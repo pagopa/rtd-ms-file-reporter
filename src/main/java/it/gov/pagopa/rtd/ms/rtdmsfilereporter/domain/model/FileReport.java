@@ -57,7 +57,7 @@ public class FileReport {
 
   public static FileReport sumFileReports(FileReport firstReport, FileReport secondReport) {
     firstReport.setId(null);
-    firstReport.getSenderCodes().addAll(firstReport.getSenderCodes());
+    firstReport.getSenderCodes().addAll(secondReport.getSenderCodes());
     firstReport.getFilesUploaded().addAll(secondReport.getFilesUploaded());
     firstReport.getAckToDownload().addAll(secondReport.getAckToDownload());
     return firstReport;
