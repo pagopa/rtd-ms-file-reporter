@@ -20,8 +20,6 @@ spec:
           imagePullPolicy: Always
           envFrom:
             - secretRef:
-                name: rtd-blob-storage-events
-            - secretRef:
                 name: mongo-credentials
           resources:
             limits:
