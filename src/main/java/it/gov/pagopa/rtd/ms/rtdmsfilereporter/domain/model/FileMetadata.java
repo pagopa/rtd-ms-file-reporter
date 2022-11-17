@@ -28,8 +28,6 @@ public class FileMetadata {
   private String status;
 
   @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-  @JsonSerialize(using = LocalDateTimeSerializer.class)
-  @JsonDeserialize(using = LocalDateTimeDeserializer.class)
   private LocalDateTime transmissionDate;
 
   public static FileMetadata createNewFileMetadata(String name) {
