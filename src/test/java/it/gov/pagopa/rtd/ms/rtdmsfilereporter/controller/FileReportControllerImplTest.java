@@ -7,11 +7,16 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.TestUtils;
+import it.gov.pagopa.rtd.ms.rtdmsfilereporter.controller.model.FileMetadataDto;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.controller.model.FileReportDto;
+import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.model.FileMetadata;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.model.FileReport;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.service.FileReportService;
+import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.List;
 import lombok.SneakyThrows;
+import org.assertj.core.groups.Tuple;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -54,14 +59,9 @@ class FileReportControllerImplTest {
     fileReportDto.setFilesUploaded(new HashSet<>());
     String emptyFileReportAsJson = objectMapper.writeValueAsString(fileReportDto);
 
-    mockMvc.perform(MockMvcRequestBuilders
-            .get(FILE_REPORT_URL)
-            .param("senderCodes", "12345"))
-        .andExpectAll(
-            status().isOk(),
-            content().contentType(MediaType.APPLICATION_JSON_VALUE),
-            content().string(emptyFileReportAsJson))
-        .andReturn();
+    mockMvc.perform(MockMvcRequestBuilders.get(FILE_REPORT_URL).param("senderCodes", "12345"))
+        .andExpectAll(status().isOk(), content().contentType(MediaType.APPLICATION_JSON_VALUE),
+            content().string(emptyFileReportAsJson)).andReturn();
 
   }
 
@@ -71,15 +71,12 @@ class FileReportControllerImplTest {
     Mockito.when(fileReportService.getFileReport(any()))
         .thenReturn(TestUtils.createFileReport(2, 2));
 
-    MvcResult result = mockMvc.perform(MockMvcRequestBuilders
-            .get(FILE_REPORT_URL)
-            .param("senderCodes", "12345"))
-        .andExpectAll(
-            status().isOk(),
-            content().contentType(MediaType.APPLICATION_JSON_VALUE))
+    MvcResult result = mockMvc.perform(
+            MockMvcRequestBuilders.get(FILE_REPORT_URL).param("senderCodes", "12345"))
+        .andExpectAll(status().isOk(), content().contentType(MediaType.APPLICATION_JSON_VALUE))
         .andReturn();
-    FileReportDto fileReportResponse = objectMapper.readValue(result.getResponse().getContentAsString(),
-        FileReportDto.class);
+    FileReportDto fileReportResponse = objectMapper.readValue(
+        result.getResponse().getContentAsString(), FileReportDto.class);
 
     assertThat(fileReportResponse.getFilesUploaded()).isNotNull().hasSize(2);
   }
@@ -89,9 +86,28 @@ class FileReportControllerImplTest {
   void givenNoQueryParamsWhenGetFileReportThenReturn400() {
     Mockito.when(fileReportService.getFileReport(any())).thenReturn(FileReport.createFileReport());
 
-    mockMvc.perform(MockMvcRequestBuilders
-            .get(FILE_REPORT_URL))
-        .andExpect(status().isBadRequest())
+    mockMvc.perform(MockMvcRequestBuilders.get(FILE_REPORT_URL)).andExpect(status().isBadRequest())
         .andReturn();
+  }
+
+  @Test
+  void mappingFromDomainToDtoWorksCorrectly() {
+    var currentDate = LocalDateTime.now();
+    FileReport fileReport = FileReport.createFileReport();
+    FileMetadata fileMetadata = new FileMetadata("ciao", 3000L, "STATUS", currentDate);
+    fileReport.addFileUploaded(fileMetadata);
+    fileReport.addAckToDownload("ack1");
+    fileReport.setSenderCodes(List.of("senderCode"));
+
+    var fileReportDto = modelMapper.map(fileReport, FileReportDto.class);
+
+    assertThat(fileReportDto).isNotNull();
+    assertThat(fileReportDto.getFilesUploaded()).isNotNull().hasSize(1)
+        .extracting(FileMetadataDto::getName,
+            FileMetadataDto::getSize,
+            FileMetadataDto::getStatus,
+            FileMetadataDto::getTransmissionDate)
+        .doesNotContainNull()
+        .containsExactly(Tuple.tuple("ciao", 3000L, "STATUS", currentDate));
   }
 }
