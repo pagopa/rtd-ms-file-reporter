@@ -7,6 +7,10 @@ import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * Configuration class to define common beans and domain bean. In this way the service class inside
+ * the domain are not bounded to the specific framework.
+ */
 @Configuration
 public class AppConfiguration {
 
