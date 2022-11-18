@@ -1,7 +1,10 @@
 package it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.model;
 
+import static java.util.Collections.emptyList;
+
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Objects;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -34,8 +37,7 @@ public class FileReport {
   public void updateFileStatus(@NotNull String filename, String status) {
 
     if (filesUploaded.stream().anyMatch(file -> file.getName().equals(filename))) {
-      filesUploaded.stream()
-          .filter(file -> file.getName().equals(filename))
+      filesUploaded.stream().filter(file -> file.getName().equals(filename))
           .forEach(file -> file.setStatus(status));
     } else {
       FileMetadata fileMetadata = FileMetadata.createNewFileMetadataWithStatus(filename, status);
@@ -57,9 +59,12 @@ public class FileReport {
 
   public static FileReport sumFileReports(FileReport firstReport, FileReport secondReport) {
     firstReport.setId(null);
-    firstReport.getSenderCodes().addAll(secondReport.getSenderCodes());
-    firstReport.getFilesUploaded().addAll(secondReport.getFilesUploaded());
-    firstReport.getAckToDownload().addAll(secondReport.getAckToDownload());
+    firstReport.getSenderCodes().addAll(
+        Objects.requireNonNullElse(secondReport.getSenderCodes(), emptyList()));
+    firstReport.getFilesUploaded().addAll(
+        Objects.requireNonNullElse(secondReport.getFilesUploaded(), emptyList()));
+    firstReport.getAckToDownload().addAll(
+        Objects.requireNonNullElse(secondReport.getAckToDownload(), emptyList()));
     return firstReport;
   }
 }
