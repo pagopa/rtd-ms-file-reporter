@@ -59,14 +59,9 @@ class FileReportControllerImplTest {
     fileReportDto.setFilesUploaded(new HashSet<>());
     String emptyFileReportAsJson = objectMapper.writeValueAsString(fileReportDto);
 
-    mockMvc.perform(MockMvcRequestBuilders
-            .get(FILE_REPORT_URL)
-            .param("senderCodes", "12345"))
-        .andExpectAll(
-            status().isOk(),
-            content().contentType(MediaType.APPLICATION_JSON_VALUE),
-            content().string(emptyFileReportAsJson))
-        .andReturn();
+    mockMvc.perform(MockMvcRequestBuilders.get(FILE_REPORT_URL).param("senderCodes", "12345"))
+        .andExpectAll(status().isOk(), content().contentType(MediaType.APPLICATION_JSON_VALUE),
+            content().string(emptyFileReportAsJson)).andReturn();
 
   }
 
@@ -76,15 +71,12 @@ class FileReportControllerImplTest {
     Mockito.when(fileReportService.getFileReport(any()))
         .thenReturn(TestUtils.createFileReport(2, 2));
 
-    MvcResult result = mockMvc.perform(MockMvcRequestBuilders
-            .get(FILE_REPORT_URL)
-            .param("senderCodes", "12345"))
-        .andExpectAll(
-            status().isOk(),
-            content().contentType(MediaType.APPLICATION_JSON_VALUE))
+    MvcResult result = mockMvc.perform(
+            MockMvcRequestBuilders.get(FILE_REPORT_URL).param("senderCodes", "12345"))
+        .andExpectAll(status().isOk(), content().contentType(MediaType.APPLICATION_JSON_VALUE))
         .andReturn();
-    FileReportDto fileReportResponse = objectMapper.readValue(result.getResponse().getContentAsString(),
-        FileReportDto.class);
+    FileReportDto fileReportResponse = objectMapper.readValue(
+        result.getResponse().getContentAsString(), FileReportDto.class);
 
     assertThat(fileReportResponse.getFilesUploaded()).isNotNull().hasSize(2);
   }
