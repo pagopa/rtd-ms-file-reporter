@@ -22,7 +22,8 @@ public class FileReportRepositoryImpl implements FileReportRepository {
     if (fileReportEntities.isEmpty()) {
       return Collections.singletonList(FileReport.createFileReport());
     } else {
-      return fileReportEntities.stream().map(entity -> modelMapper.map(entity, FileReport.class))
+      return fileReportEntities.stream()
+          .map(entity -> modelMapper.map(entity, FileReport.class))
           .collect(Collectors.toList());
     }
   }
