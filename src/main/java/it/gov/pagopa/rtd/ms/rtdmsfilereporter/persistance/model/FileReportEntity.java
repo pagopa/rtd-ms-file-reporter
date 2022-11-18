@@ -1,4 +1,4 @@
-package it.gov.pagopa.rtd.ms.rtdmsfilereporter.persistance;
+package it.gov.pagopa.rtd.ms.rtdmsfilereporter.persistance.model;
 
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.model.FileMetadata;
 import java.util.Collection;
