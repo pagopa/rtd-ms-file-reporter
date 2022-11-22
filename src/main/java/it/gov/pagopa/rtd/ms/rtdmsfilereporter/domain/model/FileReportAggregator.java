@@ -17,12 +17,12 @@ public class FileReportAggregator implements Collector<FileReport, FileReport, F
 
   @Override
   public BiConsumer<FileReport, FileReport> accumulator() {
-    return FileReport::sumFileReports;
+    return FileReport::mergeFileReports;
   }
 
   @Override
   public BinaryOperator<FileReport> combiner() {
-    return FileReport::sumFileReports;
+    return FileReport::mergeFileReports;
   }
 
   @Override
