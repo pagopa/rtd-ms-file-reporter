@@ -57,7 +57,7 @@ public class FileReport {
     return new FileReport(null, new HashSet<>(), new HashSet<>(), new HashSet<>());
   }
 
-  public static FileReport sumFileReports(FileReport firstReport, FileReport secondReport) {
+  public static FileReport mergeFileReports(FileReport firstReport, FileReport secondReport) {
     firstReport.setId(null);
     firstReport.getSenderCodes().addAll(
         Objects.requireNonNullElse(secondReport.getSenderCodes(), emptyList()));
