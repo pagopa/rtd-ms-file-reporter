@@ -94,7 +94,7 @@ class FileReportControllerImplTest {
   void mappingFromDomainToDtoWorksCorrectly() {
     var currentDate = LocalDateTime.now();
     FileReport fileReport = FileReport.createFileReport();
-    FileMetadata fileMetadata = new FileMetadata("ciao", 3000L, "STATUS", currentDate);
+    FileMetadata fileMetadata = new FileMetadata("file", 3000L, "STATUS", currentDate);
     fileReport.addFileUploaded(fileMetadata);
     fileReport.addAckToDownload("ack1");
     fileReport.setSenderCodes(List.of("senderCode"));
@@ -108,6 +108,6 @@ class FileReportControllerImplTest {
             FileMetadataDto::getStatus,
             FileMetadataDto::getTransmissionDate)
         .doesNotContainNull()
-        .containsExactly(Tuple.tuple("ciao", 3000L, "STATUS", currentDate));
+        .containsExactly(Tuple.tuple("file", 3000L, "STATUS", currentDate));
   }
 }
