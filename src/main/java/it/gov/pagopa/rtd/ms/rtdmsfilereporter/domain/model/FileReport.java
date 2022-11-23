@@ -37,7 +37,8 @@ public class FileReport {
   public void updateFileStatus(@NotNull String filename, String status) {
 
     if (filesUploaded.stream().anyMatch(file -> file.getName().equals(filename))) {
-      filesUploaded.stream().filter(file -> file.getName().equals(filename))
+      filesUploaded.stream()
+          .filter(file -> file.getName().equals(filename))
           .forEach(file -> file.setStatus(status));
     } else {
       FileMetadata fileMetadata = FileMetadata.createNewFileMetadataWithStatus(filename, status);
