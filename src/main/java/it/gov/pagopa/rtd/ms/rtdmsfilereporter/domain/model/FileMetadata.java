@@ -1,19 +1,17 @@
 package it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.model;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import java.time.LocalDateTime;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import lombok.Builder;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 
 @Data
-@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @EqualsAndHashCode
 public class FileMetadata {
 
@@ -35,10 +33,6 @@ public class FileMetadata {
   }
 
   public static FileMetadata createNewFileMetadataWithStatus(String name, String status) {
-    return FileMetadata.builder()
-        .name(name)
-        .status(status)
-        .transmissionDate(LocalDateTime.now())
-        .build();
+    return new FileMetadata(name, null, status, LocalDateTime.now());
   }
 }
