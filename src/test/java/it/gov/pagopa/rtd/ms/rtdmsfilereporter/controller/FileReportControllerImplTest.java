@@ -46,10 +46,6 @@ class FileReportControllerImplTest {
   @MockBean
   private FileReportService fileReportService;
 
-  @BeforeEach
-  void setUp() {
-  }
-
   @SneakyThrows
   @Test
   void givenEmptyReportWhenGetFileReportThenReturnEmptyListJson() {
@@ -75,7 +71,8 @@ class FileReportControllerImplTest {
 
     MvcResult result = mockMvc.perform(
             MockMvcRequestBuilders.get(FILE_REPORT_URL).param("senderCodes", "12345"))
-        .andExpectAll(status().isOk(), content().contentType(MediaType.APPLICATION_JSON_VALUE))
+        .andExpectAll(status().isOk(),
+            content().contentType(MediaType.APPLICATION_JSON_VALUE))
         .andReturn();
     FileReportDto fileReportResponse = objectMapper.readValue(
         result.getResponse().getContentAsString(), FileReportDto.class);
@@ -88,7 +85,8 @@ class FileReportControllerImplTest {
   void givenNoQueryParamsWhenGetFileReportThenReturn400() {
     Mockito.when(fileReportService.getFileReport(any())).thenReturn(FileReport.createFileReport());
 
-    mockMvc.perform(MockMvcRequestBuilders.get(FILE_REPORT_URL)).andExpect(status().isBadRequest())
+    mockMvc.perform(MockMvcRequestBuilders.get(FILE_REPORT_URL))
+        .andExpect(status().isBadRequest())
         .andReturn();
   }
 
