@@ -60,8 +60,10 @@ class FileReportControllerImplTest {
     String emptyFileReportAsJson = objectMapper.writeValueAsString(fileReportDto);
 
     mockMvc.perform(MockMvcRequestBuilders.get(FILE_REPORT_URL).param("senderCodes", "12345"))
-        .andExpectAll(status().isOk(), content().contentType(MediaType.APPLICATION_JSON_VALUE),
-            content().string(emptyFileReportAsJson)).andReturn();
+        .andExpectAll(status().isOk(),
+            content().contentType(MediaType.APPLICATION_JSON_VALUE),
+            content().string(emptyFileReportAsJson))
+        .andReturn();
 
   }
 
