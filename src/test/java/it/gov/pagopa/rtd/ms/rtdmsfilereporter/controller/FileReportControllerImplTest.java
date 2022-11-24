@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.TestUtils;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.controller.model.FileMetadataDto;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.controller.model.FileReportDto;
+import it.gov.pagopa.rtd.ms.rtdmsfilereporter.controller.model.FileReportDtoMapper;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.model.FileMetadata;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.model.FileReport;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.service.FileReportService;
@@ -17,7 +18,6 @@ import java.util.HashSet;
 import java.util.List;
 import lombok.SneakyThrows;
 import org.assertj.core.groups.Tuple;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.modelmapper.ModelMapper;
@@ -40,8 +40,7 @@ class FileReportControllerImplTest {
   @Autowired
   private MockMvc mockMvc;
 
-  @SpyBean
-  private ModelMapper modelMapper;
+  private final ModelMapper modelMapper = FileReportDtoMapper.createDtoDomainMapper();
 
   @MockBean
   private FileReportService fileReportService;
@@ -52,7 +51,7 @@ class FileReportControllerImplTest {
     Mockito.when(fileReportService.getFileReport(any())).thenReturn(FileReport.createFileReport());
 
     FileReportDto fileReportDto = new FileReportDto();
-    fileReportDto.setFilesUploaded(new HashSet<>());
+    fileReportDto.setFilesRecentlyUploaded(new HashSet<>());
     String emptyFileReportAsJson = objectMapper.writeValueAsString(fileReportDto);
 
     mockMvc.perform(MockMvcRequestBuilders.get(FILE_REPORT_URL).param("senderCodes", "12345"))
@@ -77,7 +76,7 @@ class FileReportControllerImplTest {
     FileReportDto fileReportResponse = objectMapper.readValue(
         result.getResponse().getContentAsString(), FileReportDto.class);
 
-    assertThat(fileReportResponse.getFilesUploaded()).isNotNull().hasSize(2);
+    assertThat(fileReportResponse.getFilesRecentlyUploaded()).isNotNull().hasSize(2);
   }
 
   @SneakyThrows
@@ -102,7 +101,7 @@ class FileReportControllerImplTest {
     var fileReportDto = modelMapper.map(fileReport, FileReportDto.class);
 
     assertThat(fileReportDto).isNotNull();
-    assertThat(fileReportDto.getFilesUploaded()).isNotNull().hasSize(1)
+    assertThat(fileReportDto.getFilesRecentlyUploaded()).isNotNull().hasSize(1)
         .extracting(FileMetadataDto::getName,
             FileMetadataDto::getSize,
             FileMetadataDto::getStatus,
