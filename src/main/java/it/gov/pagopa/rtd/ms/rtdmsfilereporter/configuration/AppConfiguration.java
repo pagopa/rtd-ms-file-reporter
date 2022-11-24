@@ -3,8 +3,9 @@ package it.gov.pagopa.rtd.ms.rtdmsfilereporter.configuration;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.repository.FileReportRepository;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.service.FileReportService;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.service.FileReportServiceImpl;
+import it.gov.pagopa.rtd.ms.rtdmsfilereporter.persistance.FileReportDao;
+import it.gov.pagopa.rtd.ms.rtdmsfilereporter.persistance.FileReportRepositoryImpl;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.persistance.model.FileReportEntityMapper;
-import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -16,12 +17,12 @@ import org.springframework.context.annotation.Configuration;
 public class AppConfiguration {
 
   @Bean
-  public ModelMapper getCustomMapper() {
-    return FileReportEntityMapper.createEntityDomainMapper();
+  public FileReportService getFileReportService(FileReportRepository repository) {
+    return new FileReportServiceImpl(repository);
   }
 
   @Bean
-  public FileReportService getFileReportService(FileReportRepository repository) {
-    return new FileReportServiceImpl(repository);
+  public FileReportRepository getFileReportRepository(FileReportDao dao) {
+    return new FileReportRepositoryImpl(dao, FileReportEntityMapper.createEntityDomainMapper());
   }
 }

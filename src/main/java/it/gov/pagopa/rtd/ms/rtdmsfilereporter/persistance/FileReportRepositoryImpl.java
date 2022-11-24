@@ -7,10 +7,8 @@ import java.util.Collections;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.stereotype.Component;
 
 @RequiredArgsConstructor
-@Component
 public class FileReportRepositoryImpl implements FileReportRepository {
 
   private final FileReportDao fileReportDao;
