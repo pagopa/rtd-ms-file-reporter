@@ -46,10 +46,6 @@ class FileReportControllerImplTest {
   @MockBean
   private FileReportService fileReportService;
 
-  @BeforeEach
-  void setUp() {
-  }
-
   @SneakyThrows
   @Test
   void givenEmptyReportWhenGetFileReportThenReturnEmptyListJson() {
@@ -60,8 +56,10 @@ class FileReportControllerImplTest {
     String emptyFileReportAsJson = objectMapper.writeValueAsString(fileReportDto);
 
     mockMvc.perform(MockMvcRequestBuilders.get(FILE_REPORT_URL).param("senderCodes", "12345"))
-        .andExpectAll(status().isOk(), content().contentType(MediaType.APPLICATION_JSON_VALUE),
-            content().string(emptyFileReportAsJson)).andReturn();
+        .andExpectAll(status().isOk(),
+            content().contentType(MediaType.APPLICATION_JSON_VALUE),
+            content().string(emptyFileReportAsJson))
+        .andReturn();
 
   }
 
@@ -73,7 +71,8 @@ class FileReportControllerImplTest {
 
     MvcResult result = mockMvc.perform(
             MockMvcRequestBuilders.get(FILE_REPORT_URL).param("senderCodes", "12345"))
-        .andExpectAll(status().isOk(), content().contentType(MediaType.APPLICATION_JSON_VALUE))
+        .andExpectAll(status().isOk(),
+            content().contentType(MediaType.APPLICATION_JSON_VALUE))
         .andReturn();
     FileReportDto fileReportResponse = objectMapper.readValue(
         result.getResponse().getContentAsString(), FileReportDto.class);
@@ -86,7 +85,8 @@ class FileReportControllerImplTest {
   void givenNoQueryParamsWhenGetFileReportThenReturn400() {
     Mockito.when(fileReportService.getFileReport(any())).thenReturn(FileReport.createFileReport());
 
-    mockMvc.perform(MockMvcRequestBuilders.get(FILE_REPORT_URL)).andExpect(status().isBadRequest())
+    mockMvc.perform(MockMvcRequestBuilders.get(FILE_REPORT_URL))
+        .andExpect(status().isBadRequest())
         .andReturn();
   }
 
@@ -94,7 +94,7 @@ class FileReportControllerImplTest {
   void mappingFromDomainToDtoWorksCorrectly() {
     var currentDate = LocalDateTime.now();
     FileReport fileReport = FileReport.createFileReport();
-    FileMetadata fileMetadata = new FileMetadata("ciao", 3000L, "STATUS", currentDate);
+    FileMetadata fileMetadata = new FileMetadata("file", 3000L, "STATUS", currentDate);
     fileReport.addFileUploaded(fileMetadata);
     fileReport.addAckToDownload("ack1");
     fileReport.setSenderCodes(List.of("senderCode"));
@@ -108,6 +108,6 @@ class FileReportControllerImplTest {
             FileMetadataDto::getStatus,
             FileMetadataDto::getTransmissionDate)
         .doesNotContainNull()
-        .containsExactly(Tuple.tuple("ciao", 3000L, "STATUS", currentDate));
+        .containsExactly(Tuple.tuple("file", 3000L, "STATUS", currentDate));
   }
 }

@@ -29,6 +29,23 @@ class FileReportAggregatorTest {
         .contains("12345", "6789", "87654");
   }
 
+  @Test
+  void givenOneFileReportWhenAggregateThenTheReportIsCorrect() {
+    FileReport filereport = Stream.of(createFirstFileReport())
+        .collect(FileReportAggregator.aggregateFileReports());
+
+    assertThat(filereport).isNotNull();
+    assertThat(filereport.getFilesUploaded())
+        .hasSize(1)
+        .map(FileMetadata::getName).contains("file1");
+    assertThat(filereport.getAckToDownload())
+        .hasSize(1)
+        .contains("ackreport1");
+    assertThat(filereport.getSenderCodes())
+        .hasSize(1)
+        .contains("12345");
+  }
+
   FileReport createFirstFileReport() {
     FileReport fileReport = FileReport.createFileReport();
     fileReport.setSenderCodes(Lists.list("12345"));
