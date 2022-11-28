@@ -20,4 +20,9 @@ public class FileReportServiceImpl implements FileReportService {
         .stream()
         .collect(aggregateFileReports());
   }
+
+  @Override
+  public void save(FileReport fileReport) {
+    fileReportRepository.save(fileReport);
+  }
 }

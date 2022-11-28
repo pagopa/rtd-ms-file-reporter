@@ -2,6 +2,7 @@ package it.gov.pagopa.rtd.ms.rtdmsfilereporter.persistance;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
 
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.TestUtils;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.model.FileMetadata;
@@ -85,6 +86,16 @@ class FileReportRepositoryImplTest {
     assertThat(fileReport.getAckToDownload()).isNotNull().hasSize(2).contains("ack1", "ack2");
     assertThat(fileReport.getSenderCodes()).isNotNull().hasSize(1).contains("12345");
     assertThat(fileReport.getId()).isNotNull().isEqualTo("testID");
+  }
+
+  @Test
+  void whenSaveReportThenSaveIt() {
+    var reportStub = TestUtils.createFileReport(1, 1);
+    reportStub.setSenderCodes(Collections.singleton("12345"));
+
+    repository.save(reportStub);
+
+    verify(dao).save(modelMapper.map(reportStub, FileReportEntity.class));
   }
 
   Collection<FileReportEntity> getMockedReports() {

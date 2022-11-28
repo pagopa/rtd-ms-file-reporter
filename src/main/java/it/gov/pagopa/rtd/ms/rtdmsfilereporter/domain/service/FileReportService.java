@@ -6,4 +6,6 @@ import java.util.Collection;
 public interface FileReportService {
 
   FileReport getAggregateFileReport(Collection<String> senderCodes);
+
+  void save(FileReport fileReport);
 }
