@@ -44,7 +44,8 @@ class FileReportServiceImplTest {
   void whenGetFileReportForManySenderCodesThenMergeTheReportsCorrectly() {
     Mockito.when(fileReportRepository.getReportsBySenderCodes(any())).thenReturn(getReportList());
 
-    FileReport filereport = fileReportService.getFileReport(Collections.singleton("12345"));
+    FileReport filereport = fileReportService.getAggregateFileReport(
+        Collections.singleton("12345"));
 
     assertThat(filereport).isNotNull();
     assertThat(filereport.getFilesUploaded()).isNotNull().hasSize(4);
@@ -56,7 +57,8 @@ class FileReportServiceImplTest {
     Mockito.when(fileReportRepository.getReportsBySenderCodes(any()))
         .thenReturn(Collections.emptyList());
 
-    FileReport filereport = fileReportService.getFileReport(Collections.singleton("12345"));
+    FileReport filereport = fileReportService.getAggregateFileReport(
+        Collections.singleton("12345"));
 
     assertThat(filereport).isNotNull();
     assertThat(filereport.getFilesUploaded()).isNotNull().isEmpty();
