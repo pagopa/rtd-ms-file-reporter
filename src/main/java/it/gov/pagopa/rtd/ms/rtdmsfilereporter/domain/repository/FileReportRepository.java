@@ -7,4 +7,6 @@ import java.util.Collection;
 public interface FileReportRepository {
 
   Collection<FileReport> getReportsBySenderCodes(Collection<String> senderCodes);
+
+  FileReport getReportBySenderCode(String senderCode);
 }

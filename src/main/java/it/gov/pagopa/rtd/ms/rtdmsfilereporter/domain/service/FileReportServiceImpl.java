@@ -20,4 +20,9 @@ public class FileReportServiceImpl implements FileReportService {
         .stream()
         .collect(aggregateFileReports());
   }
+
+  @Override
+  public FileReport getFileReport(String senderCode) {
+    return fileReportRepository.getReportBySenderCode(senderCode);
+  }
 }
