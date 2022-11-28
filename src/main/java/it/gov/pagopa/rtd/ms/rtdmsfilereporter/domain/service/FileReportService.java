@@ -5,5 +5,5 @@ import java.util.Collection;
 
 public interface FileReportService {
 
-  FileReport getFileReport(Collection<String> senderCodes);
+  FileReport getAggregateFileReport(Collection<String> senderCodes);
 }

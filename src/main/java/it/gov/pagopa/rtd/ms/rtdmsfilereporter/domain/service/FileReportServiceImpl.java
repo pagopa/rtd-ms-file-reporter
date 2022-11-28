@@ -15,7 +15,7 @@ public class FileReportServiceImpl implements FileReportService {
   private final FileReportRepository fileReportRepository;
 
   @Override
-  public FileReport getFileReport(Collection<String> senderCodes) {
+  public FileReport getAggregateFileReport(Collection<String> senderCodes) {
     return fileReportRepository.getReportsBySenderCodes(senderCodes)
         .stream()
         .collect(aggregateFileReports());

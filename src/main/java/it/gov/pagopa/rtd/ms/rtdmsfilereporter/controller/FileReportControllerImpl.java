@@ -20,6 +20,6 @@ public class FileReportControllerImpl implements FileReportController {
   @Override
   public FileReportDto getFileReport(Collection<String> senderCodes) {
     log.info("GET file report for sender codes: {}", senderCodes.toString());
-    return modelMapper.map(fileReportService.getFileReport(senderCodes), FileReportDto.class);
+    return modelMapper.map(fileReportService.getAggregateFileReport(senderCodes), FileReportDto.class);
   }
 }

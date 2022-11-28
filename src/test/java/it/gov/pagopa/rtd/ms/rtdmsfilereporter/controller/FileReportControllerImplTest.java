@@ -24,7 +24,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -48,7 +47,8 @@ class FileReportControllerImplTest {
   @SneakyThrows
   @Test
   void givenEmptyReportWhenGetFileReportThenReturnEmptyListJson() {
-    Mockito.when(fileReportService.getFileReport(any())).thenReturn(FileReport.createFileReport());
+    Mockito.when(fileReportService.getAggregateFileReport(any()))
+        .thenReturn(FileReport.createFileReport());
 
     FileReportDto fileReportDto = new FileReportDto();
     fileReportDto.setFilesRecentlyUploaded(new HashSet<>());
@@ -65,7 +65,7 @@ class FileReportControllerImplTest {
   @SneakyThrows
   @Test
   void givenReportWhenGetFileReportThenReturnCorrectJson() {
-    Mockito.when(fileReportService.getFileReport(any()))
+    Mockito.when(fileReportService.getAggregateFileReport(any()))
         .thenReturn(TestUtils.createFileReport(2, 2));
 
     MvcResult result = mockMvc.perform(
@@ -82,7 +82,8 @@ class FileReportControllerImplTest {
   @SneakyThrows
   @Test
   void givenNoQueryParamsWhenGetFileReportThenReturn400() {
-    Mockito.when(fileReportService.getFileReport(any())).thenReturn(FileReport.createFileReport());
+    Mockito.when(fileReportService.getAggregateFileReport(any()))
+        .thenReturn(FileReport.createFileReport());
 
     mockMvc.perform(MockMvcRequestBuilders.get(FILE_REPORT_URL))
         .andExpect(status().isBadRequest())
