@@ -116,6 +116,16 @@ class FileReportRepositoryImplTest {
     assertThat(fileReport.getId()).isNotNull().isEqualTo("testID");
   }
 
+  @Test
+  void whenSaveReportThenSaveIt() {
+    var reportStub = TestUtils.createFileReport(1, 1);
+    reportStub.setSenderCodes(Collections.singleton("12345"));
+
+    repository.save(reportStub);
+
+    verify(dao).save(modelMapper.map(reportStub, FileReportEntity.class));
+  }
+
   Collection<FileReportEntity> getMockedReports() {
     var reports = new ArrayList<FileReportEntity>();
     reports.add(modelMapper.map(TestUtils.createFileReport(1, 1), FileReportEntity.class));

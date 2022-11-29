@@ -2,6 +2,7 @@ package it.gov.pagopa.rtd.ms.rtdmsfilereporter.persistance;
 
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.model.FileReport;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.repository.FileReportRepository;
+import it.gov.pagopa.rtd.ms.rtdmsfilereporter.persistance.model.FileReportEntity;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.stream.Collectors;
@@ -31,5 +32,10 @@ public class FileReportRepositoryImpl implements FileReportRepository {
     return fileReportDao.findBySenderCode(senderCode)
         .map(entity -> modelMapper.map(entity, FileReport.class))
         .orElse(FileReport.createFileReport());
+  }
+
+  @Override
+  public void save(FileReport fileReport) {
+    fileReportDao.save(modelMapper.map(fileReport, FileReportEntity.class));
   }
 }

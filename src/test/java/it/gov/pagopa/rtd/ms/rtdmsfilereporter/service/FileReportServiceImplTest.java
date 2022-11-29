@@ -3,6 +3,7 @@ package it.gov.pagopa.rtd.ms.rtdmsfilereporter.service;
 import static it.gov.pagopa.rtd.ms.rtdmsfilereporter.TestUtils.createFileReport;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
 
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.model.FileReport;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.repository.FileReportRepository;
@@ -75,6 +76,13 @@ class FileReportServiceImplTest {
     assertThat(filereport).isNotNull();
     assertThat(filereport.getFilesUploaded()).isNotNull().isEmpty();
     assertThat(filereport.getAckToDownload()).isNotNull().isEmpty();
+  }
+
+  @Test
+  void whenSaveThenRepositorySaveIsInvoked() {
+    fileReportService.save(FileReport.createFileReport());
+
+    verify(fileReportRepository).save(FileReport.createFileReport());
   }
 
   Collection<FileReport> getReportList() {

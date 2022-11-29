@@ -25,4 +25,9 @@ public class FileReportServiceImpl implements FileReportService {
   public FileReport getFileReport(String senderCode) {
     return fileReportRepository.getReportBySenderCode(senderCode);
   }
+
+  @Override
+  public void save(FileReport fileReport) {
+    fileReportRepository.save(fileReport);
+  }
 }
