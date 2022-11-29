@@ -7,6 +7,7 @@ import static org.mockito.Mockito.verify;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.TestUtils;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.model.FileMetadata;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.model.FileReport;
+import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.model.FileStatusEnum;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.repository.FileReportRepository;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.persistance.model.FileReportEntity;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.persistance.model.FileReportEntityMapper;
@@ -102,7 +103,7 @@ class FileReportRepositoryImplTest {
     FileReportEntity fileReportEntity = new FileReportEntity();
     fileReportEntity.setSenderCode("12345");
     fileReportEntity.setFilesUploaded(
-        List.of(new FileMetadata("file", 200L, "STATUS", currentDate)));
+        List.of(new FileMetadata("file", 200L, FileStatusEnum.RECEIVED_BY_PAGOPA, currentDate)));
     fileReportEntity.setAckToDownload(List.of("ack1", "ack2"));
     fileReportEntity.setId("testID");
 
@@ -110,7 +111,8 @@ class FileReportRepositoryImplTest {
 
     assertThat(fileReport).isNotNull();
     assertThat(fileReport.getFilesUploaded()).isNotNull().hasSize(1)
-        .containsExactly(new FileMetadata("file", 200L, "STATUS", currentDate));
+        .containsExactly(
+            new FileMetadata("file", 200L, FileStatusEnum.RECEIVED_BY_PAGOPA, currentDate));
     assertThat(fileReport.getAckToDownload()).isNotNull().hasSize(2).contains("ack1", "ack2");
     assertThat(fileReport.getSenderCodes()).isNotNull().hasSize(1).contains("12345");
     assertThat(fileReport.getId()).isNotNull().isEqualTo("testID");

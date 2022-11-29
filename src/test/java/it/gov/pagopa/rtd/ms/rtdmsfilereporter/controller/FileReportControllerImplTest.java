@@ -12,6 +12,7 @@ import it.gov.pagopa.rtd.ms.rtdmsfilereporter.controller.model.FileReportDto;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.controller.model.FileReportDtoMapper;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.model.FileMetadata;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.model.FileReport;
+import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.model.FileStatusEnum;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.service.FileReportService;
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -94,7 +95,7 @@ class FileReportControllerImplTest {
   void mappingFromDomainToDtoWorksCorrectly() {
     var currentDate = LocalDateTime.now();
     FileReport fileReport = FileReport.createFileReport();
-    FileMetadata fileMetadata = new FileMetadata("file", 3000L, "STATUS", currentDate);
+    FileMetadata fileMetadata = new FileMetadata("file", 3000L, FileStatusEnum.RECEIVED_BY_PAGOPA, currentDate);
     fileReport.addFileUploaded(fileMetadata);
     fileReport.addAckToDownload("ack1");
     fileReport.setSenderCodes(List.of("senderCode"));
@@ -108,6 +109,6 @@ class FileReportControllerImplTest {
             FileMetadataDto::getStatus,
             FileMetadataDto::getTransmissionDate)
         .doesNotContainNull()
-        .containsExactly(Tuple.tuple("file", 3000L, "STATUS", currentDate));
+        .containsExactly(Tuple.tuple("file", 3000L, FileStatusEnum.RECEIVED_BY_PAGOPA.name(), currentDate));
   }
 }
