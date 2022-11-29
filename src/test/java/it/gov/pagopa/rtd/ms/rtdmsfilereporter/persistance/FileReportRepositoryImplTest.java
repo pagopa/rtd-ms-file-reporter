@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -66,6 +67,33 @@ class FileReportRepositoryImplTest {
     var fileReports = repository.getReportsBySenderCodes(any());
 
     assertThat(fileReports).isNotNull().hasSize(2);
+  }
+
+  @Test
+  void givenNoReportWhenGetReportThenReturnEmptyReport() {
+    Mockito.when(dao.findBySenderCode("12345")).thenReturn(Optional.empty());
+
+    var fileReport = repository.getReportBySenderCode("12345");
+
+    assertThat(fileReport).isNotNull();
+    assertThat(fileReport.getAckToDownload()).isNotNull().isEmpty();
+    assertThat(fileReport.getFilesUploaded()).isNotNull().isEmpty();
+    assertThat(fileReport.getSenderCodes()).isNotNull().isEmpty();
+  }
+
+  @Test
+  void whenGetReportThenReturnAReport() {
+    var reportStub = TestUtils.createFileReport(1, 1);
+    reportStub.setSenderCodes(Collections.singleton("12345"));
+    Mockito.when(dao.findBySenderCode("12345")).thenReturn(
+        Optional.of(modelMapper.map(reportStub, FileReportEntity.class)));
+
+    var fileReport = repository.getReportBySenderCode("12345");
+
+    assertThat(fileReport).isNotNull();
+    assertThat(fileReport.getAckToDownload()).isNotNull().hasSize(1);
+    assertThat(fileReport.getFilesUploaded()).isNotNull().hasSize(1);
+    assertThat(fileReport.getSenderCodes()).isNotNull().contains("12345");
   }
 
   @Test

@@ -28,6 +28,13 @@ public class FileReportRepositoryImpl implements FileReportRepository {
   }
 
   @Override
+  public FileReport getReportBySenderCode(String senderCode) {
+    return fileReportDao.findBySenderCode(senderCode)
+        .map(entity -> modelMapper.map(entity, FileReport.class))
+        .orElse(FileReport.createFileReport());
+  }
+
+  @Override
   public void save(FileReport fileReport) {
     fileReportDao.save(modelMapper.map(fileReport, FileReportEntity.class));
   }

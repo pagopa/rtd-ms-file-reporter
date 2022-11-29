@@ -67,6 +67,18 @@ class FileReportServiceImplTest {
   }
 
   @Test
+  void whenGetFileReportThenReturnsAReport() {
+    Mockito.when(fileReportRepository.getReportBySenderCode(any()))
+        .thenReturn(FileReport.createFileReport());
+
+    FileReport filereport = fileReportService.getFileReport("12345");
+
+    assertThat(filereport).isNotNull();
+    assertThat(filereport.getFilesUploaded()).isNotNull().isEmpty();
+    assertThat(filereport.getAckToDownload()).isNotNull().isEmpty();
+  }
+
+  @Test
   void whenSaveThenRepositorySaveIsInvoked() {
     fileReportService.save(FileReport.createFileReport());
 

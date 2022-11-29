@@ -7,5 +7,7 @@ public interface FileReportService {
 
   FileReport getAggregateFileReport(Collection<String> senderCodes);
 
+  FileReport getFileReport(String senderCode);
+
   void save(FileReport fileReport);
 }
