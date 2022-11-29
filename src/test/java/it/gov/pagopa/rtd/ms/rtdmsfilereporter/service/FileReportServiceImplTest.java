@@ -65,6 +65,18 @@ class FileReportServiceImplTest {
     assertThat(filereport.getAckToDownload()).isNotNull().isEmpty();
   }
 
+  @Test
+  void whenGetFileReportThenReturnsAReport() {
+    Mockito.when(fileReportRepository.getReportBySenderCode(any()))
+        .thenReturn(FileReport.createFileReport());
+
+    FileReport filereport = fileReportService.getFileReport("12345");
+
+    assertThat(filereport).isNotNull();
+    assertThat(filereport.getFilesUploaded()).isNotNull().isEmpty();
+    assertThat(filereport.getAckToDownload()).isNotNull().isEmpty();
+  }
+
   Collection<FileReport> getReportList() {
     return Stream.of(createFileReport(3, 1), createFileReport(1, 2), createFileReport(2, 1))
         .collect(Collectors.toList());
