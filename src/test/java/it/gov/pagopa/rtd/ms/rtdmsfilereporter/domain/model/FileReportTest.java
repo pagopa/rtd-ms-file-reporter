@@ -206,4 +206,14 @@ class FileReportTest {
 
     assertThat(fileReport.getFilesUploaded()).isNotNull().isEmpty();
   }
+
+  @Test
+  void whenCreateAReportWithStatusCodeThenReportIsCorrect() {
+    FileReport fileReport = FileReport.createFileReportWithSenderCode("12345");
+
+    assertThat(fileReport).isNotNull();
+    assertThat(fileReport.getSenderCodes()).isNotNull().hasSize(1).contains("12345");
+    assertThat(fileReport.getFilesUploaded()).isNotNull().isEmpty();
+    assertThat(fileReport.getAckToDownload()).isNotNull().isEmpty();
+  }
 }
