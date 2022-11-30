@@ -36,6 +36,7 @@ public class FileReportEventAdapter {
     if (!validationErrors.isEmpty()) {
       throw new ConstraintViolationException(validationErrors);
     }
+    log.info("Received event for file {} with status {}", eventDto.getFileName(), eventDto.getStatus().name());
 
     // retrieve the report
     var report = service.getFileReport(eventDto.getSender())
