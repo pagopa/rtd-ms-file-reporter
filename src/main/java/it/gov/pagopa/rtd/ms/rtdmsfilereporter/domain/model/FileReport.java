@@ -4,6 +4,7 @@ import static java.util.Collections.emptyList;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Objects;
 import javax.validation.constraints.NotBlank;
@@ -37,6 +38,10 @@ public class FileReport {
     filesUploaded.removeIf(file -> file.getName().equals(name));
   }
 
+  public void addSenderCode(String senderCode) {
+    senderCodes.add(senderCode);
+  }
+
   public void addAckToDownload(String filename) {
     ackToDownload.add(filename);
   }
@@ -63,6 +68,10 @@ public class FileReport {
 
   public static FileReport createFileReport() {
     return new FileReport(null, new HashSet<>(), new HashSet<>(), new HashSet<>());
+  }
+
+  public static FileReport createFileReportWithSenderCode(String senderCode) {
+    return new FileReport(null, Collections.singleton(senderCode), new HashSet<>(), new HashSet<>());
   }
 
   public static FileReport mergeFileReports(FileReport firstReport, FileReport secondReport) {
