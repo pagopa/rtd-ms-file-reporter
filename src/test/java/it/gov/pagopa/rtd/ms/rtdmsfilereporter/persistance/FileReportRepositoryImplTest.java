@@ -76,10 +76,7 @@ class FileReportRepositoryImplTest {
 
     var fileReport = repository.getReportBySenderCode("12345");
 
-    assertThat(fileReport).isNotNull();
-    assertThat(fileReport.getAckToDownload()).isNotNull().isEmpty();
-    assertThat(fileReport.getFilesUploaded()).isNotNull().isEmpty();
-    assertThat(fileReport.getSenderCodes()).isNotNull().isEmpty();
+    assertThat(fileReport).isEmpty();
   }
 
   @Test
@@ -91,10 +88,10 @@ class FileReportRepositoryImplTest {
 
     var fileReport = repository.getReportBySenderCode("12345");
 
-    assertThat(fileReport).isNotNull();
-    assertThat(fileReport.getAckToDownload()).isNotNull().hasSize(1);
-    assertThat(fileReport.getFilesUploaded()).isNotNull().hasSize(1);
-    assertThat(fileReport.getSenderCodes()).isNotNull().contains("12345");
+    assertThat(fileReport).isNotEmpty();
+    assertThat(fileReport.get().getAckToDownload()).isNotNull().hasSize(1);
+    assertThat(fileReport.get().getFilesUploaded()).isNotNull().hasSize(1);
+    assertThat(fileReport.get().getSenderCodes()).isNotNull().contains("12345");
   }
 
   @Test

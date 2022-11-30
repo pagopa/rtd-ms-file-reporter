@@ -11,6 +11,7 @@ import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.service.FileReportService;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.service.FileReportServiceImpl;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import lombok.SneakyThrows;
@@ -69,13 +70,11 @@ class FileReportServiceImplTest {
   @Test
   void whenGetFileReportThenReturnsAReport() {
     Mockito.when(fileReportRepository.getReportBySenderCode(any()))
-        .thenReturn(FileReport.createFileReport());
+        .thenReturn(Optional.empty());
 
-    FileReport filereport = fileReportService.getFileReport("12345");
+    var filereport = fileReportService.getFileReport("12345");
 
-    assertThat(filereport).isNotNull();
-    assertThat(filereport.getFilesUploaded()).isNotNull().isEmpty();
-    assertThat(filereport.getAckToDownload()).isNotNull().isEmpty();
+    assertThat(filereport).isEmpty();
   }
 
   @Test

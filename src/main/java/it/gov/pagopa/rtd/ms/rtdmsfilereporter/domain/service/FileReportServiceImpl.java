@@ -5,6 +5,7 @@ import static it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.model.FileReportAggr
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.model.FileReport;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.repository.FileReportRepository;
 import java.util.Collection;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -22,7 +23,7 @@ public class FileReportServiceImpl implements FileReportService {
   }
 
   @Override
-  public FileReport getFileReport(String senderCode) {
+  public Optional<FileReport> getFileReport(String senderCode) {
     return fileReportRepository.getReportBySenderCode(senderCode);
   }
 
