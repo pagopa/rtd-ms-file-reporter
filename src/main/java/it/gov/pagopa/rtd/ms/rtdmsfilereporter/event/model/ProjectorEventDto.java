@@ -33,14 +33,4 @@ public class ProjectorEventDto {
 
   @NotNull
   private EventStatusEnum status;
-
-  @Override
-  public String toString() {
-    return "EventDto{" +
-        "parent='" + fileName + '\'' +
-        ", sender='" + sender + '\'' +
-        ", size=" + size +
-        ", receiveTimestamp=" + receiveTimestamp +
-        '}';
-  }
 }
