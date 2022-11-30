@@ -4,7 +4,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 
-import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.FileReportStrategy;
+import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.FileReportCommandFactory;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.model.FileMetadata;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.model.FileReport;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.model.FileStatusEnum;
@@ -37,7 +37,7 @@ class FileReportEventAdapterTest {
   @BeforeEach
   void setUp() {
     autoCloseable = MockitoAnnotations.openMocks(this);
-    adapter = new FileReportEventAdapter(service, validator, new FileReportStrategy());
+    adapter = new FileReportEventAdapter(service, validator, new FileReportCommandFactory());
     adapter.setFileTimeToLiveInDays(fileTTL);
   }
 

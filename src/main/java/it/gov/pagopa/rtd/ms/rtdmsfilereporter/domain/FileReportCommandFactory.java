@@ -5,7 +5,7 @@ import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.model.FileReport;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.event.model.EventStatusEnum;
 import java.util.function.BiConsumer;
 
-public class FileReportStrategy {
+public class FileReportCommandFactory {
 
   public BiConsumer<FileReport, FileMetadata> getCommandByStatus(String status) {
     switch (EventStatusEnum.valueOf(status)) {
