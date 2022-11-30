@@ -42,8 +42,7 @@ public class EventToDomainMapper {
         return FileStatusEnum.ACK_DOWNLOADED;
       case ACK_TO_DOWNLOAD:
         return FileStatusEnum.ACK_TO_DOWNLOAD;
-      default:
-        return null;
     }
+    return null;
   }
 }
