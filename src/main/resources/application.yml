@@ -3,6 +3,9 @@ topics:
     topic: ${KAFKA_RTD_PROJECTOR_TOPIC:rtd-projector}
     group: ${KAFKA_RTD_PROJECTOR_CONSUMER_GROUP:rtd-file-reporter-consumer-group}
 
+report:
+  fileTTL: ${FILE_TTL_IN_DAYS:15}
+
 spring:
   config:
     activate:

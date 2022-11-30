@@ -23,7 +23,7 @@ public class FileMetadata {
 
   @NotNull
   @NotBlank
-  private String status;
+  private FileStatusEnum status;
 
   @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
   private LocalDateTime transmissionDate;
@@ -32,7 +32,7 @@ public class FileMetadata {
     return createNewFileMetadataWithStatus(name, null);
   }
 
-  public static FileMetadata createNewFileMetadataWithStatus(String name, String status) {
+  public static FileMetadata createNewFileMetadataWithStatus(String name, FileStatusEnum status) {
     return new FileMetadata(name, null, status, LocalDateTime.now());
   }
 }

@@ -5,6 +5,7 @@ import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.repository.FileReportReposi
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.persistance.model.FileReportEntity;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -28,10 +29,9 @@ public class FileReportRepositoryImpl implements FileReportRepository {
   }
 
   @Override
-  public FileReport getReportBySenderCode(String senderCode) {
+  public Optional<FileReport> getReportBySenderCode(String senderCode) {
     return fileReportDao.findBySenderCode(senderCode)
-        .map(entity -> modelMapper.map(entity, FileReport.class))
-        .orElse(FileReport.createFileReport());
+        .map(entity -> modelMapper.map(entity, FileReport.class));
   }
 
   @Override
