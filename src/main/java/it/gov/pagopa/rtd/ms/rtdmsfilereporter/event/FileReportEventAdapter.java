@@ -42,7 +42,7 @@ public class FileReportEventAdapter {
     var report = service.getFileReport(eventDto.getSender())
         .orElse(FileReport.createFileReportWithSenderCode(eventDto.getSender()));
 
-    // execute policy on report
+    // execute command on report
     fileReportCommandFactory.getCommandByStatus(eventDto.getStatus().name())
         .accept(report, modelMapper.map(eventDto, FileMetadata.class));
 
