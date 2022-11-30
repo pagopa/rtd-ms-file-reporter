@@ -71,7 +71,9 @@ public class FileReport {
   }
 
   public static FileReport createFileReportWithSenderCode(String senderCode) {
-    return new FileReport(null, Collections.singleton(senderCode), new HashSet<>(), new HashSet<>());
+    var fileReport = createFileReport();
+    fileReport.addSenderCode(senderCode);
+    return fileReport;
   }
 
   public static FileReport mergeFileReports(FileReport firstReport, FileReport secondReport) {
