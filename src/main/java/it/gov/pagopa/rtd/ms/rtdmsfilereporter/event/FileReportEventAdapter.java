@@ -2,6 +2,7 @@ package it.gov.pagopa.rtd.ms.rtdmsfilereporter.event;
 
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.FileReportStrategy;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.model.FileMetadata;
+import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.model.FileReport;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.service.FileReportService;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.event.model.EventToDomainMapper;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.event.model.ProjectorEventDto;
@@ -37,7 +38,8 @@ public class FileReportEventAdapter {
     }
 
     // retrieve the report
-    var report = service.getFileReport(eventDto.getSender());
+    var report = service.getFileReport(eventDto.getSender())
+        .orElse(FileReport.createFileReportWithSenderCode(eventDto.getSender()));
 
     // execute policy on report
     fileReportStrategy.getCommandByStatus(eventDto.getStatus().name())

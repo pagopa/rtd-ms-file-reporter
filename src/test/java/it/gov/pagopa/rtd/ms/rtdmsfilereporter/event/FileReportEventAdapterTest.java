@@ -13,6 +13,7 @@ import it.gov.pagopa.rtd.ms.rtdmsfilereporter.event.model.EventStatusEnum;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.event.model.ProjectorEventDto;
 import java.time.LocalDateTime;
 import java.util.Collections;
+import java.util.Optional;
 import javax.validation.ConstraintViolationException;
 import javax.validation.Validation;
 import javax.validation.Validator;
@@ -57,7 +58,7 @@ class FileReportEventAdapterTest {
 
   @Test
   void whenReceiveAnEventThenAddFileToEmptyReport() {
-    Mockito.when(service.getFileReport(any())).thenReturn(FileReport.createFileReport());
+    Mockito.when(service.getFileReport(any())).thenReturn(Optional.empty());
 
     var currentDate = LocalDateTime.now();
     ProjectorEventDto eventDto = new ProjectorEventDto("file", "12345", 100L, currentDate,
@@ -79,7 +80,7 @@ class FileReportEventAdapterTest {
     FileReport reportToBeRead = FileReport.createFileReport();
     reportToBeRead.addFileUploaded(
         new FileMetadata("file", 100L, FileStatusEnum.RECEIVED_BY_PAGOPA, currentDate));
-    Mockito.when(service.getFileReport(any())).thenReturn(reportToBeRead);
+    Mockito.when(service.getFileReport(any())).thenReturn(Optional.of(reportToBeRead));
 
     // even if other fields are different, the only field that will be changed is "status"
     ProjectorEventDto eventDto = new ProjectorEventDto("file", "12345", 300L, LocalDateTime.now(),
@@ -101,7 +102,7 @@ class FileReportEventAdapterTest {
     reportToBeRead.addFileUploaded(
         new FileMetadata("file", 100L, FileStatusEnum.RECEIVED_BY_PAGOPA,
             currentDate.minusDays(fileTTL + 1)));
-    Mockito.when(service.getFileReport(any())).thenReturn(reportToBeRead);
+    Mockito.when(service.getFileReport(any())).thenReturn(Optional.of(reportToBeRead));
 
     ProjectorEventDto eventDto = new ProjectorEventDto("newFile", "12345", 300L, currentDate,
         EventStatusEnum.RECEIVED);
@@ -121,7 +122,7 @@ class FileReportEventAdapterTest {
     FileReport reportToBeRead = FileReport.createFileReport();
     reportToBeRead.addFileUploaded(
         new FileMetadata("file", 100L, FileStatusEnum.RECEIVED_BY_PAGOPA, currentDate));
-    Mockito.when(service.getFileReport(any())).thenReturn(reportToBeRead);
+    Mockito.when(service.getFileReport(any())).thenReturn(Optional.of(reportToBeRead));
 
     ProjectorEventDto eventDto = new ProjectorEventDto("newFile", "12345", 300L, currentDate,
         EventStatusEnum.SENT_TO_ADE);
@@ -140,11 +141,12 @@ class FileReportEventAdapterTest {
   @Test
   void whenReceiveAnACKEventThenAddNewAckToEmptyReport() {
     var currentDate = LocalDateTime.now();
-    Mockito.when(service.getFileReport(any())).thenReturn(FileReport.createFileReport());
+    Mockito.when(service.getFileReport(any())).thenReturn(Optional.empty());
 
     ProjectorEventDto eventDto = new ProjectorEventDto("ackFile", "12345", 300L, currentDate,
         EventStatusEnum.ACK_TO_DOWNLOAD);
     FileReport expectedReport = FileReport.createFileReport();
+    expectedReport.addSenderCode("12345");
     expectedReport.addAckToDownload("ackFile");
 
     adapter.consumeEvent(eventDto);
@@ -158,7 +160,7 @@ class FileReportEventAdapterTest {
     var currentDate = LocalDateTime.now();
     FileReport reportToBeRead = FileReport.createFileReport();
     reportToBeRead.addAckToDownload("ackToDownload");
-    Mockito.when(service.getFileReport(any())).thenReturn(reportToBeRead);
+    Mockito.when(service.getFileReport(any())).thenReturn(Optional.of(reportToBeRead));
 
     ProjectorEventDto eventDto = new ProjectorEventDto("ackToDownload", "12345", 300L, currentDate,
         EventStatusEnum.ACK_DOWNLOADED);
@@ -172,12 +174,13 @@ class FileReportEventAdapterTest {
 
   @Test
   void whenReceiveStatusNotMappedThenThrowException() {
-    Mockito.when(service.getFileReport(any())).thenReturn(FileReport.createFileReport());
+    Mockito.when(service.getFileReport(any())).thenReturn(Optional.empty());
 
     var currentDate = LocalDateTime.now();
     ProjectorEventDto eventDto = new ProjectorEventDto("file", "12345", 100L, currentDate,
         EventStatusEnum.RECEIVED);
     FileReport expectedReport = FileReport.createFileReport();
+    expectedReport.addSenderCode("12345");
     expectedReport.addFileUploaded(
         new FileMetadata("file", 100L, FileStatusEnum.RECEIVED_BY_PAGOPA, currentDate));
 
