@@ -17,7 +17,7 @@ public class FileReportEntityMapper {
     Converter<String, Collection<String>> stringToCollection = c -> Collections.singleton(
         c.getSource());
     Converter<Collection<String>, String> collectionToString = c -> c.getSource().stream()
-        .findFirst().orElse(null);
+        .findAny().orElse(null);
 
     var propertyMapperEntityToDomain = modelMapper.createTypeMap(
         FileReportEntity.class, FileReport.class);
