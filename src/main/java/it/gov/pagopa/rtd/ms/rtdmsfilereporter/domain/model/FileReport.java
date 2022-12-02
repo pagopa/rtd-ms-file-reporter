@@ -2,6 +2,7 @@ package it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.model;
 
 import static java.util.Collections.emptyList;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Objects;
@@ -36,15 +37,8 @@ public class FileReport {
     filesUploaded.removeIf(file -> file.getName().equals(name));
   }
 
-  public void updateFileStatus(@NotNull String filename, String status) {
-
-    if (filesUploaded.stream().anyMatch(file -> file.getName().equals(filename))) {
-      filesUploaded.stream().filter(file -> file.getName().equals(filename))
-          .forEach(file -> file.setStatus(status));
-    } else {
-      FileMetadata fileMetadata = FileMetadata.createNewFileMetadataWithStatus(filename, status);
-      filesUploaded.add(fileMetadata);
-    }
+  public void addSenderCode(String senderCode) {
+    senderCodes.add(senderCode);
   }
 
   public void addAckToDownload(String filename) {
@@ -55,8 +49,30 @@ public class FileReport {
     ackToDownload.remove(filename);
   }
 
+  public void addFileOrUpdateStatusIfPresent(FileMetadata fileMetadata) {
+
+    if (filesUploaded.stream().anyMatch(file -> file.getName().equals(fileMetadata.getName()))) {
+      filesUploaded.stream()
+          .filter(file -> file.getName().equals(fileMetadata.getName()))
+          .forEach(file -> file.setStatus(fileMetadata.getStatus()));
+    } else {
+      filesUploaded.add(fileMetadata);
+    }
+  }
+
+  public void removeFilesOlderThan(int days) {
+    filesUploaded.removeIf(
+        file -> file.getTransmissionDate().isBefore(LocalDateTime.now().minusDays(days)));
+  }
+
   public static FileReport createFileReport() {
     return new FileReport(null, new HashSet<>(), new HashSet<>(), new HashSet<>());
+  }
+
+  public static FileReport createFileReportWithSenderCode(String senderCode) {
+    var fileReport = createFileReport();
+    fileReport.addSenderCode(senderCode);
+    return fileReport;
   }
 
   public static FileReport mergeFileReports(FileReport firstReport, FileReport secondReport) {

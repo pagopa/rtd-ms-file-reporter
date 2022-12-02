@@ -3,6 +3,7 @@ package it.gov.pagopa.rtd.ms.rtdmsfilereporter.service;
 import static it.gov.pagopa.rtd.ms.rtdmsfilereporter.TestUtils.createFileReport;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
 
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.model.FileReport;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.repository.FileReportRepository;
@@ -10,6 +11,7 @@ import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.service.FileReportService;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.service.FileReportServiceImpl;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import lombok.SneakyThrows;
@@ -44,7 +46,8 @@ class FileReportServiceImplTest {
   void whenGetFileReportForManySenderCodesThenMergeTheReportsCorrectly() {
     Mockito.when(fileReportRepository.getReportsBySenderCodes(any())).thenReturn(getReportList());
 
-    FileReport filereport = fileReportService.getFileReport(Collections.singleton("12345"));
+    FileReport filereport = fileReportService.getAggregateFileReport(
+        Collections.singleton("12345"));
 
     assertThat(filereport).isNotNull();
     assertThat(filereport.getFilesUploaded()).isNotNull().hasSize(4);
@@ -56,11 +59,29 @@ class FileReportServiceImplTest {
     Mockito.when(fileReportRepository.getReportsBySenderCodes(any()))
         .thenReturn(Collections.emptyList());
 
-    FileReport filereport = fileReportService.getFileReport(Collections.singleton("12345"));
+    FileReport filereport = fileReportService.getAggregateFileReport(
+        Collections.singleton("12345"));
 
     assertThat(filereport).isNotNull();
     assertThat(filereport.getFilesUploaded()).isNotNull().isEmpty();
     assertThat(filereport.getAckToDownload()).isNotNull().isEmpty();
+  }
+
+  @Test
+  void whenGetFileReportThenReturnsAReport() {
+    Mockito.when(fileReportRepository.getReportBySenderCode(any()))
+        .thenReturn(Optional.empty());
+
+    var filereport = fileReportService.getFileReport("12345");
+
+    assertThat(filereport).isEmpty();
+  }
+
+  @Test
+  void whenSaveThenRepositorySaveIsInvoked() {
+    fileReportService.save(FileReport.createFileReport());
+
+    verify(fileReportRepository).save(FileReport.createFileReport());
   }
 
   Collection<FileReport> getReportList() {

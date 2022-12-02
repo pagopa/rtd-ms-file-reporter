@@ -2,8 +2,13 @@ package it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.service;
 
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.model.FileReport;
 import java.util.Collection;
+import java.util.Optional;
 
 public interface FileReportService {
 
-  FileReport getFileReport(Collection<String> senderCodes);
+  FileReport getAggregateFileReport(Collection<String> senderCodes);
+
+  Optional<FileReport> getFileReport(String senderCode);
+
+  void save(FileReport fileReport);
 }

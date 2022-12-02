@@ -1,5 +1,6 @@
 package it.gov.pagopa.rtd.ms.rtdmsfilereporter.configuration;
 
+import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.FileReportCommandFactory;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.repository.FileReportRepository;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.service.FileReportService;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.service.FileReportServiceImpl;
@@ -24,5 +25,10 @@ public class AppConfiguration {
   @Bean
   public FileReportRepository getFileReportRepository(FileReportDao dao) {
     return new FileReportRepositoryImpl(dao, FileReportEntityMapper.createEntityDomainMapper());
+  }
+
+  @Bean
+  public FileReportCommandFactory getFileReportCommandFactory() {
+    return new FileReportCommandFactory();
   }
 }
