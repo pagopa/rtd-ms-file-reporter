@@ -1,0 +1,39 @@
+spring.mongodb.embedded.version: 5.0.0
+
+report:
+  fileTTL: ${FILE_TTL_IN_DAYS:15}
+
+---
+
+test.kafka.topic: rtd-projector
+
+spring:
+  config:
+    activate:
+      on-profile: kafka-test
+
+  cloud:
+    stream:
+      bindings:
+        projectorConsumer-in-0: # name must match [handler name]-in-0
+          destination: ${test.kafka.topic}
+          group: projector-consumer-group
+          content-type: application/json
+          binder: projector
+          consumer:
+            max-attempts: 1
+
+      binders:
+        projector:
+          type: kafka
+          environment.spring.cloud.stream.kafka:
+            binder:
+              auto-create-topics: false
+              brokers: ${spring.embedded.kafka.brokers}
+              sync: true
+              requiredAcks: all
+              configuration:
+                sasl.jaas.config: ${KAFKA_RTD_PROJECTOR_SASL_JAAS_CONFIG}
+              consumerProperties:
+                key.deserializer: org.apache.kafka.common.serialization.StringDeserializer
+                value.deserializer: org.apache.kafka.common.serialization.StringDeserializer

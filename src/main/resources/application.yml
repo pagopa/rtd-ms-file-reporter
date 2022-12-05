@@ -1,0 +1,45 @@
+topics:
+  rtd-projector:
+    topic: ${KAFKA_RTD_PROJECTOR_TOPIC:rtd-projector}
+    group: ${KAFKA_RTD_PROJECTOR_CONSUMER_GROUP:rtd-file-reporter-consumer-group}
+
+report:
+  fileTTL: ${FILE_TTL_IN_DAYS:15}
+
+spring:
+  config:
+    activate:
+      on-profile: default
+  data:
+    mongodb:
+      uri: ${MONGODB_CONNECTION_URI:mongodb://localhost:27017}
+      database: ${MONGODB_NAME:rtd}
+  cloud:
+    stream:
+      bindings:
+        projectorConsumer-in-0: # name must match [handler name]-in-0
+          destination: ${topics.rtd-projector.topic}
+          group: ${topics.rtd-projector.group}
+          content-type: application/json
+          binder: projector
+          consumer:
+            max-attempts: 1
+
+      kafka:
+        binder:
+          configuration:
+            security.protocol: SASL_SSL
+            sasl.mechanism: PLAIN
+
+      binders:
+        projector:
+          type: kafka
+          environment.spring.cloud.stream.kafka:
+            binder:
+              auto-create-topics: false
+              brokers: ${KAFKA_RTD_PROJECTOR_BROKER:localhost:29095}
+              configuration:
+                sasl.jaas.config: ${KAFKA_RTD_PROJECTOR_SASL_JAAS_CONFIG}
+              consumerProperties:
+                key.deserializer: org.apache.kafka.common.serialization.StringDeserializer
+                value.deserializer: org.apache.kafka.common.serialization.StringDeserializer

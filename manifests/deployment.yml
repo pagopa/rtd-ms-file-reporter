@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rtdmsfilereporter
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rtdmsfilereporter
+  template:
+    metadata:
+      labels:
+        app: rtdmsfilereporter
+    spec:
+      containers:
+        - name: rtdmsfilereporter
+          image: rtdmsfilereporter
+          ports:
+            - containerPort: 8080
+          imagePullPolicy: Always
+          envFrom:
+            - secretRef:
+                name: rtd-file-register-projector-consumer
+            - secretRef:
+                name: mongo-credentials
+          resources:
+            limits:
+              cpu: 500m
+              memory: 4Gi
+            requests:
+              cpu: 50m
+              memory: 256Mi
