@@ -29,6 +29,7 @@ public class ProjectorEventDto {
 
   @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
   @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+  @NotNull
   private LocalDateTime receiveTimestamp;
 
   @NotNull
