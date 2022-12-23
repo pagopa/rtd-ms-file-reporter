@@ -13,7 +13,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
-public class FileMetadata {
+public class FileMetadata implements Comparable<FileMetadata> {
 
   @NotNull
   @NotBlank
@@ -34,5 +34,17 @@ public class FileMetadata {
 
   public static FileMetadata createNewFileMetadataWithStatus(String name, FileStatusEnum status) {
     return new FileMetadata(name, null, status, LocalDateTime.now());
+  }
+
+  /**
+   * Descending ordering for transmissionDate. The files will be ordered from the most recent to the
+   * oldest.
+   *
+   * @param o the object to be compared.
+   * @return result of compare.
+   */
+  @Override
+  public int compareTo(@org.jetbrains.annotations.NotNull FileMetadata o) {
+    return o.getTransmissionDate().compareTo(this.transmissionDate);
   }
 }
