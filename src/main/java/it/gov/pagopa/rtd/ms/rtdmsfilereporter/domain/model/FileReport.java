@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Objects;
+import java.util.TreeSet;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -66,7 +67,7 @@ public class FileReport {
   }
 
   public static FileReport createFileReport() {
-    return new FileReport(null, new HashSet<>(), new HashSet<>(), new HashSet<>());
+    return new FileReport(null, new HashSet<>(), new TreeSet<>(), new HashSet<>());
   }
 
   public static FileReport createFileReportWithSenderCode(String senderCode) {
