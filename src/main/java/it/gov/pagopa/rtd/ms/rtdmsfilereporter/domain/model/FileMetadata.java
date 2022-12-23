@@ -44,7 +44,7 @@ public class FileMetadata implements Comparable<FileMetadata> {
    * @return result of compare.
    */
   @Override
-  public int compareTo(@org.jetbrains.annotations.NotNull FileMetadata o) {
+  public int compareTo(@NotNull FileMetadata o) {
     return o.getTransmissionDate().compareTo(this.transmissionDate);
   }
 }
