@@ -37,7 +37,7 @@ variables:
 
   ${{ if startsWith(variables['Build.SourceBranch'], 'refs/heads/uat') }}:
     environment: 'UAT'
-    isToDeploy: true
+    isToDeploy: false
     dockerRegistryServiceConnection: '$(UAT_CONTAINER_REGISTRY_SERVICE_CONN)'
     kubernetesServiceConnection: '$(UAT_KUBERNETES_SERVICE_CONN)'
     containerRegistry: '$(UAT_CONTAINER_REGISTRY_NAME)'
