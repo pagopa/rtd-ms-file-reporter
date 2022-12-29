@@ -20,16 +20,20 @@ class FileReportTest {
   }
 
   @Test
-  void whenAddFileUploadedThenCollectionIsUpdatedCorrectly() {
+  void whenAddFileUploadedThenCollectionIsUpdatedAndSortedCorrectly() {
     FileReport fileReport = FileReport.createFileReport();
 
-    fileReport.addFileUploaded(FileMetadata.createNewFileMetadata("file1"));
+    fileReport.addFileUploaded(
+        new FileMetadata("oldestFile", 200L, FileStatusEnum.RECEIVED_BY_PAGOPA,
+            LocalDateTime.of(2022, 1, 1, 10, 0)));
     assertThat(fileReport.getFilesUploaded()).isNotNull().hasSize(1)
-        .map(FileMetadata::getName).contains("file1");
+        .map(FileMetadata::getName).contains("oldestFile");
 
-    fileReport.addFileUploaded(FileMetadata.createNewFileMetadata("file2"));
+    fileReport.addFileUploaded(
+        new FileMetadata("mostRecentFile", 200L, FileStatusEnum.RECEIVED_BY_PAGOPA,
+            LocalDateTime.of(2022, 1, 2, 10, 0)));
     assertThat(fileReport.getFilesUploaded()).isNotNull().hasSize(2)
-        .map(FileMetadata::getName).contains("file1", "file2");
+        .map(FileMetadata::getName).containsExactly("mostRecentFile", "oldestFile");
   }
 
   @Test
