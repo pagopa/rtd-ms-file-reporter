@@ -43,6 +43,18 @@ spring:
               consumerProperties:
                 key.deserializer: org.apache.kafka.common.serialization.StringDeserializer
                 value.deserializer: org.apache.kafka.common.serialization.StringDeserializer
+
+# Enable only health probes
+management:
+  metrics.export.defaults.enabled: false
+  info.defaults.enabled: false
+  endpoints.enabled-by-default: false
+  endpoint:
+    health:
+      enabled: true
+      probes:
+        enabled: true
+
 ---
 topics:
   rtd-projector:
