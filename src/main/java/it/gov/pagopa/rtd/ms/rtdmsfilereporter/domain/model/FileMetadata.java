@@ -45,6 +45,7 @@ public class FileMetadata implements Comparable<FileMetadata> {
    */
   @Override
   public int compareTo(@NotNull FileMetadata o) {
-    return o.getTransmissionDate().compareTo(this.transmissionDate);
+    return o.getTransmissionDate().isEqual(this.transmissionDate) ? o.getName()
+        .compareTo(this.name) : o.getTransmissionDate().compareTo(this.transmissionDate);
   }
 }

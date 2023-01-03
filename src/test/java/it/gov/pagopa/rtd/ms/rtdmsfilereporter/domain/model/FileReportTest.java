@@ -37,6 +37,23 @@ class FileReportTest {
   }
 
   @Test
+  void whenAddFileUploadedThenCollectionIsUpdatedAndSortedCorrectlyWithSameTimestamp() {
+    FileReport fileReport = FileReport.createFileReport();
+
+    fileReport.addFileUploaded(
+        new FileMetadata("fileA", 200L, FileStatusEnum.RECEIVED_BY_PAGOPA,
+            LocalDateTime.of(2022, 1, 1, 10, 0)));
+    assertThat(fileReport.getFilesUploaded()).isNotNull().hasSize(1)
+        .map(FileMetadata::getName).contains("fileA");
+
+    fileReport.addFileUploaded(
+        new FileMetadata("fileB", 200L, FileStatusEnum.RECEIVED_BY_PAGOPA,
+            LocalDateTime.of(2022, 1, 1, 10, 0)));
+    assertThat(fileReport.getFilesUploaded()).isNotNull().hasSize(2)
+        .map(FileMetadata::getName).containsExactly("fileB", "fileA");
+  }
+
+  @Test
   void givenOneFileUploadedWhenRemoveFileUploadedThenCollectionIsEmpty() {
     FileReport fileReport = FileReport.createFileReport();
     fileReport.addFileUploaded(FileMetadata.createNewFileMetadata("file1"));
