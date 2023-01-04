@@ -44,7 +44,6 @@ spring:
                 key.deserializer: org.apache.kafka.common.serialization.StringDeserializer
                 value.deserializer: org.apache.kafka.common.serialization.StringDeserializer
 
-
 # Enable only health probes
 management:
   metrics.export.defaults.enabled: false
@@ -55,3 +54,41 @@ management:
       enabled: true
       probes:
         enabled: true
+
+---
+topics:
+  rtd-projector:
+    topic: ${KAFKA_RTD_PROJECTOR_TOPIC:rtd-projector}
+    group: ${KAFKA_RTD_PROJECTOR_CONSUMER_GROUP:rtd-file-reporter-consumer-group}
+
+report:
+  fileTTL: ${FILE_TTL_IN_DAYS:15}
+
+spring:
+  config:
+    activate:
+      on-profile: dev
+  data:
+    mongodb:
+      uri: ${MONGODB_CONNECTION_URI:mongodb://localhost:27017}
+      database: ${MONGODB_NAME:fileregister}
+  cloud:
+    stream:
+      bindings:
+        projectorConsumer-in-0: # name must match [handler name]-in-0
+          destination: ${topics.rtd-projector.topic}
+          group: ${topics.rtd-projector.group}
+          content-type: application/json
+          binder: projector
+          consumer:
+            max-attempts: 1
+      binders:
+        projector:
+          type: kafka
+          environment.spring.cloud.stream.kafka:
+            binder:
+              auto-create-topics: true
+              brokers: ${KAFKA_RTD_PROJECTOR_BROKER:localhost:29095}
+              consumerProperties:
+                key.deserializer: org.apache.kafka.common.serialization.StringDeserializer
+                value.deserializer: org.apache.kafka.common.serialization.StringDeserializer
