@@ -19,6 +19,8 @@ spec:
             - containerPort: 8080
           imagePullPolicy: Always
           envFrom:
+            - configMapRef:
+                name: rtdfilereporter
             - secretRef:
                 name: rtd-file-register-projector-consumer
             - secretRef:
