@@ -50,6 +50,7 @@ microservice-chart:
   envSecret:
     MONGODB_CONNECTION_URI: mongo-db-connection-uri
     KAFKA_RTD_PROJECTOR_SASL_JAAS_CONFIG: evh-rtd-file-register-projector-rtd-file-register-projector-consumer-policy-rtd
+    APPLICATIONINSIGHTS_CONNECTION_STRING: appinsights-instrumentation-key
 
   envConfigMapExternals:
     rtd-file-register-projector-consumer:
