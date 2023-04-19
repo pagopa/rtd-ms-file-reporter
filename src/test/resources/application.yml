@@ -1,5 +1,3 @@
-spring.mongodb.embedded.version: 5.0.0
-
 report:
   fileTTL: ${FILE_TTL_IN_DAYS:15}
 
