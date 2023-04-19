@@ -18,35 +18,24 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.autoconfigure.data.mongo.MongoDataAutoConfiguration;
-import org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration;
-import org.springframework.boot.autoconfigure.mongo.embedded.EmbeddedMongoAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.cloud.stream.function.StreamBridge;
+import org.springframework.cloud.stream.binder.test.InputDestination;
+import org.springframework.cloud.stream.binder.test.TestChannelBinderConfiguration;
 import org.springframework.context.annotation.Import;
 import org.springframework.integration.support.MessageBuilder;
-import org.springframework.kafka.test.EmbeddedKafkaBroker;
-import org.springframework.kafka.test.context.EmbeddedKafka;
 import org.springframework.messaging.Message;
 import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest
-@EnableAutoConfiguration(exclude = {EmbeddedMongoAutoConfiguration.class,
-    MongoAutoConfiguration.class, MongoDataAutoConfiguration.class})
 @ActiveProfiles("kafka-test")
-@EmbeddedKafka(topics = {
-    "${test.kafka.topic}"}, partitions = 1, bootstrapServersProperty = "spring.embedded.kafka.brokers")
-@Import(KafkaTestConfiguration.class)
+@Import({TestChannelBinderConfiguration.class, KafkaTestConfiguration.class})
 class EventHandlerTest {
 
   @Value("${test.kafka.topic}")
-  private String topic;
+  private String inputTopic;
   @Autowired
-  private StreamBridge stream;
-  @Autowired
-  private EmbeddedKafkaBroker broker;
+  private InputDestination inputDestination;
   @MockBean
   private Consumer<Message<ProjectorEventDto>> projectorConsumer;
   ObjectMapper objectMapper = new ObjectMapper();
@@ -66,7 +55,7 @@ class EventHandlerTest {
     var eventDto = new ProjectorEventDto("prova", "Sender", 100L, currentDate,
         EventStatusEnum.RECEIVED);
 
-    stream.send("projectorConsumer-in-0", MessageBuilder.withPayload(eventDto).build());
+    inputDestination.send(MessageBuilder.withPayload(eventDto).build(), inputTopic);
 
     verify(projectorConsumer, times(1)).accept(any());
   }
