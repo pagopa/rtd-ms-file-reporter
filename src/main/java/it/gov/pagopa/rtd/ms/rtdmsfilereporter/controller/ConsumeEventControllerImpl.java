@@ -2,7 +2,7 @@ package it.gov.pagopa.rtd.ms.rtdmsfilereporter.controller;
 
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.event.FileReportEventAdapter;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.event.model.ProjectorEventDto;
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.integration.support.MessageBuilder;
