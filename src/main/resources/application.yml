@@ -51,7 +51,7 @@ spring:
 
 # Enable only health probes
 management:
-  metrics.export.defaults.enabled: false
+  defaults.metrics.export.enabled: false
   info.defaults.enabled: false
   endpoints.enabled-by-default: false
   endpoint:
