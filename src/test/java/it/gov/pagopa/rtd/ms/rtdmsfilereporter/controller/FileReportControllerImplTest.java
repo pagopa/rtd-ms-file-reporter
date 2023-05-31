@@ -127,7 +127,7 @@ class FileReportControllerImplTest {
     MvcResult result = mockMvc.perform(MockMvcRequestBuilders
             .get(SENDER_ADE_ACK_URL)
             .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .param("senders", "99999", "11111")
+            .param("senderCodes", "99999", "11111")
             .accept(MediaType.APPLICATION_JSON_VALUE))
         .andExpect(status().isOk())
         .andReturn();
