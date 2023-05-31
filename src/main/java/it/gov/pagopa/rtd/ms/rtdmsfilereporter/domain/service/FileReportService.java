@@ -10,5 +10,7 @@ public interface FileReportService {
 
   Optional<FileReport> getFileReport(String senderCode);
 
+  Collection<String> getAckToDownloadList(Collection<String> senderCodes);
+
   void save(FileReport fileReport);
 }
