@@ -118,7 +118,7 @@ class FileReportControllerImplTest {
   }
 
   @Test
-  void shouldGetSenderAdeAck() throws Exception {
+  void whenGetAdeAckToDownloadThenReturns200AndCorrectBody() throws Exception {
     String senderAdeAckFileName1 = "ADEACK.99999.12345.2022-09-13.709f29ed-2a34-4c73-9a23-397e2e768ecf.csv";
     String senderAdeAckFileName2 = "ADEACK.11111.12345.2022-09-13.709f29ed-2a34-4c73-9a23-397e2e768ecf.csv";
     Mockito.when(fileReportService.getAckToDownloadList(any()))
