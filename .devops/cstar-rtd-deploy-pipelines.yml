@@ -147,6 +147,7 @@ stages:
                     buildType: 'current'
                     artifactName: 'helm'
                     targetPath: '$(Pipeline.Workspace)/helm/rtd'
+                - task: KubectlInstaller@0
                 - task: Bash@3
                   name: helm_dependency_build
                   displayName: Helm dependency build

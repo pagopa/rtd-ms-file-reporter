@@ -1,6 +1,7 @@
 package it.gov.pagopa.rtd.ms.rtdmsfilereporter.controller;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -19,7 +20,10 @@ import java.util.HashSet;
 import java.util.List;
 import lombok.SneakyThrows;
 import org.assertj.core.groups.Tuple;
+import org.assertj.core.util.Sets;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentMatchers;
+import org.mockito.BDDMockito;
 import org.mockito.Mockito;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +38,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 class FileReportControllerImplTest {
 
   private final String FILE_REPORT_URL = "/file-report";
+  private final String SENDER_ADE_ACK_URL = "/sender-ade-ack";
 
   ObjectMapper objectMapper = new ObjectMapper();
 
@@ -110,5 +115,28 @@ class FileReportControllerImplTest {
             FileMetadataDto::getTransmissionDate)
         .doesNotContainNull()
         .containsExactly(Tuple.tuple("file", 3000L, FileStatusEnum.RECEIVED_BY_PAGOPA.name(), currentDate));
+  }
+
+  @Test
+  void whenGetAdeAckToDownloadThenReturns200AndCorrectBody() throws Exception {
+    String senderAdeAckFileName1 = "ADEACK.99999.12345.2022-09-13.709f29ed-2a34-4c73-9a23-397e2e768ecf.csv";
+    String senderAdeAckFileName2 = "ADEACK.11111.12345.2022-09-13.709f29ed-2a34-4c73-9a23-397e2e768ecf.csv";
+    Mockito.when(fileReportService.getAckToDownloadList(any()))
+        .thenReturn(Sets.set(senderAdeAckFileName1, senderAdeAckFileName2));
+
+    MvcResult result = mockMvc.perform(MockMvcRequestBuilders
+            .get(SENDER_ADE_ACK_URL)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .param("senderCodes", "99999", "11111")
+            .accept(MediaType.APPLICATION_JSON_VALUE))
+        .andExpect(status().isOk())
+        .andReturn();
+
+    assertEquals(
+        "{\"fileNameList\":[\"" + senderAdeAckFileName1 + "\",\"" + senderAdeAckFileName2 + "\"]}",
+        result.getResponse().getContentAsString());
+
+    BDDMockito.verify(fileReportService, Mockito.times(1))
+        .getAckToDownloadList(ArgumentMatchers.anyCollection());
   }
 }

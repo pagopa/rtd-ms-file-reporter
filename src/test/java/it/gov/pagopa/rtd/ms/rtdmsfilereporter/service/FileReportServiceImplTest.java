@@ -84,6 +84,22 @@ class FileReportServiceImplTest {
     verify(fileReportRepository).save(FileReport.createFileReport());
   }
 
+  @Test
+  void whenGetAckToDownloadThenReturnsACollectionOfStrings() {
+    var reportMock = getReportList();
+    Mockito.when(fileReportRepository.getReportsBySenderCodes(any())).thenReturn(reportMock);
+
+    var ackToDownloadList = fileReportService.getAckToDownloadList(Collections.singleton("12345"));
+
+    var expectedList = reportMock.stream()
+        .map(FileReport::getAckToDownload)
+        .flatMap(Collection::stream)
+        .collect(Collectors.toSet());
+    assertThat(ackToDownloadList)
+        .hasSize(expectedList.size())
+        .containsExactlyInAnyOrderElementsOf(expectedList);
+  }
+
   Collection<FileReport> getReportList() {
     return Stream.of(createFileReport(3, 1), createFileReport(1, 2), createFileReport(2, 1))
         .collect(Collectors.toList());

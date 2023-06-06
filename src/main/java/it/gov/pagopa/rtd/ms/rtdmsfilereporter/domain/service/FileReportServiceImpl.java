@@ -28,6 +28,11 @@ public class FileReportServiceImpl implements FileReportService {
   }
 
   @Override
+  public Collection<String> getAckToDownloadList(Collection<String> senderCodes) {
+    return getAggregateFileReport(senderCodes).getAckToDownload();
+  }
+
+  @Override
   public void save(FileReport fileReport) {
     fileReportRepository.save(fileReport);
   }
