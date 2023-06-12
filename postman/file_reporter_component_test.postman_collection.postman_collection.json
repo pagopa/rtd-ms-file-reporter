@@ -1,9 +1,8 @@
 {
 	"info": {
-		"_postman_id": "bc8e8e50-f0d9-4419-8a88-a87591e1e131",
+		"_postman_id": "686365e3-63b5-48bf-986f-db2d7ad36743",
 		"name": "File Reporter Micro-service component test",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "20034811"
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
 		{
@@ -961,6 +960,115 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "003 - GET ack to download list",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// Get the current timestamp",
+							"var timestamp1 = Date.now();",
+							"// Convert the timestamp to a formatted date string",
+							"var date1 = new Date(timestamp1).toISOString();",
+							"",
+							"var timestamp2",
+							"var date2",
+							"",
+							"// Get the current timestamp",
+							"timestamp2 = Date.now()+1000;",
+							"",
+							"// Convert the timestamp to a formatted date string",
+							"date2 = new Date(timestamp2).toISOString();",
+							"",
+							"var year = date1.substring(0, 4);",
+							"var month = date1.substring(5, 7);",
+							"var day = date1.substring(8, 10);",
+							"var hour = date1.substring(11, 13);",
+							"var minute = date1.substring(14, 16);",
+							"var second1 = date1.substring(17, 19);",
+							"var second2 = date2.substring(17, 19);",
+							"",
+							"var formattedDate1 = year + month + day + '.' + hour + minute + second1;",
+							"var formattedDate2 = year + month + day + '.' + hour + minute + second2;",
+							"",
+							"pm.variables.set('current_file_name1','ADE.'+ pm.variables.get('sender_code_test_1') +'.TRNLOG.'+ formattedDate1 +'.001.01.csv.pgp')",
+							"pm.variables.set('current_file_name2','ADE.'+ pm.variables.get('sender_code_test_1') +'.TRNLOG.'+ formattedDate2 +'.001.01.csv.pgp')",
+							"",
+							"pm.sendRequest({",
+							"        url: pm.variables.get(\"base_url\") + pm.variables.get(\"consume_event_url\"),",
+							"        method: \"PUT\",",
+							"        header: {",
+							"            \"Content-Type\": \"application/json\"",
+							"        },",
+							"        body: {",
+							"            mode: \"raw\",",
+							"            raw: JSON.stringify({",
+							"                \"fileName\": pm.variables.get(\"current_file_name2\"),",
+							"                \"sender\": pm.variables.get(\"sender_code_test_1\"),",
+							"                \"size\": pm.variables.get(\"size_test\"),",
+							"                \"receiveTimestamp\": date2,",
+							"                \"status\": pm.variables.get(\"ACK_TO_DOWNLOAD_status\")",
+							"            }),",
+							"        }",
+							"    },",
+							"    function () {",
+							"        pm.sendRequest({",
+							"                url: pm.variables.get(\"base_url\") + pm.variables.get(\"consume_event_url\"),",
+							"                method: \"PUT\",",
+							"                header: {",
+							"                    \"Content-Type\": \"application/json\"",
+							"                },",
+							"                body: {",
+							"                    mode: \"raw\",",
+							"                    raw: JSON.stringify({",
+							"                        \"fileName\": pm.variables.get(\"current_file_name1\"),",
+							"                        \"sender\": pm.variables.get(\"sender_code_test_1\"),",
+							"                        \"size\": pm.variables.get(\"size_test\"),",
+							"                        \"receiveTimestamp\": date1,",
+							"                        \"status\": pm.variables.get(\"ACK_TO_DOWNLOAD_status\")",
+							"                    }),",
+							"                }",
+							"        })",
+							"    });",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('003 - GET ack to download list', () => {",
+							"    pm.response.to.have.status(200);",
+							"    var jsonData = pm.response.json();",
+							"    console.log(jsonData)",
+							"    pm.expect(jsonData.fileNameList).to.have.members([pm.variables.get(\"current_file_name2\"), pm.variables.get(\"current_file_name1\")]);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}{{sender_ade_ack}}?{{sender_codes_parametrs}}={{sender_code_test_1}}",
+					"host": [
+						"{{base_url}}{{sender_ade_ack}}"
+					],
+					"query": [
+						{
+							"key": "{{sender_codes_parametrs}}",
+							"value": "{{sender_code_test_1}}"
+						}
+					]
+				}
+			},
+			"response": []
 		}
 	],
 	"event": [
@@ -1098,6 +1206,11 @@
 			"key": "past_file_name1",
 			"value": "ADE.9999.TRNLOG.20200101.010100.001.01.csv.pgp",
 			"type": "string"
+		},
+		{
+			"key": "sender_ade_ack",
+			"value": "/sender-ade-ack",
+			"type": "default"
 		}
 	]
 }
