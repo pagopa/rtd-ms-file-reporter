@@ -12,9 +12,11 @@ FROM amazoncorretto:17.0.7-al2023-headless@sha256:18154896dc03cab39734594c592b73
 # operation needed because amazoncorretto do not contain the shadow-utils package
 RUN yum install -y /usr/sbin/adduser
 RUN useradd --uid 10000 runner
-RUN chown -R runner:runner /app
 
 WORKDIR /app
+
+RUN chown -R runner:runner /app
+
 
 COPY --from=buildtime /build/target/*.jar /app/app.jar
 # The agent is enabled at runtime via JAVA_TOOL_OPTIONS.
