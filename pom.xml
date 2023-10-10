@@ -5,13 +5,13 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.1.3</version>
+		<version>3.1.4</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 
 	<groupId>it.gov.pagopa.rtd.ms</groupId>
 	<artifactId>rtd-ms-file-reporter</artifactId>
-	<version>1.2.3</version>
+	<version>1.2.4</version>
 	<name>rtd-ms-file-reporter</name>
 	<description>Micro-service to retrieve and keep updated the file reports for senders</description>
 
@@ -21,7 +21,7 @@
 		<testcontainers.version>1.18.3</testcontainers.version>
 		<snakeyaml.version>2.1</snakeyaml.version>
 		<modelmapper.version>3.1.1</modelmapper.version>
-		<kafka.version>3.5.1</kafka.version>
+		<kafka.version>3.6.0</kafka.version>
 	</properties>
 
 	<dependencies>
