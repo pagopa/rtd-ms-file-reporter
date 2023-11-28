@@ -52,9 +52,6 @@ microservice-chart:
     runAsUser: 65534
     runAsGroup: 65534
 
-  envConfig:
-    APPLICATIONINSIGHTS_PREVIEW_PROFILER_ENABLED: "false"
-
   envSecret:
     MONGODB_CONNECTION_URI: mongo-db-connection-uri
     KAFKA_RTD_PROJECTOR_SASL_JAAS_CONFIG: evh-rtd-file-register-projector-rtd-file-register-projector-consumer-policy-rtd
