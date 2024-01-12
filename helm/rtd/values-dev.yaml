@@ -30,14 +30,13 @@ microservice-chart:
                   - user
     podAntiAffinity:
       preferredDuringSchedulingIgnoredDuringExecution:
-        - labelSelector:
-            matchExpressions:
-            - key: app.kubernetes.io/instance
-              operator: In
-              values:
-                - rtd-ms-file-reporter
+        - weight: 100
+          podAffinityTerm:
+            labelSelector:
+              matchLabels:
+                app.kubernetes.io/instance: rtd-ms-file-reporter
             namespaces: [ "rtd" ]
-          topologyKey: topology.kubernetes.io/zone
+            topologyKey: topology.kubernetes.io/zone
 
   #  autoscaling:
   #    enable: false
