@@ -33,8 +33,11 @@ microservice-chart:
         - weight: 100
           podAffinityTerm:
             labelSelector:
-              matchLabels:
-                app.kubernetes.io/instance: rtd-ms-file-reporter
+              matchExpressions:
+                - key: app.kubernetes.io/instance
+                  operator: In
+                  values:
+                    - rtd-ms-file-reporter
             namespaces: [ "rtd" ]
             topologyKey: topology.kubernetes.io/zone
 
