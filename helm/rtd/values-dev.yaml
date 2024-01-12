@@ -17,6 +17,26 @@ microservice-chart:
 
   deployment:
     forceRedeploy: true
+    replicas: 2
+
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+          - matchExpressions:
+              - key: node_type
+                operator: In
+                values:
+                  - user
+    podAntiAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+        - weight: 100
+          podAffinityTerm:
+            labelSelector:
+              matchLabels:
+                app.kubernetes.io/instance: rtd-ms-file-reporter
+            namespaces: [ "rtd" ]
+            topologyKey: topology.kubernetes.io/zone
 
   #  autoscaling:
   #    enable: false
