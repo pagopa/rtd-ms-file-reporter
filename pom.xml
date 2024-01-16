@@ -90,7 +90,7 @@
 		<dependency>
 			<groupId>com.azure</groupId>
 			<artifactId>azure-monitor-opentelemetry-exporter</artifactId>
-			<version>1.0.0-beta.11</version>
+			<version>1.0.0-beta.15</version>
 		</dependency>
 
 <!-- test -->
@@ -138,36 +138,65 @@
 			<dependency>
 				<groupId>io.opentelemetry</groupId>
 				<artifactId>opentelemetry-bom</artifactId>
-				<version>1.31.0</version>
+				<version>1.32.0</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
 			<dependency>
 				<groupId>io.opentelemetry.instrumentation</groupId>
 				<artifactId>opentelemetry-instrumentation-bom-alpha</artifactId>
-				<version>1.31.0-alpha</version>
+				<version>1.32.0-alpha</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-				<version>${project.parent.version}</version>
-				<configuration>
-					<excludes>
-						<exclude>
-							<groupId>org.projectlombok</groupId>
-							<artifactId>lombok</artifactId>
-						</exclude>
-					</excludes>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
+  <profiles>
+    <profile>
+      <id>native</id>
+      <properties>
+        <applicationinsights.enabled>true</applicationinsights.enabled>
+      </properties>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.graalvm.buildtools</groupId>
+            <artifactId>native-maven-plugin</artifactId>
+            <configuration>
+              <metadataRepository>
+                <enabled>true</enabled>
+              </metadataRepository>
+              <buildArgs>
+                <arg>--initialize-at-build-time=org.slf4j.LoggerFactory,ch.qos.logback</arg>
+              </buildArgs>
+            </configuration>
+            <executions>
+              <execution>
+                <id>build-native</id>
+                <goals>
+                  <goal>compile-no-fork</goal>
+                </goals>
+                <phase>package</phase>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-maven-plugin</artifactId>
+            <version>${project.parent.version}</version>
+            <configuration>
+              <excludes>
+                <exclude>
+                  <groupId>org.projectlombok</groupId>
+                  <artifactId>lombok</artifactId>
+                </exclude>
+              </excludes>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 
 </project>
