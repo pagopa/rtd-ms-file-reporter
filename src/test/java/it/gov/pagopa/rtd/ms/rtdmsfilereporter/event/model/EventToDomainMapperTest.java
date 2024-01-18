@@ -2,18 +2,16 @@ package it.gov.pagopa.rtd.ms.rtdmsfilereporter.event.model;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.model.FileMetadata;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.model.FileStatusEnum;
 import java.time.LocalDateTime;
 import java.util.stream.Stream;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.modelmapper.ModelMapper;
 
 class EventToDomainMapperTest {
 
-  private final ModelMapper modelMapper = EventToDomainMapper.createEventDomainMapper();
+  private final EventToDomainMapper mapper = EventToDomainMapper.INSTANCE;
 
   private static Stream<Arguments> provideStatus() {
     return Stream.of(
@@ -33,7 +31,7 @@ class EventToDomainMapperTest {
     var eventDto = new ProjectorEventDto("filename", "12345", 100L, currentDate,
         eventStatus);
 
-    var domainFile = modelMapper.map(eventDto, FileMetadata.class);
+    var domainFile = mapper.eventToDomain(eventDto);
 
     assertThat(domainFile).isNotNull();
     assertThat(domainFile.getName()).isEqualTo("filename");
