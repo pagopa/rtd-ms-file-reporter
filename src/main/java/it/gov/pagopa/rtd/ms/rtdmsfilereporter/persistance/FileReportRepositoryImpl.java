@@ -2,19 +2,17 @@ package it.gov.pagopa.rtd.ms.rtdmsfilereporter.persistance;
 
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.model.FileReport;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.repository.FileReportRepository;
-import it.gov.pagopa.rtd.ms.rtdmsfilereporter.persistance.model.FileReportEntity;
+import it.gov.pagopa.rtd.ms.rtdmsfilereporter.persistance.model.FileReportEntityMapper;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 
 @RequiredArgsConstructor
 public class FileReportRepositoryImpl implements FileReportRepository {
 
   private final FileReportDao fileReportDao;
-  private final ModelMapper modelMapper;
+  private final FileReportEntityMapper mapper;
 
   @Override
   public Collection<FileReport> getReportsBySenderCodes(Collection<String> senderCodes) {
@@ -23,19 +21,19 @@ public class FileReportRepositoryImpl implements FileReportRepository {
       return Collections.singletonList(FileReport.createFileReport());
     } else {
       return fileReportEntities.stream()
-          .map(entity -> modelMapper.map(entity, FileReport.class))
-          .collect(Collectors.toList());
+          .map(mapper::entityToDomain)
+          .toList();
     }
   }
 
   @Override
   public Optional<FileReport> getReportBySenderCode(String senderCode) {
     return fileReportDao.findBySenderCode(senderCode)
-        .map(entity -> modelMapper.map(entity, FileReport.class));
+        .map(mapper::entityToDomain);
   }
 
   @Override
   public void save(FileReport fileReport) {
-    fileReportDao.save(modelMapper.map(fileReport, FileReportEntity.class));
+    fileReportDao.save(mapper.domainToEntity(fileReport));
   }
 }
