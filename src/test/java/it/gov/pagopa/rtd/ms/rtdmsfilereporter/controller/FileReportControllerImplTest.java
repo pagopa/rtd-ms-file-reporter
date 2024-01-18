@@ -8,24 +8,18 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.TestUtils;
-import it.gov.pagopa.rtd.ms.rtdmsfilereporter.controller.model.FileMetadataDto;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.controller.model.FileReportDto;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.controller.model.FileReportDtoMapper;
-import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.model.FileMetadata;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.model.FileReport;
-import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.model.FileStatusEnum;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.service.FileReportService;
-import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
 import lombok.SneakyThrows;
-import org.assertj.core.groups.Tuple;
 import org.assertj.core.util.Sets;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
 import org.mockito.BDDMockito;
 import org.mockito.Mockito;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -45,7 +39,8 @@ class FileReportControllerImplTest {
   @Autowired
   private MockMvc mockMvc;
 
-  private final ModelMapper modelMapper = FileReportDtoMapper.createDtoDomainMapper();
+  @MockBean
+  private FileReportDtoMapper mapper;
 
   @MockBean
   private FileReportService fileReportService;
@@ -53,8 +48,10 @@ class FileReportControllerImplTest {
   @SneakyThrows
   @Test
   void givenEmptyReportWhenGetFileReportThenReturnEmptyListJson() {
-    Mockito.when(fileReportService.getAggregateFileReport(any()))
-        .thenReturn(FileReport.createFileReport());
+    var emptyReportDto = new FileReportDto();
+    emptyReportDto.setFilesRecentlyUploaded(Collections.emptyList());
+    Mockito.when(mapper.fileReportToDto(any()))
+        .thenReturn(emptyReportDto);
 
     FileReportDto fileReportDto = new FileReportDto();
     fileReportDto.setFilesRecentlyUploaded(new HashSet<>());
@@ -71,8 +68,9 @@ class FileReportControllerImplTest {
   @SneakyThrows
   @Test
   void givenReportWhenGetFileReportThenReturnCorrectJson() {
-    Mockito.when(fileReportService.getAggregateFileReport(any()))
-        .thenReturn(TestUtils.createFileReport(2, 2));
+    var reportMock = TestUtils.createFileReport(2, 2);
+    var reportDto = FileReportDtoMapper.INSTANCE.fileReportToDto(reportMock);
+    Mockito.when(mapper.fileReportToDto(any())).thenReturn(reportDto);
 
     MvcResult result = mockMvc.perform(
             MockMvcRequestBuilders.get(FILE_REPORT_URL).param("senderCodes", "12345"))
@@ -94,27 +92,6 @@ class FileReportControllerImplTest {
     mockMvc.perform(MockMvcRequestBuilders.get(FILE_REPORT_URL))
         .andExpect(status().isBadRequest())
         .andReturn();
-  }
-
-  @Test
-  void mappingFromDomainToDtoWorksCorrectly() {
-    var currentDate = LocalDateTime.now();
-    FileReport fileReport = FileReport.createFileReport();
-    FileMetadata fileMetadata = new FileMetadata("file", 3000L, FileStatusEnum.RECEIVED_BY_PAGOPA, currentDate);
-    fileReport.addFileUploaded(fileMetadata);
-    fileReport.addAckToDownload("ack1");
-    fileReport.setSenderCodes(List.of("senderCode"));
-
-    var fileReportDto = modelMapper.map(fileReport, FileReportDto.class);
-
-    assertThat(fileReportDto).isNotNull();
-    assertThat(fileReportDto.getFilesRecentlyUploaded()).isNotNull().hasSize(1)
-        .extracting(FileMetadataDto::getName,
-            FileMetadataDto::getSize,
-            FileMetadataDto::getStatus,
-            FileMetadataDto::getTransmissionDate)
-        .doesNotContainNull()
-        .containsExactly(Tuple.tuple("file", 3000L, FileStatusEnum.RECEIVED_BY_PAGOPA.name(), currentDate));
   }
 
   @Test

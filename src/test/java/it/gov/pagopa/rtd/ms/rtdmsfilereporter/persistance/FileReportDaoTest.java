@@ -10,7 +10,6 @@ import java.util.List;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -38,7 +37,7 @@ class FileReportDaoTest {
   @Autowired
   MongoTemplate mongoTemplate;
 
-  ModelMapper modelMapper = FileReportEntityMapper.createEntityDomainMapper();
+  FileReportEntityMapper mapper = FileReportEntityMapper.INSTANCE;
 
   @BeforeEach
   void setUp() {
@@ -61,7 +60,7 @@ class FileReportDaoTest {
   void givenOneReportWhenFindBySenderCodeThenReturnsOneReport() {
     var fileReport = TestUtils.createFileReport(2, 3);
     fileReport.setSenderCodes(List.of("12345"));
-    dao.save(modelMapper.map(fileReport, FileReportEntity.class));
+    dao.save(mapper.domainToEntity(fileReport));
 
     var entities = dao.findBySenderCodeIn(List.of("12345"));
 
@@ -77,9 +76,9 @@ class FileReportDaoTest {
     fileReport2.setSenderCodes(List.of("67890"));
     var fileReport3 = TestUtils.createFileReport(1, 2);
     fileReport3.setSenderCodes(List.of("46801"));
-    dao.save(modelMapper.map(fileReport, FileReportEntity.class));
-    dao.save(modelMapper.map(fileReport2, FileReportEntity.class));
-    dao.save(modelMapper.map(fileReport3, FileReportEntity.class));
+    dao.save(mapper.domainToEntity(fileReport));
+    dao.save(mapper.domainToEntity(fileReport2));
+    dao.save(mapper.domainToEntity(fileReport3));
 
     var entities = dao.findBySenderCodeIn(List.of("12345", "67890"));
 
