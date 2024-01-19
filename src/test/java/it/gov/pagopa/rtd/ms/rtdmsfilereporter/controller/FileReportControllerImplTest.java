@@ -17,6 +17,7 @@ import java.util.HashSet;
 import lombok.SneakyThrows;
 import org.assertj.core.util.Sets;
 import org.junit.jupiter.api.Test;
+import org.mapstruct.factory.Mappers;
 import org.mockito.ArgumentMatchers;
 import org.mockito.BDDMockito;
 import org.mockito.Mockito;
@@ -69,7 +70,7 @@ class FileReportControllerImplTest {
   @Test
   void givenReportWhenGetFileReportThenReturnCorrectJson() {
     var reportMock = TestUtils.createFileReport(2, 2);
-    var reportDto = FileReportDtoMapper.INSTANCE.fileReportToDto(reportMock);
+    var reportDto = Mappers.getMapper(FileReportDtoMapper.class).fileReportToDto(reportMock);
     Mockito.when(mapper.fileReportToDto(any())).thenReturn(reportDto);
 
     MvcResult result = mockMvc.perform(

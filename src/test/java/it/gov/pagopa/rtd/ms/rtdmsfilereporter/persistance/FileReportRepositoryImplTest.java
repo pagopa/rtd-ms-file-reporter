@@ -20,6 +20,7 @@ import lombok.SneakyThrows;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mapstruct.factory.Mappers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
@@ -31,7 +32,7 @@ class FileReportRepositoryImplTest {
 
   FileReportRepository repository;
 
-  FileReportEntityMapper mapper = FileReportEntityMapper.INSTANCE;
+  FileReportEntityMapper mapper = Mappers.getMapper(FileReportEntityMapper.class);
   AutoCloseable autoCloseable;
 
   @BeforeEach
