@@ -11,10 +11,11 @@ import java.time.LocalDateTime;
 import java.util.List;
 import org.assertj.core.groups.Tuple;
 import org.junit.jupiter.api.Test;
+import org.mapstruct.factory.Mappers;
 
 class DomainToDtoMapperTest {
 
-  private final FileReportDtoMapper mapper = FileReportDtoMapper.INSTANCE;
+  private final FileReportDtoMapper mapper = Mappers.getMapper(FileReportDtoMapper.class);
 
   @Test
   void mappingFromDomainToDtoWorksCorrectly() {

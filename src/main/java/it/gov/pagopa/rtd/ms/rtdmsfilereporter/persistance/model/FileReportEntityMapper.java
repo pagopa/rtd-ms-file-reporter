@@ -6,12 +6,9 @@ import java.util.Collections;
 import java.util.Set;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.factory.Mappers;
 
 @Mapper(componentModel = "spring")
 public interface FileReportEntityMapper {
-
-  FileReportEntityMapper INSTANCE = Mappers.getMapper(FileReportEntityMapper.class);
 
   @Mapping(source = "senderCode", target = "senderCodes")
   FileReport entityToDomain(FileReportEntity entity);

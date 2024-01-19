@@ -10,6 +10,7 @@ import java.util.List;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -37,7 +38,7 @@ class FileReportDaoTest {
   @Autowired
   MongoTemplate mongoTemplate;
 
-  FileReportEntityMapper mapper = FileReportEntityMapper.INSTANCE;
+  FileReportEntityMapper mapper = Mappers.getMapper(FileReportEntityMapper.class);
 
   @BeforeEach
   void setUp() {

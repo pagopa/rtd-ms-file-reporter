@@ -4,12 +4,9 @@ import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.model.FileMetadata;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.model.FileStatusEnum;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.factory.Mappers;
 
 @Mapper(componentModel = "spring")
 public interface EventToDomainMapper {
-
-  EventToDomainMapper INSTANCE = Mappers.getMapper(EventToDomainMapper.class);
 
   @Mapping(source = "fileName", target = "name")
   @Mapping(source = "receiveTimestamp", target = "transmissionDate")
