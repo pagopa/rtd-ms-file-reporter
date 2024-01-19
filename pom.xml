@@ -189,7 +189,6 @@
       <id>native</id>
       <properties>
         <applicationinsights.enabled>true</applicationinsights.enabled>
-				<mainClass>it.gov.pagopa.rtd.ms.rtdmsfilereporter.RtdMsFileReporterApplication</mainClass>
 			</properties>
       <build>
         <plugins>
@@ -238,16 +237,9 @@
 						</configuration>
 					</plugin>
 					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-jar-plugin</artifactId>
-						<configuration>
-							<archive>
-								<manifest>
-									<addClasspath>true</addClasspath>
-									<mainClass>${mainClass}</mainClass>
-								</manifest>
-							</archive>
-						</configuration>
+						<groupId>org.springframework.boot</groupId>
+						<artifactId>spring-boot-maven-plugin</artifactId>
+						<version>${project.parent.version}</version>
 					</plugin>
         </plugins>
       </build>
