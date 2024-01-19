@@ -6,7 +6,6 @@ import static org.mockito.Mockito.verify;
 
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.TestUtils;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.model.FileMetadata;
-import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.model.FileReport;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.model.FileStatusEnum;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.repository.FileReportRepository;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.persistance.model.FileReportEntity;
@@ -24,7 +23,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.modelmapper.ModelMapper;
 
 class FileReportRepositoryImplTest {
 
@@ -33,13 +31,13 @@ class FileReportRepositoryImplTest {
 
   FileReportRepository repository;
 
-  ModelMapper modelMapper = FileReportEntityMapper.createEntityDomainMapper();
+  FileReportEntityMapper mapper = FileReportEntityMapper.INSTANCE;
   AutoCloseable autoCloseable;
 
   @BeforeEach
   void setUp() {
     autoCloseable = MockitoAnnotations.openMocks(this);
-    repository = new FileReportRepositoryImpl(dao, modelMapper);
+    repository = new FileReportRepositoryImpl(dao, mapper);
   }
 
   @SneakyThrows
@@ -84,7 +82,7 @@ class FileReportRepositoryImplTest {
     var reportStub = TestUtils.createFileReport(1, 1);
     reportStub.setSenderCodes(Collections.singleton("12345"));
     Mockito.when(dao.findBySenderCode("12345")).thenReturn(
-        Optional.of(modelMapper.map(reportStub, FileReportEntity.class)));
+        Optional.of(mapper.domainToEntity(reportStub)));
 
     var fileReport = repository.getReportBySenderCode("12345");
 
@@ -104,7 +102,7 @@ class FileReportRepositoryImplTest {
     fileReportEntity.setAckToDownload(List.of("ack1", "ack2"));
     fileReportEntity.setId("testID");
 
-    var fileReport = modelMapper.map(fileReportEntity, FileReport.class);
+    var fileReport = mapper.entityToDomain(fileReportEntity);
 
     assertThat(fileReport).isNotNull();
     assertThat(fileReport.getFilesUploaded()).isNotNull().hasSize(1)
@@ -122,13 +120,13 @@ class FileReportRepositoryImplTest {
 
     repository.save(reportStub);
 
-    verify(dao).save(modelMapper.map(reportStub, FileReportEntity.class));
+    verify(dao).save(mapper.domainToEntity(reportStub));
   }
 
   Collection<FileReportEntity> getMockedReports() {
     var reports = new ArrayList<FileReportEntity>();
-    reports.add(modelMapper.map(TestUtils.createFileReport(1, 1), FileReportEntity.class));
-    reports.add(modelMapper.map(TestUtils.createFileReport(2, 1), FileReportEntity.class));
+    reports.add(mapper.domainToEntity(TestUtils.createFileReport(1, 1)));
+    reports.add(mapper.domainToEntity(TestUtils.createFileReport(2, 1)));
     return reports;
   }
 

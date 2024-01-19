@@ -10,6 +10,7 @@ import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.model.FileReport;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.model.FileStatusEnum;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.service.FileReportService;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.event.model.EventStatusEnum;
+import it.gov.pagopa.rtd.ms.rtdmsfilereporter.event.model.EventToDomainMapper;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.event.model.ProjectorEventDto;
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -32,12 +33,13 @@ class FileReportEventAdapterTest {
   private final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
   private FileReportEventAdapter adapter;
   private AutoCloseable autoCloseable;
+  private final EventToDomainMapper mapper = EventToDomainMapper.INSTANCE;
   private final int fileTTL = 10;
 
   @BeforeEach
   void setUp() {
     autoCloseable = MockitoAnnotations.openMocks(this);
-    adapter = new FileReportEventAdapter(service, validator, new FileReportCommandFactory());
+    adapter = new FileReportEventAdapter(service, validator, mapper, new FileReportCommandFactory());
     adapter.setFileTimeToLiveInDays(fileTTL);
   }
 
