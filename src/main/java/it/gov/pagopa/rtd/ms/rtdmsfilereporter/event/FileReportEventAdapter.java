@@ -1,7 +1,6 @@
 package it.gov.pagopa.rtd.ms.rtdmsfilereporter.event;
 
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.FileReportCommandFactory;
-import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.model.FileMetadata;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.model.FileReport;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.service.FileReportService;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.event.model.EventToDomainMapper;
@@ -26,7 +25,7 @@ public class FileReportEventAdapter {
 
   private final FileReportService service;
   private final Validator validator;
-  private final EventToDomainMapper modelMapper;
+  private final EventToDomainMapper mapper;
   private final FileReportCommandFactory fileReportCommandFactory;
 
   public void consumeEvent(@Valid ProjectorEventDto eventDto) {
@@ -43,7 +42,7 @@ public class FileReportEventAdapter {
 
     // execute command on report
     fileReportCommandFactory.getCommandByStatus(eventDto.getStatus().name())
-        .accept(report, modelMapper.eventToDomain(eventDto));
+        .accept(report, mapper.eventToDomain(eventDto));
 
     // remove from the report the old files
     report.removeFilesOlderThan(fileTimeToLiveInDays);
