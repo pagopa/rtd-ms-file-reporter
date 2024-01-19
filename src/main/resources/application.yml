@@ -3,6 +3,7 @@ logging:
   level:
     root: INFO
     org.apache.kafka: WARN
+    com.azure.monitor.opentelemetry.exporter.implementation.builders.TelemetryTruncation: ERROR
 
 # OpenTelemetry
 applicationinsights.enabled: '@applicationinsights.enabled@'
