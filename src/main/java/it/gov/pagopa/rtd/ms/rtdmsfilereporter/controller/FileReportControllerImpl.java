@@ -8,7 +8,6 @@ import jakarta.validation.constraints.NotNull;
 import java.util.Collection;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.modelmapper.ModelMapper;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -17,13 +16,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class FileReportControllerImpl implements FileReportController {
 
   private final FileReportService fileReportService;
-  private final ModelMapper modelMapper = FileReportDtoMapper.createDtoDomainMapper();
+  private final FileReportDtoMapper mapper;
 
   @Override
   public FileReportDto getFileReport(Collection<String> senderCodes) {
     log.info("GET file report for sender codes: {}", senderCodes.toString());
-    return modelMapper.map(fileReportService.getAggregateFileReport(senderCodes),
-        FileReportDto.class);
+    return mapper.fileReportToDto(fileReportService.getAggregateFileReport(senderCodes));
   }
 
   @Override

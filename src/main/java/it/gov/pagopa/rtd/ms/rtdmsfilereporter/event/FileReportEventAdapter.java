@@ -1,7 +1,6 @@
 package it.gov.pagopa.rtd.ms.rtdmsfilereporter.event;
 
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.FileReportCommandFactory;
-import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.model.FileMetadata;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.model.FileReport;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.service.FileReportService;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.event.model.EventToDomainMapper;
@@ -12,7 +11,6 @@ import jakarta.validation.Validator;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -27,7 +25,7 @@ public class FileReportEventAdapter {
 
   private final FileReportService service;
   private final Validator validator;
-  private final ModelMapper modelMapper = EventToDomainMapper.createEventDomainMapper();
+  private final EventToDomainMapper mapper;
   private final FileReportCommandFactory fileReportCommandFactory;
 
   public void consumeEvent(@Valid ProjectorEventDto eventDto) {
@@ -44,7 +42,7 @@ public class FileReportEventAdapter {
 
     // execute command on report
     fileReportCommandFactory.getCommandByStatus(eventDto.getStatus().name())
-        .accept(report, modelMapper.map(eventDto, FileMetadata.class));
+        .accept(report, mapper.eventToDomain(eventDto));
 
     // remove from the report the old files
     report.removeFilesOlderThan(fileTimeToLiveInDays);
