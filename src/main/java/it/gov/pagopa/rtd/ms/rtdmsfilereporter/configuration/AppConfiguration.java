@@ -23,8 +23,8 @@ public class AppConfiguration {
   }
 
   @Bean
-  public FileReportRepository getFileReportRepository(FileReportDao dao) {
-    return new FileReportRepositoryImpl(dao, FileReportEntityMapper.createEntityDomainMapper());
+  public FileReportRepository getFileReportRepository(FileReportDao dao, FileReportEntityMapper mapper) {
+    return new FileReportRepositoryImpl(dao, mapper);
   }
 
   @Bean

@@ -8,13 +8,12 @@ import java.util.function.BiConsumer;
 public class FileReportCommandFactory {
 
   public BiConsumer<FileReport, FileMetadata> getCommandByStatus(String status) {
-    switch (EventStatusEnum.valueOf(status)) {
-      case ACK_TO_DOWNLOAD:
-        return (fileReport, fileMetadata) -> fileReport.addAckToDownload(fileMetadata.getName());
-      case ACK_DOWNLOADED:
-        return (fileReport, fileMetadata) -> fileReport.removeAckToDownload(fileMetadata.getName());
-      default:
-        return FileReport::addFileOrUpdateStatusIfPresent;
-    }
+    return switch (EventStatusEnum.valueOf(status)) {
+      case ACK_TO_DOWNLOAD ->
+          (fileReport, fileMetadata) -> fileReport.addAckToDownload(fileMetadata.getName());
+      case ACK_DOWNLOADED ->
+          (fileReport, fileMetadata) -> fileReport.removeAckToDownload(fileMetadata.getName());
+      default -> FileReport::addFileOrUpdateStatusIfPresent;
+    };
   }
 }
