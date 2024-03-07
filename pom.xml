@@ -5,13 +5,13 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.2.1</version>
+		<version>3.2.3</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 
 	<groupId>it.gov.pagopa.rtd.ms</groupId>
 	<artifactId>rtd-ms-file-reporter</artifactId>
-	<version>1.4.0</version>
+	<version>1.4.1</version>
 	<name>rtd-ms-file-reporter</name>
 	<description>Micro-service to retrieve and keep updated the file reports for senders</description>
 
