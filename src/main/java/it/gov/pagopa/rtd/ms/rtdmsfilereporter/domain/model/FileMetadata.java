@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -13,6 +14,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
+@Builder
 public class FileMetadata implements Comparable<FileMetadata> {
 
   @NotNull
@@ -28,12 +30,14 @@ public class FileMetadata implements Comparable<FileMetadata> {
   @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
   private LocalDateTime transmissionDate;
 
+  private SquaringData squaringData;
+
   public static FileMetadata createNewFileMetadata(String name) {
     return createNewFileMetadataWithStatus(name, null);
   }
 
   public static FileMetadata createNewFileMetadataWithStatus(String name, FileStatusEnum status) {
-    return new FileMetadata(name, null, status, LocalDateTime.now());
+    return new FileMetadata(name, null, status, LocalDateTime.now(), null);
   }
 
   /**
