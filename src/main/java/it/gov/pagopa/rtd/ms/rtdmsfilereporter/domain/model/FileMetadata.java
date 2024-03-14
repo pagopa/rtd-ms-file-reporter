@@ -30,7 +30,7 @@ public class FileMetadata implements Comparable<FileMetadata> {
   @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
   private LocalDateTime transmissionDate;
 
-  private SquaringData squaringData;
+  private AggregatesDataSummary aggregatesDataSummary;
 
   public static FileMetadata createNewFileMetadata(String name) {
     return createNewFileMetadataWithStatus(name, null);
