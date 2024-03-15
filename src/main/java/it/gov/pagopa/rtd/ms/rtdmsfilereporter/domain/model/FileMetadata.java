@@ -21,6 +21,8 @@ public class FileMetadata implements Comparable<FileMetadata> {
   @NotBlank
   private String name;
 
+  private String path;
+
   private Long size;
 
   @NotNull
@@ -37,7 +39,7 @@ public class FileMetadata implements Comparable<FileMetadata> {
   }
 
   public static FileMetadata createNewFileMetadataWithStatus(String name, FileStatusEnum status) {
-    return new FileMetadata(name, null, status, LocalDateTime.now(), null);
+    return new FileMetadata(name, null, null, status, LocalDateTime.now(), null);
   }
 
   /**
