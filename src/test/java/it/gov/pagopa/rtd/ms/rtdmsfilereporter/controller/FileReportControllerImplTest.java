@@ -8,6 +8,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.TestUtils;
+import it.gov.pagopa.rtd.ms.rtdmsfilereporter.controller.model.FileReportDto;
+import it.gov.pagopa.rtd.ms.rtdmsfilereporter.controller.model.FileReportDtoMapper;
+import it.gov.pagopa.rtd.ms.rtdmsfilereporter.controller.model.FileReportV2Dto;
+import it.gov.pagopa.rtd.ms.rtdmsfilereporter.controller.model.FileReportV2DtoMapper;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.controller.model.v1.FileReportDto;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.controller.model.v1.FileReportDtoMapper;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.model.FileReport;
@@ -33,6 +37,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 class FileReportControllerImplTest {
 
   private final String FILE_REPORT_URL = "/file-report";
+  private final String FILE_REPORT_URL_V2 = "/v2/file-report";
   private final String SENDER_ADE_ACK_URL = "/sender-ade-ack";
 
   ObjectMapper objectMapper = new ObjectMapper();
@@ -42,6 +47,9 @@ class FileReportControllerImplTest {
 
   @MockBean
   private FileReportDtoMapper mapper;
+
+  @MockBean
+  private FileReportV2DtoMapper mapperV2;
 
   @MockBean
   private FileReportService fileReportService;
@@ -63,7 +71,6 @@ class FileReportControllerImplTest {
             content().contentType(MediaType.APPLICATION_JSON_VALUE),
             content().string(emptyFileReportAsJson))
         .andReturn();
-
   }
 
   @SneakyThrows
@@ -80,6 +87,24 @@ class FileReportControllerImplTest {
         .andReturn();
     FileReportDto fileReportResponse = objectMapper.readValue(
         result.getResponse().getContentAsString(), FileReportDto.class);
+
+    assertThat(fileReportResponse.getFilesRecentlyUploaded()).isNotNull().hasSize(2);
+  }
+
+  @SneakyThrows
+  @Test
+  void givenReportWhenGetFileReportV2ThenReturnCorrectJson() {
+    var reportMock = TestUtils.createFileReport(2, 2);
+    var reportDto = Mappers.getMapper(FileReportDtoMapper.class).fileReportToDto(reportMock);
+    Mockito.when(mapper.fileReportToDto(any())).thenReturn(reportDto);
+
+    MvcResult result = mockMvc.perform(
+            MockMvcRequestBuilders.get(FILE_REPORT_URL_V2).param("senderCodes", "12345"))
+        .andExpectAll(status().isOk(),
+            content().contentType(MediaType.APPLICATION_JSON_VALUE))
+        .andReturn();
+    FileReportV2Dto fileReportResponse = objectMapper.readValue(
+        result.getResponse().getContentAsString(), FileReportV2Dto.class);
 
     assertThat(fileReportResponse.getFilesRecentlyUploaded()).isNotNull().hasSize(2);
   }
