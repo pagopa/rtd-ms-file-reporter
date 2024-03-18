@@ -8,6 +8,7 @@ import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.FileReportCommandFactory;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.model.FileMetadata;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.model.FileReport;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.model.FileStatusEnum;
+import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.service.DecryptedEventCommand;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.service.FileReportService;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.event.model.EventStatusEnum;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.event.model.EventToDomainMapper;
@@ -18,19 +19,21 @@ import jakarta.validation.Validator;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.Optional;
-import lombok.SneakyThrows;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mapstruct.factory.Mappers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 
+@ExtendWith(MockitoExtension.class)
 class FileReportEventAdapterTest {
 
   @Mock
   private FileReportService service;
+  @Mock
+  private DecryptedEventCommand command;
   private final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
   private FileReportEventAdapter adapter;
   private AutoCloseable autoCloseable;
@@ -39,16 +42,9 @@ class FileReportEventAdapterTest {
 
   @BeforeEach
   void setUp() {
-    autoCloseable = MockitoAnnotations.openMocks(this);
     adapter = new FileReportEventAdapter(service, validator, mapper,
-        new FileReportCommandFactory());
+        new FileReportCommandFactory(command));
     adapter.setFileTimeToLiveInDays(fileTTL);
-  }
-
-  @SneakyThrows
-  @AfterEach
-  void tearDown() {
-    autoCloseable.close();
   }
 
   @Test
