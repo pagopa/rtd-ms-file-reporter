@@ -1,9 +1,9 @@
 package it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.model;
 
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import java.util.Objects;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -63,9 +63,11 @@ public class FileMetadata implements Comparable<FileMetadata> {
 
   /**
    * Enrich the file metadata with the summary of the content.
+   *
    * @param dataSummary additional information about content of file
    */
-  public void enrichWithSquaringData(@NotNull AggregatesDataSummary dataSummary) {
+  public void enrichWithSquaringData(AggregatesDataSummary dataSummary) {
+    dataSummary = Objects.requireNonNullElse(dataSummary, AggregatesDataSummary.builder().build());
     this.aggregatesDataSummary = dataSummary;
   }
 }
