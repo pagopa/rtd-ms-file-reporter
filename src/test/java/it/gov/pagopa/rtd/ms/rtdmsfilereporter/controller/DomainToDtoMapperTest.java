@@ -21,8 +21,9 @@ class DomainToDtoMapperTest {
   void mappingFromDomainToDtoWorksCorrectly() {
     var currentDate = LocalDateTime.now();
     FileReport fileReport = FileReport.createFileReport();
-    FileMetadata fileMetadata = new FileMetadata("file", 3000L, FileStatusEnum.RECEIVED_BY_PAGOPA,
-        currentDate);
+    FileMetadata fileMetadata = FileMetadata.builder().name("file").size(3000L)
+        .status(FileStatusEnum.RECEIVED_BY_PAGOPA)
+        .transmissionDate(currentDate).build();
     fileReport.addFileUploaded(fileMetadata);
     fileReport.addAckToDownload("ack1");
     fileReport.setSenderCodes(List.of("senderCode"));

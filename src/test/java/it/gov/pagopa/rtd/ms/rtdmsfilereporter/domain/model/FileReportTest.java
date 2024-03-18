@@ -24,14 +24,16 @@ class FileReportTest {
     FileReport fileReport = FileReport.createFileReport();
 
     fileReport.addFileUploaded(
-        new FileMetadata("oldestFile", 200L, FileStatusEnum.RECEIVED_BY_PAGOPA,
-            LocalDateTime.of(2022, 1, 1, 10, 0)));
+        FileMetadata.builder().name("oldestFile").size(200L)
+            .status(FileStatusEnum.RECEIVED_BY_PAGOPA)
+            .transmissionDate(LocalDateTime.of(2022, 1, 1, 10, 0)).build());
     assertThat(fileReport.getFilesUploaded()).isNotNull().hasSize(1)
         .map(FileMetadata::getName).contains("oldestFile");
 
     fileReport.addFileUploaded(
-        new FileMetadata("mostRecentFile", 200L, FileStatusEnum.RECEIVED_BY_PAGOPA,
-            LocalDateTime.of(2022, 1, 2, 10, 0)));
+        FileMetadata.builder().name("mostRecentFile").size(200L)
+            .status(FileStatusEnum.RECEIVED_BY_PAGOPA)
+            .transmissionDate(LocalDateTime.of(2022, 1, 2, 10, 0)).build());
     assertThat(fileReport.getFilesUploaded()).isNotNull().hasSize(2)
         .map(FileMetadata::getName).containsExactly("mostRecentFile", "oldestFile");
   }
@@ -41,14 +43,14 @@ class FileReportTest {
     FileReport fileReport = FileReport.createFileReport();
 
     fileReport.addFileUploaded(
-        new FileMetadata("fileA", 200L, FileStatusEnum.RECEIVED_BY_PAGOPA,
-            LocalDateTime.of(2022, 1, 1, 10, 0)));
+        FileMetadata.builder().name("fileA").size(200L).status(FileStatusEnum.RECEIVED_BY_PAGOPA)
+            .transmissionDate(LocalDateTime.of(2022, 1, 1, 10, 0)).build());
     assertThat(fileReport.getFilesUploaded()).isNotNull().hasSize(1)
         .map(FileMetadata::getName).contains("fileA");
 
     fileReport.addFileUploaded(
-        new FileMetadata("fileB", 200L, FileStatusEnum.RECEIVED_BY_PAGOPA,
-            LocalDateTime.of(2022, 1, 1, 10, 0)));
+        FileMetadata.builder().name("fileB").size(200L).status(FileStatusEnum.RECEIVED_BY_PAGOPA)
+            .transmissionDate(LocalDateTime.of(2022, 1, 1, 10, 0)).build());
     assertThat(fileReport.getFilesUploaded()).isNotNull().hasSize(2)
         .map(FileMetadata::getName).containsExactly("fileB", "fileA");
   }
@@ -166,10 +168,12 @@ class FileReportTest {
   @Test
   void givenTwoFilesInsideDateRangeWhenRemoveOldFilesThenRemoveNothing() {
     FileReport fileReport = FileReport.createFileReport();
-    var fileMetadata = new FileMetadata("file", 100L, FileStatusEnum.RECEIVED_BY_PAGOPA,
-        LocalDateTime.now().minusDays(5));
-    var fileMetadata2 = new FileMetadata("file2", 3000L, FileStatusEnum.VALIDATED_BY_PAGOPA,
-        LocalDateTime.now().minusDays(2));
+    var fileMetadata = FileMetadata.builder().name("file").size(100L)
+        .status(FileStatusEnum.RECEIVED_BY_PAGOPA)
+        .transmissionDate(LocalDateTime.now().minusDays(5)).build();
+    var fileMetadata2 = FileMetadata.builder().name("file2").size(3000L)
+        .status(FileStatusEnum.RECEIVED_BY_PAGOPA)
+        .transmissionDate(LocalDateTime.now().minusDays(2)).build();
     fileReport.addFileUploaded(fileMetadata);
     fileReport.addFileUploaded(fileMetadata2);
     assertThat(fileReport.getFilesUploaded()).isNotNull().hasSize(2);
@@ -182,10 +186,12 @@ class FileReportTest {
   @Test
   void givenOneFileOutDateRangeWhenRemoveOldFilesThenRemoveOneFile() {
     FileReport fileReport = FileReport.createFileReport();
-    var fileMetadata = new FileMetadata("file", 100L, FileStatusEnum.RECEIVED_BY_PAGOPA,
-        LocalDateTime.now().minusDays(5));
-    var fileMetadata2 = new FileMetadata("file2", 3000L, FileStatusEnum.VALIDATED_BY_PAGOPA,
-        LocalDateTime.now().minusDays(11));
+    var fileMetadata = FileMetadata.builder().name("file").size(100L)
+        .status(FileStatusEnum.RECEIVED_BY_PAGOPA)
+        .transmissionDate(LocalDateTime.now().minusDays(5)).build();
+    var fileMetadata2 = FileMetadata.builder().name("file2").size(3000L)
+        .status(FileStatusEnum.VALIDATED_BY_PAGOPA)
+        .transmissionDate(LocalDateTime.now().minusDays(11)).build();
     fileReport.addFileUploaded(fileMetadata);
     fileReport.addFileUploaded(fileMetadata2);
     assertThat(fileReport.getFilesUploaded()).isNotNull().hasSize(2);
@@ -199,10 +205,12 @@ class FileReportTest {
   @Test
   void givenTwoFileOutDateRangeWhenRemoveOldFilesThenRemoveAllFiles() {
     FileReport fileReport = FileReport.createFileReport();
-    var fileMetadata = new FileMetadata("file", 100L, FileStatusEnum.RECEIVED_BY_PAGOPA,
-        LocalDateTime.now().minusDays(12));
-    var fileMetadata2 = new FileMetadata("file2", 3000L, FileStatusEnum.VALIDATED_BY_PAGOPA,
-        LocalDateTime.now().minusDays(11));
+    var fileMetadata = FileMetadata.builder().name("file").size(100L)
+        .status(FileStatusEnum.RECEIVED_BY_PAGOPA)
+        .transmissionDate(LocalDateTime.now().minusDays(12)).build();
+    var fileMetadata2 = FileMetadata.builder().name("file2").size(3000L)
+        .status(FileStatusEnum.VALIDATED_BY_PAGOPA)
+        .transmissionDate(LocalDateTime.now().minusDays(11)).build();
     fileReport.addFileUploaded(fileMetadata);
     fileReport.addFileUploaded(fileMetadata2);
     assertThat(fileReport.getFilesUploaded()).isNotNull().hasSize(2);
@@ -215,10 +223,12 @@ class FileReportTest {
   @Test
   void whenRemoveOldFilesWithNullParamThenDoNothing() {
     FileReport fileReport = FileReport.createFileReport();
-    var fileMetadata = new FileMetadata("file", 100L, FileStatusEnum.RECEIVED_BY_PAGOPA,
-        LocalDateTime.now().minusDays(12));
-    var fileMetadata2 = new FileMetadata("file2", 3000L, FileStatusEnum.VALIDATED_BY_PAGOPA,
-        LocalDateTime.now().minusDays(11));
+    var fileMetadata = FileMetadata.builder().name("file").size(100L)
+        .status(FileStatusEnum.RECEIVED_BY_PAGOPA)
+        .transmissionDate(LocalDateTime.now().minusDays(12)).build();
+    var fileMetadata2 = FileMetadata.builder().name("file2").size(3000L)
+        .status(FileStatusEnum.VALIDATED_BY_PAGOPA)
+        .transmissionDate(LocalDateTime.now().minusDays(11)).build();
     fileReport.addFileUploaded(fileMetadata);
     fileReport.addFileUploaded(fileMetadata2);
     assertThat(fileReport.getFilesUploaded()).isNotNull().hasSize(2);
