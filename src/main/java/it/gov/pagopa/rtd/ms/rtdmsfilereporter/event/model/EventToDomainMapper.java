@@ -4,11 +4,27 @@ import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.model.FileMetadata;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.model.FileStatusEnum;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.Named;
 
 @Mapper(componentModel = "spring")
 public interface EventToDomainMapper {
 
-  @Mapping(source = "fileName", target = "name")
+  @Named("filePathToFileName")
+  static String filePathToFileName(String filePath) {
+    return filePath.substring(filePath.lastIndexOf('/') + 1);
+  }
+
+  @Named("filePathToPath")
+  static String filePathToPath(String filePath) {
+    if (filePath.contains("/")) {
+      return filePath.substring(0, filePath.lastIndexOf('/') + 1);
+    } else {
+      return "";
+    }
+  }
+
+  @Mapping(source = "filePath", target = "name", qualifiedByName = "filePathToFileName")
+  @Mapping(source = "filePath", target = "path", qualifiedByName = "filePathToPath")
   @Mapping(source = "receiveTimestamp", target = "transmissionDate")
   FileMetadata eventToDomain(ProjectorEventDto eventDto);
 
