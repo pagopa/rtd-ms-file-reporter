@@ -15,5 +15,6 @@ public class AggregatesDataSummary {
   private long countPositiveTransactions;
   private long sumAmountNegativeTransactions;
   private long sumAmountPositiveTransactions;
-
+  // sha256 of the initial input file containing the transactions
+  private String sha256OriginFile;
 }
