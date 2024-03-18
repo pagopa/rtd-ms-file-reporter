@@ -9,11 +9,19 @@ import org.mapstruct.Named;
 @Mapper(componentModel = "spring")
 public interface EventToDomainMapper {
 
+
+  /**
+   * Extract the file name from a path. e.g. '/container/filename.txt' returns 'filename.txt'
+   */
   @Named("filePathToFileName")
   static String filePathToFileName(String filePath) {
     return filePath.substring(filePath.lastIndexOf('/') + 1);
   }
 
+  /**
+   * Map from a path containing the file name to a string containing the path only.
+   * e.g. '/container/filename.txt' returns '/container/'
+   */
   @Named("filePathToPath")
   static String filePathToPath(String filePath) {
     if (filePath.contains("/")) {
