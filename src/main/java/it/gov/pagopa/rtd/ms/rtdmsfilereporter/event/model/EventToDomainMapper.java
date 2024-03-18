@@ -26,6 +26,7 @@ public interface EventToDomainMapper {
   @Mapping(source = "filePath", target = "name", qualifiedByName = "filePathToFileName")
   @Mapping(source = "filePath", target = "path", qualifiedByName = "filePathToPath")
   @Mapping(source = "receiveTimestamp", target = "transmissionDate")
+  @Mapping(target = "aggregatesDataSummary", ignore = true)
   FileMetadata eventToDomain(ProjectorEventDto eventDto);
 
   default FileStatusEnum convertFromStringToStatusEnum(EventStatusEnum status) {
