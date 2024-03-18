@@ -95,8 +95,8 @@ class FileReportControllerImplTest {
   @Test
   void givenReportWhenGetFileReportV2ThenReturnCorrectJson() {
     var reportMock = TestUtils.createFileReport(2, 2);
-    var reportDto = Mappers.getMapper(FileReportDtoMapper.class).fileReportToDto(reportMock);
-    Mockito.when(mapper.fileReportToDto(any())).thenReturn(reportDto);
+    var reportDto = Mappers.getMapper(FileReportV2DtoMapper.class).fileReportToDto(reportMock);
+    Mockito.when(mapperV2.fileReportToDto(any())).thenReturn(reportDto);
 
     MvcResult result = mockMvc.perform(
             MockMvcRequestBuilders.get(FILE_REPORT_URL_V2).param("senderCodes", "12345"))
