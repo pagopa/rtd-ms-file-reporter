@@ -2,8 +2,8 @@ package it.gov.pagopa.rtd.ms.rtdmsfilereporter.controller;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import it.gov.pagopa.rtd.ms.rtdmsfilereporter.controller.model.FileMetadataDto;
-import it.gov.pagopa.rtd.ms.rtdmsfilereporter.controller.model.FileReportDtoMapper;
+import it.gov.pagopa.rtd.ms.rtdmsfilereporter.controller.model.v1.FileMetadataDto;
+import it.gov.pagopa.rtd.ms.rtdmsfilereporter.controller.model.v1.FileReportDtoMapper;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.model.FileMetadata;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.model.FileReport;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.model.FileStatusEnum;

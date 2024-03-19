@@ -1,7 +1,7 @@
 package it.gov.pagopa.rtd.ms.rtdmsfilereporter.controller;
 
-import it.gov.pagopa.rtd.ms.rtdmsfilereporter.controller.model.FileReportDto;
-import it.gov.pagopa.rtd.ms.rtdmsfilereporter.controller.model.FileReportDtoMapper;
+import it.gov.pagopa.rtd.ms.rtdmsfilereporter.controller.model.v1.FileReportDto;
+import it.gov.pagopa.rtd.ms.rtdmsfilereporter.controller.model.v1.FileReportDtoMapper;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.controller.model.SenderAdeAckListDto;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.service.FileReportService;
 import jakarta.validation.constraints.NotNull;

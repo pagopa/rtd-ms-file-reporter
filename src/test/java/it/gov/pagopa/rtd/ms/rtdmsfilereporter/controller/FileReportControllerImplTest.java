@@ -8,8 +8,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.TestUtils;
-import it.gov.pagopa.rtd.ms.rtdmsfilereporter.controller.model.FileReportDto;
-import it.gov.pagopa.rtd.ms.rtdmsfilereporter.controller.model.FileReportDtoMapper;
+import it.gov.pagopa.rtd.ms.rtdmsfilereporter.controller.model.v1.FileReportDto;
+import it.gov.pagopa.rtd.ms.rtdmsfilereporter.controller.model.v1.FileReportDtoMapper;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.model.FileReport;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.service.FileReportService;
 import java.util.Collections;
