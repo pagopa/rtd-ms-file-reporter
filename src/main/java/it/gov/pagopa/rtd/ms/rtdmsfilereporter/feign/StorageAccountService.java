@@ -18,6 +18,7 @@ public class StorageAccountService {
 
     // todo extract data from response entity
     log.info("response for {} has status {}", fileName, response.getStatusCode());
+    response.getHeaders().forEach((key, value) -> log.info("header {} with value {}", key, value));
 
     return AggregatesDataSummary.builder().build();
   }
