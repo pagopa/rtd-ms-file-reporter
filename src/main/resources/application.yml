@@ -30,6 +30,12 @@ spring:
       uri: ${MONGODB_CONNECTION_URI:mongodb://localhost:27017}
       database: ${MONGODB_NAME:rtd}
   cloud:
+    openfeign:
+      client:
+        config:
+          StorageAccountConnector:
+            url: https://${STORAGE_ACCOUNT_HOST:internal.it}/storage
+            apiKey: ${INTERNAL_SERVICES_API_KEY:myApiKey}
     stream:
       bindings:
         projectorConsumer-in-0: # name must match [handler name]-in-0
