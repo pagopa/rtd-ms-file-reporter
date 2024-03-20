@@ -10,6 +10,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.TestUtils;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.controller.model.v1.FileReportDto;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.controller.model.v1.FileReportDtoMapper;
+import it.gov.pagopa.rtd.ms.rtdmsfilereporter.controller.model.v2.FileReportV2Dto;
+import it.gov.pagopa.rtd.ms.rtdmsfilereporter.controller.model.v2.FileReportV2DtoMapper;
+import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.model.AggregatesDataSummary;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.model.FileReport;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.service.FileReportService;
 import java.util.Collections;
@@ -34,15 +37,15 @@ class FileReportControllerImplTest {
 
   private final String FILE_REPORT_URL = "/file-report";
   private final String SENDER_ADE_ACK_URL = "/sender-ade-ack";
-
+  private final String FILE_REPORT_URL_V2 = "/v2/file-report";
   ObjectMapper objectMapper = new ObjectMapper();
 
   @Autowired
   private MockMvc mockMvc;
-
   @MockBean
   private FileReportDtoMapper mapper;
-
+  @MockBean
+  private FileReportV2DtoMapper mapperV2;
   @MockBean
   private FileReportService fileReportService;
 
@@ -63,7 +66,6 @@ class FileReportControllerImplTest {
             content().contentType(MediaType.APPLICATION_JSON_VALUE),
             content().string(emptyFileReportAsJson))
         .andReturn();
-
   }
 
   @SneakyThrows
@@ -116,5 +118,48 @@ class FileReportControllerImplTest {
 
     BDDMockito.verify(fileReportService, Mockito.times(1))
         .getAckToDownloadList(ArgumentMatchers.anyCollection());
+  }
+
+  @SneakyThrows
+  @Test
+  void givenReportWhenGetFileReportV2ThenReturnCorrectJson() {
+    var reportMock = TestUtils.createFileReport(0, 1);
+    var reportDto = Mappers.getMapper(FileReportV2DtoMapper.class).fileReportToDto(reportMock);
+    reportDto.getFilesRecentlyUploaded().stream()
+        .findAny()
+        .ifPresent(file -> file.setDataSummary(
+            AggregatesDataSummary.builder()
+                .countPositiveTransactions(10)
+                .sumAmountPositiveTransactions(1000)
+                .build()));
+    Mockito.when(mapperV2.fileReportToDto(any())).thenReturn(reportDto);
+
+    MvcResult result = mockMvc.perform(
+            MockMvcRequestBuilders.get(FILE_REPORT_URL_V2).param("senderCodes", "12345"))
+        .andExpectAll(status().isOk(),
+            content().contentType(MediaType.APPLICATION_JSON_VALUE))
+        .andReturn();
+    FileReportV2Dto fileReportResponse = objectMapper.readValue(
+        result.getResponse().getContentAsString(),
+        FileReportV2Dto.class);
+
+    assertThat(fileReportResponse.getFilesRecentlyUploaded()).isNotNull().hasSize(1);
+    var file = fileReportResponse.getFilesRecentlyUploaded().stream().findAny();
+    assertThat(file).isPresent();
+    var summary = file.get().getDataSummary();
+    assertThat(summary).isNotNull();
+    assertThat(summary.getCountPositiveTransactions()).isEqualTo(10);
+    assertThat(summary.getSumAmountPositiveTransactions()).isEqualTo(1000);
+  }
+
+  @SneakyThrows
+  @Test
+  void givenNoQueryParamsWhenGetFileReportV2ThenReturn400() {
+    Mockito.when(fileReportService.getAggregateFileReport(any()))
+        .thenReturn(FileReport.createFileReport());
+
+    mockMvc.perform(MockMvcRequestBuilders.get(FILE_REPORT_URL_V2))
+        .andExpect(status().isBadRequest())
+        .andReturn();
   }
 }

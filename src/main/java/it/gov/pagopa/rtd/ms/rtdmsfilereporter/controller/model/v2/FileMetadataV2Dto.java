@@ -12,7 +12,7 @@ import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
 @Data
-public class FileMetadataDto {
+public class FileMetadataV2Dto {
 
   @NotNull
   @NotBlank

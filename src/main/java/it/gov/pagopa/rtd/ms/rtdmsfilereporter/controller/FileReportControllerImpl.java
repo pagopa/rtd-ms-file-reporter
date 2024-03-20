@@ -1,8 +1,10 @@
 package it.gov.pagopa.rtd.ms.rtdmsfilereporter.controller;
 
+import it.gov.pagopa.rtd.ms.rtdmsfilereporter.controller.model.SenderAdeAckListDto;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.controller.model.v1.FileReportDto;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.controller.model.v1.FileReportDtoMapper;
-import it.gov.pagopa.rtd.ms.rtdmsfilereporter.controller.model.SenderAdeAckListDto;
+import it.gov.pagopa.rtd.ms.rtdmsfilereporter.controller.model.v2.FileReportV2Dto;
+import it.gov.pagopa.rtd.ms.rtdmsfilereporter.controller.model.v2.FileReportV2DtoMapper;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.service.FileReportService;
 import jakarta.validation.constraints.NotNull;
 import java.util.Collection;
@@ -17,11 +19,18 @@ public class FileReportControllerImpl implements FileReportController {
 
   private final FileReportService fileReportService;
   private final FileReportDtoMapper mapper;
+  private final FileReportV2DtoMapper mapperV2;
 
   @Override
   public FileReportDto getFileReport(Collection<String> senderCodes) {
     log.info("GET file report for sender codes: {}", senderCodes.toString());
     return mapper.fileReportToDto(fileReportService.getAggregateFileReport(senderCodes));
+  }
+
+  @Override
+  public FileReportV2Dto getFileReportV2(Collection<String> senderCodes) {
+    log.info("GET file report v2 for sender codes: {}", senderCodes.toString());
+    return mapperV2.fileReportToDto(fileReportService.getAggregateFileReport(senderCodes));
   }
 
   @Override

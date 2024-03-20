@@ -4,7 +4,7 @@ import java.util.Collection;
 import lombok.Data;
 
 @Data
-public class FileReportDto {
+public class FileReportV2Dto {
 
-  Collection<FileMetadataDto> filesRecentlyUploaded;
+  Collection<FileMetadataV2Dto> filesRecentlyUploaded;
 }
