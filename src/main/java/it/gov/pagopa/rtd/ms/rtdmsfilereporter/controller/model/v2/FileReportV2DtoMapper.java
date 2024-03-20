@@ -9,8 +9,8 @@ import org.mapstruct.Mapping;
 public interface FileReportV2DtoMapper {
 
   @Mapping(source = "filesUploaded", target = "filesRecentlyUploaded")
-  FileReportDto fileReportToDto(FileReport fileReport);
+  FileReportV2Dto fileReportToDto(FileReport fileReport);
 
   @Mapping(source = "aggregatesDataSummary", target = "dataSummary")
-  FileMetadataDto fileMetadataToDto(FileMetadata fileMetadata);
+  FileMetadataV2Dto fileMetadataToDto(FileMetadata fileMetadata);
 }
