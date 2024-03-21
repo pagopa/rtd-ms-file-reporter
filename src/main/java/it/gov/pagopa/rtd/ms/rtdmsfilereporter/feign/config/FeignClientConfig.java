@@ -21,8 +21,10 @@ import org.apache.hc.core5.http.config.Registry;
 import org.apache.hc.core5.http.config.RegistryBuilder;
 import org.apache.hc.core5.ssl.SSLContexts;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 @RequiredArgsConstructor
+@Configuration
 public class FeignClientConfig {
 
   private final StorageProperties properties;
