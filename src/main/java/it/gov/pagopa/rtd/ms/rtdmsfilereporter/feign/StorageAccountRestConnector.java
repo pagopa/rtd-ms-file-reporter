@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 @FeignClient(name = "StorageAccountConnector")
 public interface StorageAccountRestConnector {
 
-  @GetMapping(value = "/{container}/{fileName}?comp=metadata")
+  @GetMapping(value = "{basePath}{fileName}?comp=metadata")
   ResponseEntity<Void> getBlobMetadata(
 //      @RequestHeader("Ocp-Apim-Subscription-Key") String token,
       @PathVariable("container") String container,
