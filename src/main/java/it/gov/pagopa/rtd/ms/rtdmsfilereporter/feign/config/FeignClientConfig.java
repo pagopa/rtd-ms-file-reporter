@@ -1,13 +1,10 @@
 package it.gov.pagopa.rtd.ms.rtdmsfilereporter.feign.config;
 
 import feign.RequestInterceptor;
-import it.gov.pagopa.rtd.ms.rtdmsfilereporter.feign.StorageAccountRestConnector;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
 
 @RequiredArgsConstructor
-@EnableFeignClients(clients = StorageAccountRestConnector.class)
 public class FeignClientConfig {
 
   private final StorageProperties properties;
