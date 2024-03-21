@@ -35,8 +35,8 @@ spring:
     openfeign:
       client:
         config:
-          StorageAccountConnector:
-            url: https://${STORAGE_ACCOUNT_HOST:internal.it}/storage
+          storage-account-connector:
+            url: https://${STORAGE_ACCOUNT_HOST:httpbin.org}/storage
             apiKey: ${INTERNAL_SERVICES_API_KEY:myApiKey}
     stream:
       bindings:
