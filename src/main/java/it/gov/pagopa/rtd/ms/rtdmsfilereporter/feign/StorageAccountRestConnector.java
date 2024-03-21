@@ -11,6 +11,6 @@ public interface StorageAccountRestConnector {
   @GetMapping(value = "{basePath}{fileName}?comp=metadata")
   ResponseEntity<Void> getBlobMetadata(
 //      @RequestHeader("Ocp-Apim-Subscription-Key") String token,
-      @PathVariable("container") String container,
+      @PathVariable("basePath") String basePath,
       @PathVariable("fileName") String fileName);
 }

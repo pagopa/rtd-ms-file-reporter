@@ -12,9 +12,9 @@ public class StorageAccountService {
 
   private final StorageAccountRestConnector connector;
 
-  public AggregatesDataSummary getMetadata(String blobContainer, String fileName) {
-
-    var response = connector.getBlobMetadata(blobContainer, fileName);
+  public AggregatesDataSummary getMetadata(String basePath, String fileName) {
+    log.info("passing container {} and name {}", basePath, fileName);
+    var response = connector.getBlobMetadata(basePath, fileName);
 
     // todo extract data from response entity
     log.info("response for {} has status {}", fileName, response.getStatusCode());
