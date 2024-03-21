@@ -33,7 +33,7 @@ public class FeignClientConfig {
   }
 
   @Bean
-  CloseableHttpClient getFeignClient()
+  CloseableHttpClient getHttpClient()
       throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
     SSLContext sslContext = SSLContexts.custom()
         .loadTrustMaterial(TrustSelfSignedStrategy.INSTANCE)
