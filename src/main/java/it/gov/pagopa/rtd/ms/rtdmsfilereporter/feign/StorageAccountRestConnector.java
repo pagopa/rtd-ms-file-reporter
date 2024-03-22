@@ -39,6 +39,11 @@ public class StorageAccountRestConnector {
    */
   public Map<String, String> getBlobMetadata(String basePath, String fileName) throws IOException {
 
+    if (!basePath.startsWith("/") || !basePath.endsWith("/")) {
+      throw new IllegalArgumentException(
+          "Invalid format for basePath! Make it start and end with '/'");
+    }
+
     var uri = properties.url()
         + basePath
         + fileName

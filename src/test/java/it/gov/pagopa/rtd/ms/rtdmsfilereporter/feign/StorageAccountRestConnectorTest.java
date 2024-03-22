@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.entry;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -20,6 +21,8 @@ import org.apache.hc.core5.http.message.BasicHeader;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -32,13 +35,13 @@ class StorageAccountRestConnectorTest {
 
   @BeforeEach
   void setUp() {
-    connector = new StorageAccountRestConnector(new StorageProperties("url", "key"), client);
+    connector = new StorageAccountRestConnector(new StorageProperties("/url/", "key"), client);
   }
 
   @Test
   @SneakyThrows
   void whenGetBlobTheReturnMap() {
-    var basePath = "url";
+    var basePath = "/container/";
     var name = "name";
     var httpGet = new HttpGet(basePath + name + StorageAccountRestConnector.BLOB_METADATA_QUERY);
     httpGet.setHeaders(new BasicHeader("Ocp-Apim-Subscription-Key", "key"));
@@ -57,11 +60,23 @@ class StorageAccountRestConnectorTest {
     when(client.execute(any(ClassicHttpRequest.class), any(HttpClientResponseHandler.class)))
         .thenThrow(new IOException("KO"));
 
-    assertThatThrownBy(() -> connector.getBlobMetadata("basePath", "name"))
+    assertThatThrownBy(() -> connector.getBlobMetadata("/basePath/", "name"))
         .isInstanceOf(IOException.class)
         .hasMessage("KO");
 
     verify(client).execute(any(ClassicHttpRequest.class), any(HttpClientResponseHandler.class));
+  }
+
+  @SneakyThrows
+  @ParameterizedTest
+  @ValueSource(strings = {"missingBothSlash", "/missingFinalSlash", "missingInitialSlash/"})
+  void givenABadPathFormatWhenGetMetadataThenThrowException(String basePath) {
+
+    assertThatThrownBy(() -> connector.getBlobMetadata(basePath, "name"))
+        .isInstanceOf(IllegalArgumentException.class);
+
+    verify(client, times(0)).execute(any(ClassicHttpRequest.class),
+        any(HttpClientResponseHandler.class));
   }
 
   @Test
