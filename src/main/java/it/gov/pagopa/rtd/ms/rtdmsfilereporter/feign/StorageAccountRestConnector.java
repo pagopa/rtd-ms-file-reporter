@@ -27,6 +27,16 @@ public class StorageAccountRestConnector {
   private final StorageProperties properties;
   private final CloseableHttpClient httpClient;
 
+  /**
+   * Returns a map with header name and header value as key-value. The headers are filtered by the
+   * expected prefix for metadata.
+   *
+   * @param basePath - path of blob storage starting and ending with '/'
+   * @param fileName - name of blob storage
+   * @return a map with the headers
+   * @throws IOException - thrown by an error occurred in the http client or when the returned
+   *                     status code does not match 200
+   */
   public Map<String, String> getBlobMetadata(String basePath, String fileName) throws IOException {
 
     var uri = properties.url()
