@@ -1,14 +1,9 @@
 package it.gov.pagopa.rtd.ms.rtdmsfilereporter.feign.config;
 
-import feign.Client;
-import feign.RequestInterceptor;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import javax.net.ssl.SSLContext;
-import lombok.RequiredArgsConstructor;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.impl.classic.HttpClients;
 import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManager;
@@ -23,23 +18,8 @@ import org.apache.hc.core5.ssl.SSLContexts;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-@RequiredArgsConstructor
 @Configuration
-public class FeignClientConfig {
-
-  private final StorageProperties properties;
-
-//  @Bean
-//  public RequestInterceptor requestInterceptor() {
-//    // This interceptor injects the api key header in each request made with the client.
-//    return requestTemplate -> {
-//      requestTemplate.header(
-//          "Ocp-Apim-Subscription-Key", properties.apiKey());
-//      requestTemplate.header("x-ms-date", LocalDateTime.now().toString());
-//      requestTemplate.header("x-ms-version", "2021-04-10");
-//    };
-//
-//  }
+public class HttpClientConfig {
 
   @Bean
   CloseableHttpClient getHttpClient()
@@ -59,5 +39,4 @@ public class FeignClientConfig {
 
     return HttpClients.custom().setConnectionManager(connectionManager).build();
   }
-
 }
