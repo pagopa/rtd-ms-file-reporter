@@ -11,12 +11,12 @@ import org.springframework.stereotype.Component;
 @Component
 public class DecryptedEventCommand implements BiConsumer<FileReport, FileMetadata> {
 
-  private final StorageAccountService client;
+  private final StorageAccountService service;
 
   @Override
   public void accept(FileReport fileReport, FileMetadata fileMetadata) {
     // preliminary api call
-    var dataSummary = client.getMetadata(fileMetadata.getPath(), fileMetadata.getName());
+    var dataSummary = service.getMetadata(fileMetadata.getPath(), fileMetadata.getName());
     // actions on domain object
     fileMetadata.enrichWithSquaringData(dataSummary);
     // two operations are needed: update status + add aggregates summary
