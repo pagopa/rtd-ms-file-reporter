@@ -4,7 +4,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-@ConfigurationProperties(prefix = "spring.cloud.openfeign.client.config.storage-account-connector")
+@ConfigurationProperties(prefix = "storage-account-connector")
 public record StorageProperties
     (@NotNull
      @NotBlank
