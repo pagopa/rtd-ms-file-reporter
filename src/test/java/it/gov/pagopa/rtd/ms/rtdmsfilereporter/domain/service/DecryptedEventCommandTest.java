@@ -7,7 +7,6 @@ import static org.mockito.ArgumentMatchers.any;
 
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.model.AggregatesDataSummary;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.model.FileMetadata;
-import it.gov.pagopa.rtd.ms.rtdmsfilereporter.feign.StorageAccountService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

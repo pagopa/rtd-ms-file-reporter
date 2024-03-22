@@ -1,4 +1,4 @@
-package it.gov.pagopa.rtd.ms.rtdmsfilereporter.feign;
+package it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -7,6 +7,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.model.AggregatesDataSummary;
+import it.gov.pagopa.rtd.ms.rtdmsfilereporter.feign.AggregatesDataSummaryMapper;
+import it.gov.pagopa.rtd.ms.rtdmsfilereporter.feign.StorageAccountRestConnector;
 import java.io.IOException;
 import java.util.Map;
 import lombok.SneakyThrows;

@@ -2,7 +2,6 @@ package it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.service;
 
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.model.FileMetadata;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.model.FileReport;
-import it.gov.pagopa.rtd.ms.rtdmsfilereporter.feign.StorageAccountService;
 import java.util.function.BiConsumer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
