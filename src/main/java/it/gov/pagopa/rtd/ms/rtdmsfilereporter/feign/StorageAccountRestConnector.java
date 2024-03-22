@@ -23,6 +23,9 @@ import org.springframework.web.server.ResponseStatusException;
 @Component
 public class StorageAccountRestConnector {
 
+  public static final String BLOB_METADATA_PREFIX = "x-ms-meta-";
+  public static final String BLOB_METADATA_QUERY = "?comp=metadata";
+  public static final String SUBSCRIPTION_KEY_HEADER = "Ocp-Apim-Subscription-Key";
   private final StorageProperties properties;
   private final CloseableHttpClient httpClient;
 
@@ -31,10 +34,10 @@ public class StorageAccountRestConnector {
     var uri = properties.url()
         + basePath
         + fileName
-        + "?comp=metadata";
+        + BLOB_METADATA_QUERY;
 
     final HttpGet httpGet = new HttpGet(uri);
-    httpGet.setHeader(new BasicHeader("Ocp-Apim-Subscription-Key", properties.apiKey()));
+    httpGet.setHeader(new BasicHeader(SUBSCRIPTION_KEY_HEADER, properties.apiKey()));
 
     return httpClient.execute(httpGet, validateAndGetMetadata());
   }
@@ -53,7 +56,7 @@ public class StorageAccountRestConnector {
       }
 
       return Arrays.stream(response.getHeaders())
-          .filter(header -> header.getName().startsWith("x-ms-meta-"))
+          .filter(header -> header.getName().startsWith(BLOB_METADATA_PREFIX))
           .map(this::removeAdditionalHeaderText)
           .collect(Collectors.toMap(Entry::getKey, Entry::getValue));
     };
@@ -61,7 +64,7 @@ public class StorageAccountRestConnector {
 
   @NotNull
   private Entry<String, String> removeAdditionalHeaderText(Header header) {
-    return Map.entry(header.getName().replaceFirst("x-ms-meta-", ""),
+    return Map.entry(header.getName().replaceFirst(BLOB_METADATA_PREFIX, ""),
         header.getValue());
   }
 }

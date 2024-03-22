@@ -40,7 +40,7 @@ class StorageAccountRestConnectorTest {
   void whenGetBlobTheReturnMap() {
     var basePath = "url";
     var name = "name";
-    var httpGet = new HttpGet(basePath + name + "?comp=metadata");
+    var httpGet = new HttpGet(basePath + name + StorageAccountRestConnector.BLOB_METADATA_QUERY);
     httpGet.setHeaders(new BasicHeader("Ocp-Apim-Subscription-Key", "key"));
     when(client.execute(any(ClassicHttpRequest.class), any(HttpClientResponseHandler.class)))
         .thenReturn(Map.of());
@@ -56,8 +56,8 @@ class StorageAccountRestConnectorTest {
   void givenResponseWith404WhenValidateThenThrowException() {
     var response = DefaultClassicHttpResponseFactory.INSTANCE.newHttpResponse(404, "not found");
     response.setHeaders(new BasicHeader("content-length", 10),
-        new BasicHeader("x-ms-meta-foo", "bar"),
-        new BasicHeader("x-ms-meta-key", "value"));
+        new BasicHeader(StorageAccountRestConnector.BLOB_METADATA_PREFIX + "foo", "bar"),
+        new BasicHeader(StorageAccountRestConnector.BLOB_METADATA_PREFIX + "key", "value"));
 
     var lambda = connector.validateAndGetMetadata();
 
@@ -70,8 +70,8 @@ class StorageAccountRestConnectorTest {
   void givenResponseWith200WhenValidateThenReturnsMetadata() {
     var response = DefaultClassicHttpResponseFactory.INSTANCE.newHttpResponse(200, "ok");
     response.setHeaders(new BasicHeader("content-length", 10),
-        new BasicHeader("x-ms-meta-foo", "bar"),
-        new BasicHeader("x-ms-meta-key", "value"));
+        new BasicHeader(StorageAccountRestConnector.BLOB_METADATA_PREFIX + "foo", "bar"),
+        new BasicHeader(StorageAccountRestConnector.BLOB_METADATA_PREFIX + "key", "value"));
 
     var metadata = connector.validateAndGetMetadata().handleResponse(response);
 
