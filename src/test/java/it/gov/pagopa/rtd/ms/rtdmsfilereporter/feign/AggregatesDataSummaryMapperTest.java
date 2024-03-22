@@ -1,7 +1,6 @@
 package it.gov.pagopa.rtd.ms.rtdmsfilereporter.feign;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.model.AggregatesDataSummary;
 import java.util.Map;
@@ -10,11 +9,13 @@ import org.mapstruct.factory.Mappers;
 
 class AggregatesDataSummaryMapperTest {
 
-  private final AggregatesDataSummaryMapper mapper = Mappers.getMapper(AggregatesDataSummaryMapper.class);
+  private final AggregatesDataSummaryMapper mapper = Mappers.getMapper(
+      AggregatesDataSummaryMapper.class);
 
   @Test
-  void whenMapThenOk() {
-    var metadataMap = Map.of("numberOfMerchants", "10");
+  void whenMapToDomainPojoThenOk() {
+    var metadataMap = Map.of("numMerchant", "10",
+        "totalAmountCanceledTrx", "1000");
 
     var dataSummary = mapper.getDataSummary(metadataMap);
 
@@ -27,7 +28,7 @@ class AggregatesDataSummaryMapperTest {
     assertThat(dataSummary)
         .extracting(AggregatesDataSummary::getSumAmountPositiveTransactions).isEqualTo(0L);
     assertThat(dataSummary)
-        .extracting(AggregatesDataSummary::getSumAmountNegativeTransactions).isEqualTo(0L);
+        .extracting(AggregatesDataSummary::getSumAmountNegativeTransactions).isEqualTo(1000L);
     assertThat(dataSummary)
         .extracting(AggregatesDataSummary::getMinAccountingDate).isNull();
     assertThat(dataSummary)

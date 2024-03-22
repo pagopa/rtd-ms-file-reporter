@@ -8,11 +8,13 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface AggregatesDataSummaryMapper {
 
-  @Mapping(source= "", target = "countNegativeTransactions")
-  @Mapping(source= "", target = "countPositiveTransactions")
-  @Mapping(source= "", target = "sumAmountNegativeTransactions")
-  @Mapping(source= "", target = "sumAmountPositiveTransactions")
-  @Mapping(source= "", target = "maxAccountingDate")
-  @Mapping(source= "", target = "minAccountingDate")
+  @Mapping(source = "numMerchant", target = "numberOfMerchants")
+  @Mapping(source = "numCanceledTrx", target = "countNegativeTransactions")
+  @Mapping(source = "numPositiveTrx", target = "countPositiveTransactions")
+  @Mapping(source = "totalAmountCanceledTrx", target = "sumAmountNegativeTransactions")
+  @Mapping(source = "totalAmountPositiveTrx", target = "sumAmountPositiveTransactions")
+  @Mapping(source = "maxAccountingDate", target = "maxAccountingDate")
+  @Mapping(source = "minAccountingDate", target = "minAccountingDate")
+  @Mapping(source = "checkSum", target = "sha256OriginFile")
   AggregatesDataSummary getDataSummary(Map<String, String> data);
 }
