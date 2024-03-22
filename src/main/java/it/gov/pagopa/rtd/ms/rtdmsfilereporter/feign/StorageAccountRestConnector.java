@@ -14,9 +14,7 @@ import org.apache.hc.core5.http.Header;
 import org.apache.hc.core5.http.io.HttpClientResponseHandler;
 import org.apache.hc.core5.http.message.BasicHeader;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Component;
-import org.springframework.web.server.ResponseStatusException;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -51,8 +49,7 @@ public class StorageAccountRestConnector {
   protected HttpClientResponseHandler<Map<String, String>> validateAndGetMetadata() {
     return response -> {
       if (200 != response.getCode()) {
-        throw new ResponseStatusException(HttpStatusCode.valueOf(response.getCode()),
-            response.getReasonPhrase());
+        throw new IOException(response.getReasonPhrase());
       }
 
       return Arrays.stream(response.getHeaders())

@@ -8,6 +8,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.feign.config.StorageProperties;
+import java.io.IOException;
 import java.util.Map;
 import lombok.SneakyThrows;
 import org.apache.hc.client5.http.classic.methods.HttpGet;
@@ -21,7 +22,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.web.server.ResponseStatusException;
 
 @ExtendWith(MockitoExtension.class)
 class StorageAccountRestConnectorTest {
@@ -53,6 +53,19 @@ class StorageAccountRestConnectorTest {
 
   @Test
   @SneakyThrows
+  void givenResponseWith404WhenClientExecuteThenThrowException() {
+    when(client.execute(any(ClassicHttpRequest.class), any(HttpClientResponseHandler.class)))
+        .thenThrow(new IOException("KO"));
+
+    assertThatThrownBy(() -> connector.getBlobMetadata("basePath", "name"))
+        .isInstanceOf(IOException.class)
+        .hasMessage("KO");
+
+    verify(client).execute(any(ClassicHttpRequest.class), any(HttpClientResponseHandler.class));
+  }
+
+  @Test
+  @SneakyThrows
   void givenResponseWith404WhenValidateThenThrowException() {
     var response = DefaultClassicHttpResponseFactory.INSTANCE.newHttpResponse(404, "not found");
     response.setHeaders(new BasicHeader("content-length", 10),
@@ -62,7 +75,7 @@ class StorageAccountRestConnectorTest {
     var lambda = connector.validateAndGetMetadata();
 
     assertThatThrownBy(() -> lambda.handleResponse(response))
-        .isInstanceOf(ResponseStatusException.class);
+        .isInstanceOf(IOException.class);
   }
 
   @Test
@@ -92,5 +105,4 @@ class StorageAccountRestConnectorTest {
 
     assertThat(metadata).isNotNull().isEmpty();
   }
-
 }
