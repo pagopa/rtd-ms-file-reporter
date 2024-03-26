@@ -27,8 +27,6 @@ public class StorageAccountService {
       return AggregatesDataSummary.createInvalidDataSummary();
     }
 
-    response.forEach((key, value) -> log.info("header {} with value {}", key, value));
-
     // catch any eventual cast exceptions
     AggregatesDataSummary dataSummary;
     try {

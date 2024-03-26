@@ -10,6 +10,7 @@ import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.model.AggregatesDataSummary
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.feign.AggregatesDataSummaryMapper;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.feign.StorageAccountRestConnector;
 import java.io.IOException;
+import java.time.format.DateTimeParseException;
 import java.util.Map;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
@@ -67,4 +68,22 @@ class StorageAccountServiceTest {
     assertThat(response.getNumberOfMerchants()).isEqualTo(-1);
     assertThat(response.getSumAmountPositiveTransactions()).isEqualTo(-1);
   }
+
+  @Test
+  @SneakyThrows
+  void givenBadFormatMetadataWhenGetMetadataThenReturnsInvalidDataSummary() {
+
+    when(connector.getBlobMetadata(any(), any()))
+        .thenReturn(Map.of("date", "2022-10-01", "key2", "value2"));
+    when(mapper.getDataSummary(any())).thenThrow(new DateTimeParseException("error", "2022-10-01", 10));
+
+    var response = service.getMetadata("container", "fileName");
+
+    verify(connector).getBlobMetadata(any(), any());
+    verify(mapper).getDataSummary(any());
+    assertThat(response).isNotNull();
+    assertThat(response.getNumberOfMerchants()).isEqualTo(-1);
+    assertThat(response.getSumAmountPositiveTransactions()).isEqualTo(-1);
+  }
+
 }
