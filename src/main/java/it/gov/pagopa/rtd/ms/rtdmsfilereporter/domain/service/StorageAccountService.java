@@ -4,6 +4,7 @@ import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.model.AggregatesDataSummary
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.feign.AggregatesDataSummaryMapper;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.feign.StorageAccountRestConnector;
 import java.io.IOException;
+import java.time.format.DateTimeParseException;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +29,15 @@ public class StorageAccountService {
 
     response.forEach((key, value) -> log.info("header {} with value {}", key, value));
 
-    return mapper.getDataSummary(response);
+    // catch any eventual cast exceptions
+    AggregatesDataSummary dataSummary;
+    try {
+      dataSummary = mapper.getDataSummary(response);
+    } catch (DateTimeParseException | NumberFormatException ex) {
+      log.error("Error in parsing some metadata! Error: {}", ex.getMessage());
+      return AggregatesDataSummary.createInvalidDataSummary();
+    }
+
+    return dataSummary;
   }
 }

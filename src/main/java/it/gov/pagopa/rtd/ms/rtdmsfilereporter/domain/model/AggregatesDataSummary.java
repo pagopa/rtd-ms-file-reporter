@@ -1,6 +1,6 @@
 package it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.model;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,8 +12,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class AggregatesDataSummary {
 
-  private LocalDateTime minAccountingDate;
-  private LocalDateTime maxAccountingDate;
+  private LocalDate minAccountingDate;
+  private LocalDate maxAccountingDate;
   private int numberOfMerchants;
   private long countNegativeTransactions;
   private long countPositiveTransactions;
