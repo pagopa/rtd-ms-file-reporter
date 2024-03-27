@@ -24,6 +24,14 @@ class EventToDomainMapperTest {
     );
   }
 
+  private static Stream<Arguments> provideFilePath() {
+    return Stream.of(
+        Arguments.of("fileWithoutPath.txt", "", "fileWithoutPath.txt"),
+        Arguments.of("storage/container/fileName.txt", "storage/container/", "fileName.txt"),
+        Arguments.of("/fileName.txt", "/", "fileName.txt")
+    );
+  }
+
   @ParameterizedTest
   @MethodSource("provideStatus")
   void mappingFromEventToDomainWorksCorrectly(EventStatusEnum eventStatus,
@@ -35,10 +43,21 @@ class EventToDomainMapperTest {
     var domainFile = mapper.eventToDomain(eventDto);
 
     assertThat(domainFile).isNotNull();
-    assertThat(domainFile.getName()).isEqualTo("filename");
     assertThat(domainFile.getStatus()).isEqualTo(domainStatus);
     assertThat(domainFile.getSize()).isEqualTo(100L);
     assertThat(domainFile.getTransmissionDate()).isEqualTo(currentDate);
   }
 
+  @ParameterizedTest
+  @MethodSource("provideFilePath")
+  void mappingPathToTwoDifferentFields(String filePath, String expectedPath, String expectedName) {
+    var eventDto = new ProjectorEventDto(filePath, "12345", 100L, null,
+        EventStatusEnum.RECEIVED);
+
+    var domainFile = mapper.eventToDomain(eventDto);
+
+    assertThat(domainFile).isNotNull();
+    assertThat(domainFile.getName()).isEqualTo(expectedName);
+    assertThat(domainFile.getPath()).isEqualTo(expectedPath);
+  }
 }

@@ -8,6 +8,7 @@ import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.FileReportCommandFactory;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.model.FileMetadata;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.model.FileReport;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.model.FileStatusEnum;
+import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.service.DecryptedEventCommand;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.service.FileReportService;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.event.model.EventStatusEnum;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.event.model.EventToDomainMapper;
@@ -18,19 +19,21 @@ import jakarta.validation.Validator;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.Optional;
-import lombok.SneakyThrows;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mapstruct.factory.Mappers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 
+@ExtendWith(MockitoExtension.class)
 class FileReportEventAdapterTest {
 
   @Mock
   private FileReportService service;
+  @Mock
+  private DecryptedEventCommand command;
   private final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
   private FileReportEventAdapter adapter;
   private AutoCloseable autoCloseable;
@@ -39,15 +42,9 @@ class FileReportEventAdapterTest {
 
   @BeforeEach
   void setUp() {
-    autoCloseable = MockitoAnnotations.openMocks(this);
-    adapter = new FileReportEventAdapter(service, validator, mapper, new FileReportCommandFactory());
+    adapter = new FileReportEventAdapter(service, validator, mapper,
+        new FileReportCommandFactory(command));
     adapter.setFileTimeToLiveInDays(fileTTL);
-  }
-
-  @SneakyThrows
-  @AfterEach
-  void tearDown() {
-    autoCloseable.close();
   }
 
   @Test
@@ -69,7 +66,8 @@ class FileReportEventAdapterTest {
     FileReport expectedReport = FileReport.createFileReport();
     expectedReport.setSenderCodes(Collections.singleton("12345"));
     expectedReport.addFileUploaded(
-        new FileMetadata("file", 100L, FileStatusEnum.RECEIVED_BY_PAGOPA, currentDate));
+        FileMetadata.builder().name("file").size(100L).status(FileStatusEnum.RECEIVED_BY_PAGOPA)
+            .transmissionDate(currentDate).build());
 
     adapter.consumeEvent(eventDto);
 
@@ -82,7 +80,8 @@ class FileReportEventAdapterTest {
     var currentDate = LocalDateTime.now();
     FileReport reportToBeRead = FileReport.createFileReport();
     reportToBeRead.addFileUploaded(
-        new FileMetadata("file", 100L, FileStatusEnum.RECEIVED_BY_PAGOPA, currentDate));
+        FileMetadata.builder().name("file").size(100L).status(FileStatusEnum.RECEIVED_BY_PAGOPA)
+            .transmissionDate(currentDate).build());
     Mockito.when(service.getFileReport(any())).thenReturn(Optional.of(reportToBeRead));
 
     // even if other fields are different, the only field that will be changed is "status"
@@ -90,7 +89,8 @@ class FileReportEventAdapterTest {
         EventStatusEnum.DECRYPTED);
     FileReport expectedReport = FileReport.createFileReport();
     expectedReport.addFileUploaded(
-        new FileMetadata("file", 100L, FileStatusEnum.VALIDATED_BY_PAGOPA, currentDate));
+        FileMetadata.builder().name("file").size(100L).status(FileStatusEnum.VALIDATED_BY_PAGOPA)
+            .transmissionDate(currentDate).build());
 
     adapter.consumeEvent(eventDto);
 
@@ -103,15 +103,16 @@ class FileReportEventAdapterTest {
     var currentDate = LocalDateTime.now();
     FileReport reportToBeRead = FileReport.createFileReport();
     reportToBeRead.addFileUploaded(
-        new FileMetadata("file", 100L, FileStatusEnum.RECEIVED_BY_PAGOPA,
-            currentDate.minusDays(fileTTL + 1)));
+        FileMetadata.builder().name("file").size(100L).status(FileStatusEnum.RECEIVED_BY_PAGOPA)
+            .transmissionDate(currentDate.minusDays(fileTTL + 1)).build());
     Mockito.when(service.getFileReport(any())).thenReturn(Optional.of(reportToBeRead));
 
     ProjectorEventDto eventDto = new ProjectorEventDto("newFile", "12345", 300L, currentDate,
         EventStatusEnum.RECEIVED);
     FileReport expectedReport = FileReport.createFileReport();
     expectedReport.addFileUploaded(
-        new FileMetadata("newFile", 300L, FileStatusEnum.RECEIVED_BY_PAGOPA, currentDate));
+        FileMetadata.builder().name("newFile").size(300L).status(FileStatusEnum.RECEIVED_BY_PAGOPA)
+            .transmissionDate(currentDate).build());
 
     adapter.consumeEvent(eventDto);
 
@@ -124,16 +125,20 @@ class FileReportEventAdapterTest {
     var currentDate = LocalDateTime.now();
     FileReport reportToBeRead = FileReport.createFileReport();
     reportToBeRead.addFileUploaded(
-        new FileMetadata("file", 100L, FileStatusEnum.RECEIVED_BY_PAGOPA, currentDate));
+        FileMetadata.builder().name("file").size(100L).status(FileStatusEnum.RECEIVED_BY_PAGOPA)
+            .transmissionDate(currentDate).build());
     Mockito.when(service.getFileReport(any())).thenReturn(Optional.of(reportToBeRead));
 
     ProjectorEventDto eventDto = new ProjectorEventDto("newFile", "12345", 300L, currentDate,
         EventStatusEnum.SENT_TO_ADE);
     FileReport expectedReport = FileReport.createFileReport();
     expectedReport.addFileUploaded(
-        new FileMetadata("newFile", 300L, FileStatusEnum.SENT_TO_AGENZIA_DELLE_ENTRATE, currentDate));
+        FileMetadata.builder().name("newFile").size(300L)
+            .status(FileStatusEnum.SENT_TO_AGENZIA_DELLE_ENTRATE)
+            .transmissionDate(currentDate).build());
     expectedReport.addFileUploaded(
-        new FileMetadata("file", 100L, FileStatusEnum.RECEIVED_BY_PAGOPA, currentDate));
+        FileMetadata.builder().name("file").size(100L).status(FileStatusEnum.RECEIVED_BY_PAGOPA)
+            .transmissionDate(currentDate).build());
 
     adapter.consumeEvent(eventDto);
 
@@ -185,7 +190,8 @@ class FileReportEventAdapterTest {
     FileReport expectedReport = FileReport.createFileReport();
     expectedReport.addSenderCode("12345");
     expectedReport.addFileUploaded(
-        new FileMetadata("file", 100L, FileStatusEnum.RECEIVED_BY_PAGOPA, currentDate));
+        FileMetadata.builder().name("file").size(100L).status(FileStatusEnum.RECEIVED_BY_PAGOPA)
+            .transmissionDate(currentDate).build());
 
     adapter.consumeEvent(eventDto);
 
