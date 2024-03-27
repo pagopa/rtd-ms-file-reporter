@@ -7,7 +7,6 @@ import static org.mockito.ArgumentMatchers.any;
 
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.model.AggregatesDataSummary;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.model.FileMetadata;
-import it.gov.pagopa.rtd.ms.rtdmsfilereporter.feign.StorageAccountClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,7 +19,7 @@ class DecryptedEventCommandTest {
 
   private DecryptedEventCommand command;
   @Mock
-  private StorageAccountClient client;
+  private StorageAccountService client;
 
   @BeforeEach
   void setUp() {
@@ -34,11 +33,11 @@ class DecryptedEventCommandTest {
     var metadata = FileMetadata.createNewFileMetadata("filename");
     var dataSummary = AggregatesDataSummary.builder().numberOfMerchants(10)
         .countPositiveTransactions(5).sumAmountPositiveTransactions(100).build();
-    Mockito.when(client.getMetadata(any())).thenReturn(dataSummary);
+    Mockito.when(client.getMetadata(any(), any())).thenReturn(dataSummary);
 
     command.accept(report, metadata);
 
-    Mockito.verify(client, Mockito.times(1)).getMetadata(any());
+    Mockito.verify(client, Mockito.times(1)).getMetadata(any(), any());
 
     // assert metadata has been enriched with stuff
     assertThat(metadata).isNotNull();
@@ -64,7 +63,7 @@ class DecryptedEventCommandTest {
   void whenDataSummaryIsNullThenThrowsSummaryIsEmpty() {
     var report = createFileReport(0, 1);
     var metadata = FileMetadata.createNewFileMetadata("filename");
-    Mockito.when(client.getMetadata(any())).thenReturn(null);
+    Mockito.when(client.getMetadata(any(), any())).thenReturn(null);
 
     command.accept(report, metadata);
 
