@@ -21,7 +21,6 @@ class FileMetadata {
  -transmissionDate: Date
  -dataSummary: AggregatesDataSummary
 
- +getCompletePath()
  +enrichWithSquaringData()
 }
 

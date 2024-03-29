@@ -36,10 +36,6 @@ public class FileMetadata implements Comparable<FileMetadata> {
 
   private AggregatesDataSummary aggregatesDataSummary;
 
-  public String getCompletePath() {
-    return this.path + this.name;
-  }
-
   public static FileMetadata createNewFileMetadata(String name) {
     return createNewFileMetadataWithStatus(name, null);
   }
