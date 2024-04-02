@@ -2,13 +2,13 @@ package it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.model;
 
 import static java.util.Collections.emptyList;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.TreeSet;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -85,5 +85,12 @@ public class FileReport {
     firstReport.getAckToDownload().addAll(
         Objects.requireNonNullElse(secondReport.getAckToDownload(), emptyList()));
     return firstReport;
+  }
+
+  public void addSquaringDataToFile(FileMetadata fileMetadata) {
+    this.filesUploaded.stream()
+        .filter(file -> file.getName().equals(fileMetadata.getName()))
+        .findAny()
+        .ifPresent(file -> file.setAggregatesDataSummary(fileMetadata.getAggregatesDataSummary()));
   }
 }

@@ -1,0 +1,40 @@
+@startuml
+class FileReport {
+ -senderCodes: String[]
+ -filesUploaded: FileMetadata[]
+ -ackToDownload: String[]
+ +addFileUploaded(file)
+ +removeFileUploaded(file)
+ +addSenderCode(senderCode)
+ +addAckToDownload(file)
+ +removeAckToDownload(file)
+ +addFileOrUpdateStatus(file)
+ +removeFilesOlderThan(days)
+ +addSquaringDataToFile(file)
+}
+
+class FileMetadata {
+ -name: String
+ -path: String
+ -size: Long
+ -status: Enum
+ -transmissionDate: Date
+ -dataSummary: AggregatesDataSummary
+
+ +enrichWithSquaringData()
+}
+
+class AggregatesDataSummary {
+  -minAccountingDate: Date
+  -maxAccountingDate: Date
+  -numberOfMerchants: Integer
+  -countNegativeTransactions: Long
+  -countPositiveTransactions: Long
+  -sumAmountNegativeTransactions: Long
+  -sumAmountPositiveTransactions: Long
+  -sha256OriginFile: String
+}
+
+FileReport "1" *-- "n" FileMetadata
+FileMetadata *-- AggregatesDataSummary
+@enduml

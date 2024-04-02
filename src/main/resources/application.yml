@@ -21,6 +21,10 @@ topics:
 report:
   fileTTL: ${FILE_TTL_IN_DAYS:15}
 
+storage-account-connector:
+  url: https://${STORAGE_ACCOUNT_HOST:httpbin.org}/storage
+  apiKey: ${INTERNAL_SERVICES_API_KEY:myApiKey}
+
 spring:
   config:
     activate:
@@ -30,6 +34,8 @@ spring:
       uri: ${MONGODB_CONNECTION_URI:mongodb://localhost:27017}
       database: ${MONGODB_NAME:rtd}
   cloud:
+    function:
+      definition: projectorConsumer
     stream:
       bindings:
         projectorConsumer-in-0: # name must match [handler name]-in-0

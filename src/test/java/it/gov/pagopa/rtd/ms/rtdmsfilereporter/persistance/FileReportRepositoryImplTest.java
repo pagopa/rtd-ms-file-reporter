@@ -99,7 +99,8 @@ class FileReportRepositoryImplTest {
     FileReportEntity fileReportEntity = new FileReportEntity();
     fileReportEntity.setSenderCode("12345");
     fileReportEntity.setFilesUploaded(
-        List.of(new FileMetadata("file", 200L, FileStatusEnum.RECEIVED_BY_PAGOPA, currentDate)));
+        List.of(FileMetadata.builder().name("file").size(200L).status(FileStatusEnum.RECEIVED_BY_PAGOPA)
+            .transmissionDate(currentDate).build()));
     fileReportEntity.setAckToDownload(List.of("ack1", "ack2"));
     fileReportEntity.setId("testID");
 
@@ -108,7 +109,8 @@ class FileReportRepositoryImplTest {
     assertThat(fileReport).isNotNull();
     assertThat(fileReport.getFilesUploaded()).isNotNull().hasSize(1)
         .containsExactly(
-            new FileMetadata("file", 200L, FileStatusEnum.RECEIVED_BY_PAGOPA, currentDate));
+            FileMetadata.builder().name("file").size(200L).status(FileStatusEnum.RECEIVED_BY_PAGOPA)
+                .transmissionDate(currentDate).build());
     assertThat(fileReport.getAckToDownload()).isNotNull().hasSize(2).contains("ack1", "ack2");
     assertThat(fileReport.getSenderCodes()).isNotNull().hasSize(1).contains("12345");
     assertThat(fileReport.getId()).isNotNull().isEqualTo("testID");
