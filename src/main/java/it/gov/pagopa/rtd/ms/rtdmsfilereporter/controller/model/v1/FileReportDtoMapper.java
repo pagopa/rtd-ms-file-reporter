@@ -1,4 +1,4 @@
-package it.gov.pagopa.rtd.ms.rtdmsfilereporter.controller.model;
+package it.gov.pagopa.rtd.ms.rtdmsfilereporter.controller.model.v1;
 
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.model.FileReport;
 import org.mapstruct.Mapper;

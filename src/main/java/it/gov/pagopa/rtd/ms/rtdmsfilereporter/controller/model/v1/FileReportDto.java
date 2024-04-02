@@ -1,4 +1,4 @@
-package it.gov.pagopa.rtd.ms.rtdmsfilereporter.controller.model;
+package it.gov.pagopa.rtd.ms.rtdmsfilereporter.controller.model.v1;
 
 import java.util.Collection;
 import lombok.Data;

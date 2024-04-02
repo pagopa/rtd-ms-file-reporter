@@ -56,6 +56,7 @@ microservice-chart:
     MONGODB_CONNECTION_URI: mongo-db-connection-uri
     KAFKA_RTD_PROJECTOR_SASL_JAAS_CONFIG: evh-rtd-file-register-projector-rtd-file-register-projector-consumer-policy-rtd
     APPLICATIONINSIGHTS_CONNECTION_STRING: appinsights-instrumentation-key
+    INTERNAL_SERVICES_API_KEY: rtd-internal-api-product-subscription-key
 
   envConfigMapExternals:
     rtd-file-register-projector-consumer:
@@ -64,3 +65,4 @@ microservice-chart:
 
     rtd-filereporter:
       OPENTELEMETRY_LOG_LEVEL: APPLICATIONINSIGHTS_INSTRUMENTATION_LOGGING_LEVEL
+      STORAGE_ACCOUNT_HOST: STORAGE_ACCOUNT_HOST
