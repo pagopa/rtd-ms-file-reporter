@@ -20,7 +20,7 @@ public class ConsumeEventControllerImpl implements ConsumeEventController {
 
   @Override
   public void consumeEvent(@RequestBody @Valid ProjectorEventDto eventData) {
-    log.info("Received event [{}]", eventData.getFilePath());
+    log.info("Received event from controller");
 
     adapter.consumeEvent(MessageBuilder.withPayload(eventData).build().getPayload());
   }
