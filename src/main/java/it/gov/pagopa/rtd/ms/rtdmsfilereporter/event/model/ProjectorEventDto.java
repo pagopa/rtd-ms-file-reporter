@@ -21,7 +21,7 @@ public class ProjectorEventDto {
 
   @NotNull
   @NotBlank
-  private String fileName;
+  private String filePath;
 
   @NotNull
   @NotBlank

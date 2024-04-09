@@ -65,7 +65,7 @@ class EventHandlerTest {
   void whenAMalformedEventIsSentThenRaiseException() {
     var currentDate = LocalDateTime.now();
     String eventDtoJson =
-        "{\"fileName\": \"prova\", \"sender\": \"Sender\", \"size\":100, \"receiveTimestamp\": \"" +
+        "{\"filePath\": \"prova\", \"sender\": \"Sender\", \"size\":100, \"receiveTimestamp\": \"" +
             currentDate + "\", \"status\": \"UNMAPPED\"}";
 
     assertThatThrownBy(() -> objectMapper.readValue(eventDtoJson, ProjectorEventDto.class))

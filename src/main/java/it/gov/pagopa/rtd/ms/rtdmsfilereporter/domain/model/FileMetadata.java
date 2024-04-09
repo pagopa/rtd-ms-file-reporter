@@ -1,9 +1,11 @@
 package it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.model;
 
-import java.time.LocalDateTime;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import java.time.LocalDateTime;
+import java.util.Objects;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -13,11 +15,15 @@ import org.springframework.format.annotation.DateTimeFormat;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
+@Builder
 public class FileMetadata implements Comparable<FileMetadata> {
 
   @NotNull
   @NotBlank
   private String name;
+
+  @NotNull
+  private String path;
 
   private Long size;
 
@@ -28,12 +34,14 @@ public class FileMetadata implements Comparable<FileMetadata> {
   @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
   private LocalDateTime transmissionDate;
 
+  private AggregatesDataSummary aggregatesDataSummary;
+
   public static FileMetadata createNewFileMetadata(String name) {
     return createNewFileMetadataWithStatus(name, null);
   }
 
   public static FileMetadata createNewFileMetadataWithStatus(String name, FileStatusEnum status) {
-    return new FileMetadata(name, null, status, LocalDateTime.now());
+    return new FileMetadata(name, null, null, status, LocalDateTime.now(), null);
   }
 
   /**
@@ -47,5 +55,15 @@ public class FileMetadata implements Comparable<FileMetadata> {
   public int compareTo(@NotNull FileMetadata o) {
     return o.getTransmissionDate().isEqual(this.transmissionDate) ? o.getName()
         .compareTo(this.name) : o.getTransmissionDate().compareTo(this.transmissionDate);
+  }
+
+  /**
+   * Enrich the file metadata with the summary of the content.
+   *
+   * @param dataSummary additional information about content of file
+   */
+  public void enrichWithSquaringData(AggregatesDataSummary dataSummary) {
+    dataSummary = Objects.requireNonNullElse(dataSummary, AggregatesDataSummary.builder().build());
+    this.aggregatesDataSummary = dataSummary;
   }
 }

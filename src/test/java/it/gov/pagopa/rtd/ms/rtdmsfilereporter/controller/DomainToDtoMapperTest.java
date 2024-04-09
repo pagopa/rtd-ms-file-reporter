@@ -2,8 +2,8 @@ package it.gov.pagopa.rtd.ms.rtdmsfilereporter.controller;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import it.gov.pagopa.rtd.ms.rtdmsfilereporter.controller.model.FileMetadataDto;
-import it.gov.pagopa.rtd.ms.rtdmsfilereporter.controller.model.FileReportDtoMapper;
+import it.gov.pagopa.rtd.ms.rtdmsfilereporter.controller.model.v1.FileMetadataDto;
+import it.gov.pagopa.rtd.ms.rtdmsfilereporter.controller.model.v1.FileReportDtoMapper;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.model.FileMetadata;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.model.FileReport;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.model.FileStatusEnum;
@@ -21,8 +21,9 @@ class DomainToDtoMapperTest {
   void mappingFromDomainToDtoWorksCorrectly() {
     var currentDate = LocalDateTime.now();
     FileReport fileReport = FileReport.createFileReport();
-    FileMetadata fileMetadata = new FileMetadata("file", 3000L, FileStatusEnum.RECEIVED_BY_PAGOPA,
-        currentDate);
+    FileMetadata fileMetadata = FileMetadata.builder().name("file").size(3000L)
+        .status(FileStatusEnum.RECEIVED_BY_PAGOPA)
+        .transmissionDate(currentDate).build();
     fileReport.addFileUploaded(fileMetadata);
     fileReport.addAckToDownload("ack1");
     fileReport.setSenderCodes(List.of("senderCode"));
