@@ -40,7 +40,7 @@ public class AppInsightConfig implements BeanPostProcessor {
   }
 
   @Bean
-  MongoClientSettingsBuilderCustomizer mongoOpenTelemetryBridge(
+  public MongoClientSettingsBuilderCustomizer mongoOpenTelemetryBridge(
       OpenTelemetry openTelemetry
   ) {
     return clientSettingsBuilder -> clientSettingsBuilder
