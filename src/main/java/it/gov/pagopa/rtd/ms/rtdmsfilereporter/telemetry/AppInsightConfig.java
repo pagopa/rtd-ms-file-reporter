@@ -2,9 +2,11 @@ package it.gov.pagopa.rtd.ms.rtdmsfilereporter.telemetry;
 
 import com.azure.monitor.opentelemetry.exporter.AzureMonitorExporterBuilder;
 import io.opentelemetry.api.OpenTelemetry;
+import io.opentelemetry.instrumentation.apachehttpclient.v5_2.ApacheHttpClient5Telemetry;
 import io.opentelemetry.instrumentation.mongo.v3_1.MongoTelemetry;
 import io.opentelemetry.sdk.autoconfigure.AutoConfiguredOpenTelemetrySdkBuilder;
 import io.opentelemetry.sdk.autoconfigure.spi.AutoConfigurationCustomizerProvider;
+import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -45,5 +47,11 @@ public class AppInsightConfig implements BeanPostProcessor {
   ) {
     return clientSettingsBuilder -> clientSettingsBuilder
         .addCommandListener(MongoTelemetry.builder(openTelemetry).build().newCommandListener());
+  }
+
+  @Bean
+  public HttpClientBuilder createBuilder(OpenTelemetry openTelemetry) {
+    return
+        ApacheHttpClient5Telemetry.builder(openTelemetry).build().newHttpClientBuilder();
   }
 }
