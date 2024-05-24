@@ -8,15 +8,17 @@ import org.springframework.context.annotation.Bean;
 
 public class ApacheHttpClient5Configuration {
 
+  private OpenTelemetry openTelemetry;
+
   // creates a new http client builder for constructing http clients with open telemetry instrumentation
   @Bean
-  public HttpClientBuilder createBuilder(OpenTelemetry openTelemetry) {
+  public HttpClientBuilder createBuilder() {
     return ApacheHttpClient5Telemetry.builder(openTelemetry).build().newHttpClientBuilder();
   }
 
   // creates a new http client with open telemetry instrumentation
   @Bean
-  public HttpClient newHttpClient(OpenTelemetry openTelemetry) {
+  public HttpClient newHttpClient() {
     return ApacheHttpClient5Telemetry.builder(openTelemetry).build().newHttpClient();
   }
 }
