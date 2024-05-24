@@ -48,10 +48,4 @@ public class AppInsightConfig implements BeanPostProcessor {
     return clientSettingsBuilder -> clientSettingsBuilder
         .addCommandListener(MongoTelemetry.builder(openTelemetry).build().newCommandListener());
   }
-
-  @Bean
-  public HttpClientBuilder createBuilder(OpenTelemetry openTelemetry) {
-    return
-        ApacheHttpClient5Telemetry.builder(openTelemetry).build().newHttpClientBuilder();
-  }
 }
