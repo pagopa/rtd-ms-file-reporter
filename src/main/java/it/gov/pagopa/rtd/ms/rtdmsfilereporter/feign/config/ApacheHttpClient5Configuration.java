@@ -5,7 +5,9 @@ import io.opentelemetry.instrumentation.apachehttpclient.v5_2.ApacheHttpClient5T
 import org.apache.hc.client5.http.classic.HttpClient;
 import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
+@Configuration
 public class ApacheHttpClient5Configuration {
 
   private OpenTelemetry openTelemetry;

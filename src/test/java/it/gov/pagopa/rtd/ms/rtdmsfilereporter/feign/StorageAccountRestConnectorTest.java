@@ -35,7 +35,7 @@ class StorageAccountRestConnectorTest {
 
   @BeforeEach
   void setUp() {
-    connector = new StorageAccountRestConnector(new StorageProperties("/url/", "key"));
+    connector = new StorageAccountRestConnector(new StorageProperties("/url/", "key"), client);
   }
 
   @Test

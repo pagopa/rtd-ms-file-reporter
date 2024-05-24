@@ -26,7 +26,7 @@ public class StorageAccountRestConnector {
   public static final String BLOB_METADATA_QUERY = "?comp=metadata";
   public static final String SUBSCRIPTION_KEY_HEADER = "Ocp-Apim-Subscription-Key";
   private final StorageProperties properties;
-  private final HttpClient httpClient = new ApacheHttpClient5Configuration().newHttpClient();
+  private final HttpClient httpClient;
 
   /**
    * Returns a map with header name and header value as key-value. The headers are filtered by the
