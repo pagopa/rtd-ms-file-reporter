@@ -21,8 +21,6 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class HttpClientConfig {
 
-  private OpenTelemetry openTelemetry;
-
   private ApacheHttpClient5Configuration apacheHttpClient5Configuration;
 
   @Bean
