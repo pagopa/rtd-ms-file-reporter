@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Configuration;
 @RequiredArgsConstructor
 public class ApacheHttpClient5Configuration {
 
-  private OpenTelemetry openTelemetry;
+  private final OpenTelemetry openTelemetry;
 
   // creates a new http client builder for constructing http clients with open telemetry instrumentation
   @Bean
