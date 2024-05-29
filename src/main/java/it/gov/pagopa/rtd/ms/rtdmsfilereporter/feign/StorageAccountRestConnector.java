@@ -8,8 +8,8 @@ import java.util.Map.Entry;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.hc.client5.http.classic.HttpClient;
 import org.apache.hc.client5.http.classic.methods.HttpGet;
-import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.core5.http.Header;
 import org.apache.hc.core5.http.io.HttpClientResponseHandler;
 import org.apache.hc.core5.http.message.BasicHeader;
@@ -25,7 +25,7 @@ public class StorageAccountRestConnector {
   public static final String BLOB_METADATA_QUERY = "?comp=metadata";
   public static final String SUBSCRIPTION_KEY_HEADER = "Ocp-Apim-Subscription-Key";
   private final StorageProperties properties;
-  private final CloseableHttpClient httpClient;
+  private final HttpClient httpClient;
 
   /**
    * Returns a map with header name and header value as key-value. The headers are filtered by the

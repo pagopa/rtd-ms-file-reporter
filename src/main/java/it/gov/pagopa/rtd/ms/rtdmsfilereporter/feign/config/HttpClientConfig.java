@@ -4,8 +4,9 @@ import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import javax.net.ssl.SSLContext;
-import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
-import org.apache.hc.client5.http.impl.classic.HttpClients;
+import lombok.RequiredArgsConstructor;
+import org.apache.hc.client5.http.classic.HttpClient;
+import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
 import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManager;
 import org.apache.hc.client5.http.socket.ConnectionSocketFactory;
 import org.apache.hc.client5.http.socket.PlainConnectionSocketFactory;
@@ -19,10 +20,13 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
+@RequiredArgsConstructor
 public class HttpClientConfig {
 
+  private final HttpClientBuilder httpClientBuilder;
+
   @Bean
-  CloseableHttpClient getHttpClient()
+  HttpClient getHttpClient()
       throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
     SSLContext sslContext = SSLContexts.custom()
         .loadTrustMaterial(TrustSelfSignedStrategy.INSTANCE)
@@ -37,6 +41,6 @@ public class HttpClientConfig {
     PoolingHttpClientConnectionManager connectionManager = new PoolingHttpClientConnectionManager(
         registry);
 
-    return HttpClients.custom().setConnectionManager(connectionManager).build();
+    return httpClientBuilder.setConnectionManager(connectionManager).build();
   }
 }
