@@ -1,6 +1,5 @@
 package it.gov.pagopa.rtd.ms.rtdmsfilereporter.feign;
 
-import it.gov.pagopa.rtd.ms.rtdmsfilereporter.feign.config.ApacheHttpClient5Configuration;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.feign.config.StorageProperties;
 import java.io.IOException;
 import java.util.Arrays;
