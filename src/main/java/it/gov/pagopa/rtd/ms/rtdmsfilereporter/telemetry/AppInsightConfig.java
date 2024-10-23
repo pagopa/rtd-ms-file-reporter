@@ -1,6 +1,6 @@
 package it.gov.pagopa.rtd.ms.rtdmsfilereporter.telemetry;
 
-import com.azure.monitor.opentelemetry.exporter.AzureMonitorExporterBuilder;
+import com.azure.monitor.opentelemetry.exporter.AzureMonitorExporter;
 import io.opentelemetry.api.OpenTelemetry;
 import io.opentelemetry.instrumentation.mongo.v3_1.MongoTelemetry;
 import io.opentelemetry.sdk.autoconfigure.AutoConfiguredOpenTelemetrySdkBuilder;
@@ -14,7 +14,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
 /**
- * Configuration for AppInsight OpenTelemetry. Connection string will automatically take from
+ * Configuration for AppInsight OpenTelemetry. Connection string will
+ * automatically take from
  * environment variable APPLICATIONINSIGHTS_CONNECTION_STRING
  */
 @Configuration
@@ -22,27 +23,19 @@ import org.springframework.context.annotation.Import;
 @Import(SpringCloudKafkaBinderInstrumentation.class)
 public class AppInsightConfig implements BeanPostProcessor {
 
-  private final AzureMonitorExporterBuilder azureMonitorExporterBuilder;
-
-  public AppInsightConfig(
-      @Value("${applicationinsights.connection-string}") String applicationInsights) {
-    this.azureMonitorExporterBuilder = new AzureMonitorExporterBuilder().connectionString(
-        applicationInsights);
-  }
-
   @Bean
-  public AutoConfigurationCustomizerProvider otelCustomizer() {
+  public AutoConfigurationCustomizerProvider otelCustomizer(
+      @Value("${applicationinsights.connection-string}") String applicationInsights) {
     return p -> {
       if (p instanceof AutoConfiguredOpenTelemetrySdkBuilder) {
-        this.azureMonitorExporterBuilder.install((AutoConfiguredOpenTelemetrySdkBuilder) p);
+        AzureMonitorExporter.customize(p, applicationInsights);
       }
     };
   }
 
   @Bean
   public MongoClientSettingsBuilderCustomizer mongoOpenTelemetryBridge(
-      OpenTelemetry openTelemetry
-  ) {
+      OpenTelemetry openTelemetry) {
     return clientSettingsBuilder -> clientSettingsBuilder
         .addCommandListener(MongoTelemetry.builder(openTelemetry).build().newCommandListener());
   }
