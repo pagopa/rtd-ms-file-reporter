@@ -23,6 +23,8 @@ otel:
       enabled: true # enable logback instrumentation
     micrometer:
       enabled: false
+    mongo:
+      enabled: true
 
 topics:
   rtd-projector:
