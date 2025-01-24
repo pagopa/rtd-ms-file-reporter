@@ -23,7 +23,7 @@ public class StorageAccountService {
     try {
       response = connector.getBlobMetadata(basePath, fileName);
     } catch (IOException e) {
-      log.warn("Failed to retrieve the file metadata from the storage! Error: {}", e.getMessage());
+      log.warn("Failed to retrieve the file metadata from the storage! Filename {} Error: {}", fileName, e.getMessage());
       return AggregatesDataSummary.createInvalidDataSummary();
     }
 
