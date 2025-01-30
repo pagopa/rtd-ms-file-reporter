@@ -21,4 +21,8 @@ public interface FileReportController {
   @GetMapping(value = "/sender-ade-ack", produces = MediaType.APPLICATION_JSON_VALUE)
   SenderAdeAckListDto getSenderAdeAckList(
       @NotNull @RequestParam(name = "senderCodes") Collection<String> senderCodes);
+
+  @GetMapping(value = "/getMetadata", produces = MediaType.APPLICATION_JSON_VALUE)
+  void getMetadata(
+          @NotNull @RequestParam(name = "path") String path);
 }

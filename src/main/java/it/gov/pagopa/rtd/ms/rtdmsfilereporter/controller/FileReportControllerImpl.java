@@ -5,7 +5,10 @@ import it.gov.pagopa.rtd.ms.rtdmsfilereporter.controller.model.v1.FileReportDto;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.controller.model.v1.FileReportDtoMapper;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.controller.model.v2.FileReportV2Dto;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.controller.model.v2.FileReportV2DtoMapper;
+import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.model.FileMetadata;
+import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.model.FileReport;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.service.FileReportService;
+import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.service.StorageAccountService;
 import jakarta.validation.constraints.NotNull;
 import java.util.Collection;
 import lombok.RequiredArgsConstructor;
@@ -39,5 +42,11 @@ public class FileReportControllerImpl implements FileReportController {
     return SenderAdeAckListDto.builder()
         .fileNameList(fileReportService.getAckToDownloadList(senderCodes))
         .build();
+  }
+
+  @Override
+  public void getMetadata(@NotNull String filePath) {
+    log.info("Enrich metadata on file : {}", filePath);
+    fileReportService.getMetadata(filePath);
   }
 }
