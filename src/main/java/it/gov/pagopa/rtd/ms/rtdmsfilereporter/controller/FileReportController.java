@@ -24,5 +24,5 @@ public interface FileReportController {
 
   @GetMapping(value = "/getMetadata", produces = MediaType.APPLICATION_JSON_VALUE)
   void getMetadata(
-          @NotNull @RequestParam(name = "path") String path);
+          @NotNull @RequestParam(name = "basePath") String path, @NotNull @RequestParam(name = "fileName") String fileName);
 }

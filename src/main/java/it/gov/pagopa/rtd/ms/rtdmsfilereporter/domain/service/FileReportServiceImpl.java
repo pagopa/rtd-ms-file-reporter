@@ -39,13 +39,9 @@ public class FileReportServiceImpl implements FileReportService {
   }
 
   @Override
-  public void getMetadata(String filePath){
-
-    String[] af = filePath.split("/");
-    String basePath = filePath.substring(0, filePath.indexOf("/AGGADE"));
-    String fileName = af[af.length-1];
-
+  public void getMetadata(String basePath, String fileName){
     FileMetadata fileMetadata = FileMetadata.createNewFileMetadata(fileName);
+    fileMetadata.setPath(basePath);
 
     var dataSummary = service.getMetadata(basePath,fileName);
 

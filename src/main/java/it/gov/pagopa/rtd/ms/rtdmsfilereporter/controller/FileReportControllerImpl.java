@@ -45,8 +45,8 @@ public class FileReportControllerImpl implements FileReportController {
   }
 
   @Override
-  public void getMetadata(@NotNull String filePath) {
-    log.info("Enrich metadata on file : {}", filePath);
-    fileReportService.getMetadata(filePath);
+  public void getMetadata(@NotNull String basePath, @NotNull String fileName) {
+    log.info("Enrich metadata on file : {}", fileName);
+    fileReportService.getMetadata(basePath, fileName);
   }
 }

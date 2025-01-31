@@ -33,7 +33,7 @@ class FileReportServiceImplTest {
   void setUp() {
     autoCloseable = MockitoAnnotations.openMocks(this);
 
-    fileReportService = new FileReportServiceImpl(fileReportRepository);
+    fileReportService = new FileReportServiceImpl(fileReportRepository, any());
   }
 
   @SneakyThrows

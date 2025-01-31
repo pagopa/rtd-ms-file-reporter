@@ -14,5 +14,5 @@ public interface FileReportService {
 
   void save(FileReport fileReport);
 
-  void getMetadata(String filePath);
+  void getMetadata(String basePath, String fileName);
 }
