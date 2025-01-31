@@ -43,7 +43,8 @@ public class FileReportControllerImpl implements FileReportController {
 
   @Override
   public void getMetadata(@NotNull String basePath, @NotNull String fileName) {
-    log.info("Enrich metadata on file : {}", fileName);
+    String sanitizedFileName = fileName.replace("\n", "").replace("\r", "");
+    log.info("Enrich metadata on file : {}", sanitizedFileName);
     fileReportService.getMetadata(basePath, fileName);
   }
 }

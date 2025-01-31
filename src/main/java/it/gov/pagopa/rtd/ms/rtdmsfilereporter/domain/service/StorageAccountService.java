@@ -23,8 +23,9 @@ public class StorageAccountService {
     try {
       response = connector.getBlobMetadata(basePath, fileName);
     } catch (IOException e) {
-
-      log.warn("Failed to retrieve the file metadata from the storage! Filename {} Error: {}", basePath.concat(fileName), e.getMessage());
+      String sanitizedBasePath = basePath.replaceAll("[^a-zA-Z0-9]", "");
+      String sanitizedFileName = fileName.replaceAll("[^a-zA-Z0-9]", "");
+      log.warn("Failed to retrieve the file metadata from the storage! Filename {} Error: {}", sanitizedBasePath.concat(sanitizedFileName), e.getMessage());
       return AggregatesDataSummary.createInvalidDataSummary();
     }
 
