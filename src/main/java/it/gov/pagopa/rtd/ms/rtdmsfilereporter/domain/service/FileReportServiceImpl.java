@@ -41,6 +41,7 @@ public class FileReportServiceImpl implements FileReportService {
   @Override
   public void getMetadata(String basePath, String fileName){
     FileMetadata fileMetadata = FileMetadata.createNewFileMetadata(fileName);
+    basePath = "/" + basePath + "/";
     fileMetadata.setPath(basePath);
 
     var dataSummary = service.getMetadata(basePath,fileName);

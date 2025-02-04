@@ -100,6 +100,11 @@ class FileReportServiceImplTest {
         .containsExactlyInAnyOrderElementsOf(expectedList);
   }
 
+  @Test
+  void whenGetMetadataThen(){
+
+  }
+
   Collection<FileReport> getReportList() {
     return Stream.of(createFileReport(3, 1), createFileReport(1, 2), createFileReport(2, 1))
         .collect(Collectors.toList());
