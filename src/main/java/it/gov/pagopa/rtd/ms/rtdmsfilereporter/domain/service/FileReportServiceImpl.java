@@ -8,8 +8,10 @@ import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.repository.FileReportReposi
 import java.util.Collection;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 
+@Slf4j
 @RequiredArgsConstructor
 public class FileReportServiceImpl implements FileReportService {
 
@@ -46,9 +48,10 @@ public class FileReportServiceImpl implements FileReportService {
 
     var dataSummary = service.getMetadata(basePath,fileName);
 
+    log.debug("DataSummay : " + dataSummary.toString());
     //get senderCode from filename
     String senderCode = fileName.split("\\.")[1];
-    var fileReport = getFileReport(senderCode)
+    FileReport fileReport = getFileReport(senderCode)
             .orElse(FileReport.createFileReportWithSenderCode(senderCode));
 
     // actions on domain object
@@ -56,5 +59,7 @@ public class FileReportServiceImpl implements FileReportService {
     // two operations are needed: update status + add aggregates summary
     fileReport.addFileOrUpdateStatusIfPresent(fileMetadata);
     fileReport.addSquaringDataToFile(fileMetadata);
+
+    save(fileReport);
   }
 }
