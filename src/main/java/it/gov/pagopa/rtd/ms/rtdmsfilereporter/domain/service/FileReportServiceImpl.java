@@ -9,6 +9,8 @@ import java.util.Collection;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 
 @Slf4j
@@ -41,20 +43,27 @@ public class FileReportServiceImpl implements FileReportService {
   }
 
   @Override
-  public void getMetadata(String basePath, String fileName){
-    FileMetadata fileMetadata = FileMetadata.createNewFileMetadata(fileName);
-    basePath = "/" + basePath + "/";
-    fileMetadata.setPath(basePath);
-
-    var dataSummary = service.getMetadata(basePath,fileName);
-
-    log.debug("DataSummay : " + dataSummary.toString());
+  public void getMetadata(String basePath, String fileName) {
     //get senderCode from filename
     String senderCode = fileName.split("\\.")[1];
     FileReport fileReport = getFileReport(senderCode)
             .orElse(FileReport.createFileReportWithSenderCode(senderCode));
 
-    // actions on domain object
+    Optional<FileMetadata> result = fileReport.getFilesUploaded().stream()
+            .filter(f -> f.getName().equals(fileName)).findFirst();
+
+    FileMetadata fileMetadata;
+    if (result.isEmpty())
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "FileMetadata not found in FileReport");
+    else
+     fileMetadata = result.get();
+
+    basePath = "/" + basePath + "/";
+    fileMetadata.setPath(basePath);
+    var dataSummary = service.getMetadata(basePath,fileName);
+
+    log.debug("DataSummary : {}", dataSummary.toString());
+
     fileMetadata.enrichWithSquaringData(dataSummary);
     // two operations are needed: update status + add aggregates summary
     fileReport.addFileOrUpdateStatusIfPresent(fileMetadata);
