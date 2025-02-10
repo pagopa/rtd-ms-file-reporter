@@ -162,4 +162,19 @@ class FileReportControllerImplTest {
         .andExpect(status().isBadRequest())
         .andReturn();
   }
+
+  @SneakyThrows
+  @Test
+  void givenValidFilename_whenGetMetadataEndpoint_thenStatusOkAndServiceCalled() {
+    String basePath = "myBasePath";
+    String fileName = "ADE.12345.TRNLOG.20230101.130000.001.01.csv";
+
+    mockMvc.perform(MockMvcRequestBuilders
+                    .get("/v1/report/metadata")
+                    .param("basePath", basePath)
+                    .param("fileName", fileName))
+            .andExpect(status().isOk());
+
+    Mockito.verify(fileReportService).getMetadata(basePath, fileName);
+  }
 }
