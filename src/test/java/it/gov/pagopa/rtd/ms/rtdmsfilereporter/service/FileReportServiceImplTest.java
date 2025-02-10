@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 
+import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.exception.FileMetadataNotFoundException;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.model.FileMetadata;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.model.FileReport;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.model.AggregatesDataSummary;
@@ -112,12 +113,7 @@ class FileReportServiceImplTest {
                 .hasSize(expectedList.size())
                 .containsExactlyInAnyOrderElementsOf(expectedList);
     }
-
-    @Test
-    void whenGetMetadataThenSaveFileReport() {
-
-    }
-
+    
     Collection<FileReport> getReportList() {
         return Stream.of(createFileReport(3, 1), createFileReport(1, 2), createFileReport(2, 1))
                 .collect(Collectors.toList());
@@ -132,12 +128,14 @@ class FileReportServiceImplTest {
 
         FileReport fileReport = FileReport.createFileReportWithSenderCode(senderCode);
 
-        var fileMetadata = new FileMetadata();
-        fileMetadata.setName(fileName);
-        fileMetadata.setTransmissionDate(java.time.LocalDateTime.now());
+       // var fileMetadata = new FileMetadata();
+
+        var fileMetadata = FileMetadata.createNewFileMetadata(fileName);
+//        fileMetadata.setName(fileName);
+//        fileMetadata.setTransmissionDate(java.time.LocalDateTime.now());
         fileReport.addFileOrUpdateStatusIfPresent(fileMetadata);
 
-        Mockito.when(fileReportRepository.getReportBySenderCode(senderCode))
+        Mockito.when(fileReportService.getFileReport(senderCode))
                 .thenReturn(Optional.of(fileReport));
 
         AggregatesDataSummary dataSummaryMock = AggregatesDataSummary.builder()
@@ -162,11 +160,11 @@ class FileReportServiceImplTest {
 
         FileReport fileReport = FileReport.createFileReportWithSenderCode(senderCode);
 
-        Mockito.when(fileReportRepository.getReportBySenderCode(senderCode))
+        Mockito.when(fileReportService.getFileReport(senderCode))
                 .thenReturn(Optional.of(fileReport));
 
         assertThatThrownBy(() -> fileReportService.getMetadata(basePath, fileName))
-                .isInstanceOf(ResponseStatusException.class)
+                .isInstanceOf(FileMetadataNotFoundException.class)
                 .hasMessageContaining("FileMetadata not found in FileReport");
 
         Mockito.verify(fileReportRepository, Mockito.never()).save(any());

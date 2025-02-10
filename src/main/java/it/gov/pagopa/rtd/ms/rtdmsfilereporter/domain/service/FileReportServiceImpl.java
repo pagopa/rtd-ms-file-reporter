@@ -59,8 +59,8 @@ public class FileReportServiceImpl implements FileReportService {
 
         FileMetadata fileMetadata;
         if (result.isEmpty()) {
-            log.warn("FileMetadata not found for file: {}");
-            throw new FileMetadataNotFoundException("FileMetadata not found in FileReport for file: ");
+            log.warn("FileMetadata not found in FileReport");
+            throw new FileMetadataNotFoundException("FileMetadata not found in FileReport");
         } else
             fileMetadata = result.get();
 
