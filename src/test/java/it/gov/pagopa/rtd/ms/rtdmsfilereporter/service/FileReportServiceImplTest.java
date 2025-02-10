@@ -113,7 +113,7 @@ class FileReportServiceImplTest {
                 .hasSize(expectedList.size())
                 .containsExactlyInAnyOrderElementsOf(expectedList);
     }
-    
+
     Collection<FileReport> getReportList() {
         return Stream.of(createFileReport(3, 1), createFileReport(1, 2), createFileReport(2, 1))
                 .collect(Collectors.toList());
@@ -128,11 +128,8 @@ class FileReportServiceImplTest {
 
         FileReport fileReport = FileReport.createFileReportWithSenderCode(senderCode);
 
-       // var fileMetadata = new FileMetadata();
 
         var fileMetadata = FileMetadata.createNewFileMetadata(fileName);
-//        fileMetadata.setName(fileName);
-//        fileMetadata.setTransmissionDate(java.time.LocalDateTime.now());
         fileReport.addFileOrUpdateStatusIfPresent(fileMetadata);
 
         Mockito.when(fileReportService.getFileReport(senderCode))
@@ -165,7 +162,9 @@ class FileReportServiceImplTest {
 
         assertThatThrownBy(() -> fileReportService.getMetadata(basePath, fileName))
                 .isInstanceOf(FileMetadataNotFoundException.class)
-                .hasMessageContaining("FileMetadata not found in FileReport");
+                .hasMessageContaining("not found in latest")
+                .hasMessageContaining(fileName)
+                .hasMessageContaining(senderCode);
 
         Mockito.verify(fileReportRepository, Mockito.never()).save(any());
     }
