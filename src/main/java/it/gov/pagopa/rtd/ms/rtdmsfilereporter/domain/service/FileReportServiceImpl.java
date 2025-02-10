@@ -16,6 +16,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.beans.factory.annotation.Value;
+
 
 @Slf4j
 @RequiredArgsConstructor
@@ -23,6 +25,9 @@ public class FileReportServiceImpl implements FileReportService {
 
     private final FileReportRepository fileReportRepository;
     private final StorageAccountService service;
+
+    @Value("${report.fileTTL}")
+    private Integer fileTimeToLiveInDays;
 
     @Override
     public FileReport getAggregateFileReport(Collection<String> senderCodes) {
@@ -58,8 +63,11 @@ public class FileReportServiceImpl implements FileReportService {
 
         FileMetadata fileMetadata;
         if (result.isEmpty()) {
-            log.warn("FileMetadata not found in FileReport");
-            throw new FileMetadataNotFoundException("FileMetadata not found in FileReport");
+            String errorMsg = String.format(
+                    "File %s not found in latest %d days report of sender %s",
+                    fileName, fileTimeToLiveInDays, senderCode
+            );
+            throw new FileMetadataNotFoundException(errorMsg);
         } else
             fileMetadata = result.get();
 

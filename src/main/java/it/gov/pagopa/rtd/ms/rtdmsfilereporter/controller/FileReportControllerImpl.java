@@ -46,7 +46,6 @@ public class FileReportControllerImpl implements FileReportController {
     }
 
     @Override
-    @GetMapping("/v1/report/metadata")
     public void getMetadata(@RequestParam @NotNull String basePath,
                             @RequestParam @NotNull String fileName) {
         String sanitizedFileName = fileName.replace("\n", "").replace("\r", "");
