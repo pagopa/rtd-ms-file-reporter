@@ -1,12 +1,17 @@
 package it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.service;
 
+import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.exception.FileMetadataNotFoundException;
+
+
 import static it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.model.FileReportAggregator.aggregateFileReports;
 
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.model.FileMetadata;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.model.FileReport;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.repository.FileReportRepository;
+
 import java.util.Collection;
 import java.util.Optional;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -17,58 +22,59 @@ import org.springframework.web.server.ResponseStatusException;
 @RequiredArgsConstructor
 public class FileReportServiceImpl implements FileReportService {
 
-  private final FileReportRepository fileReportRepository;
-  private final StorageAccountService service;
+    private final FileReportRepository fileReportRepository;
+    private final StorageAccountService service;
 
-  @Override
-  public FileReport getAggregateFileReport(Collection<String> senderCodes) {
-    return fileReportRepository.getReportsBySenderCodes(senderCodes)
-        .stream()
-        .collect(aggregateFileReports());
-  }
+    @Override
+    public FileReport getAggregateFileReport(Collection<String> senderCodes) {
+        return fileReportRepository.getReportsBySenderCodes(senderCodes)
+                .stream()
+                .collect(aggregateFileReports());
+    }
 
-  @Override
-  public Optional<FileReport> getFileReport(String senderCode) {
-    return fileReportRepository.getReportBySenderCode(senderCode);
-  }
+    @Override
+    public Optional<FileReport> getFileReport(String senderCode) {
+        return fileReportRepository.getReportBySenderCode(senderCode);
+    }
 
-  @Override
-  public Collection<String> getAckToDownloadList(Collection<String> senderCodes) {
-    return getAggregateFileReport(senderCodes).getAckToDownload();
-  }
+    @Override
+    public Collection<String> getAckToDownloadList(Collection<String> senderCodes) {
+        return getAggregateFileReport(senderCodes).getAckToDownload();
+    }
 
-  @Override
-  public void save(FileReport fileReport) {
-    fileReportRepository.save(fileReport);
-  }
+    @Override
+    public void save(FileReport fileReport) {
+        fileReportRepository.save(fileReport);
+    }
 
-  @Override
-  public void getMetadata(String basePath, String fileName) {
-    //get senderCode from filename
-    String senderCode = fileName.split("\\.")[1];
-    FileReport fileReport = getFileReport(senderCode)
-            .orElse(FileReport.createFileReportWithSenderCode(senderCode));
+    @Override
+    public void getMetadata(String basePath, String fileName) {
+        //get senderCode from filename
+        String senderCode = fileName.split("\\.")[1];
+        FileReport fileReport = getFileReport(senderCode)
+                .orElse(FileReport.createFileReportWithSenderCode(senderCode));
 
-    Optional<FileMetadata> result = fileReport.getFilesUploaded().stream()
-            .filter(f -> f.getName().equals(fileName)).findFirst();
+        Optional<FileMetadata> result = fileReport.getFilesUploaded().stream()
+                .filter(f -> f.getName().equals(fileName)).findFirst();
 
-    FileMetadata fileMetadata;
-    if (result.isEmpty())
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "FileMetadata not found in FileReport");
-    else
-     fileMetadata = result.get();
+        FileMetadata fileMetadata;
+        if (result.isEmpty()) {
+            log.warn("FileMetadata not found for file: {}");
+            throw new FileMetadataNotFoundException("FileMetadata not found in FileReport for file: ");
+        } else
+            fileMetadata = result.get();
 
-    basePath = "/" + basePath + "/";
-    fileMetadata.setPath(basePath);
-    var dataSummary = service.getMetadata(basePath,fileName);
+        basePath = "/" + basePath + "/";
+        fileMetadata.setPath(basePath);
+        var dataSummary = service.getMetadata(basePath, fileName);
 
-    log.debug("DataSummary : {}", dataSummary.toString());
+        log.debug("DataSummary : {}", dataSummary.toString());
 
-    fileMetadata.enrichWithSquaringData(dataSummary);
-    // two operations are needed: update status + add aggregates summary
-    fileReport.addFileOrUpdateStatusIfPresent(fileMetadata);
-    fileReport.addSquaringDataToFile(fileMetadata);
+        fileMetadata.enrichWithSquaringData(dataSummary);
+        // two operations are needed: update status + add aggregates summary
+        fileReport.addFileOrUpdateStatusIfPresent(fileMetadata);
+        fileReport.addSquaringDataToFile(fileMetadata);
 
-    save(fileReport);
-  }
+        save(fileReport);
+    }
 }
