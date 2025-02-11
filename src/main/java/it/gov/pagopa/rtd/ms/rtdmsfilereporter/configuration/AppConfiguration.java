@@ -6,6 +6,7 @@ import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.service.DecryptedEventComma
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.service.FileReportService;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.service.FileReportServiceImpl;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.service.StorageAccountService;
+import it.gov.pagopa.rtd.ms.rtdmsfilereporter.feign.config.ReportFileTTL;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.persistance.FileReportDao;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.persistance.FileReportRepositoryImpl;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.persistance.model.FileReportEntityMapper;
@@ -20,8 +21,8 @@ import org.springframework.context.annotation.Configuration;
 public class AppConfiguration {
 
   @Bean
-  public FileReportService getFileReportService(FileReportRepository repository, StorageAccountService service) {
-    return new FileReportServiceImpl(repository, service);
+  public FileReportService getFileReportService(FileReportRepository repository, StorageAccountService service, ReportFileTTL report) {
+    return new FileReportServiceImpl(repository, service, report);
   }
 
   @Bean
