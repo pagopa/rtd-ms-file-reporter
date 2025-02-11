@@ -2,7 +2,6 @@ package it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.service;
 
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.exception.FileMetadataNotFoundException;
 
-
 import static it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.model.FileReportAggregator.aggregateFileReports;
 
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.model.FileMetadata;
@@ -21,6 +20,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 @Slf4j
 @RequiredArgsConstructor
