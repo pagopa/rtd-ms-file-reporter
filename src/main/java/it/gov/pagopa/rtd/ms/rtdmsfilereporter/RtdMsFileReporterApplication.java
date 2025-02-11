@@ -1,5 +1,6 @@
 package it.gov.pagopa.rtd.ms.rtdmsfilereporter;
 
+import it.gov.pagopa.rtd.ms.rtdmsfilereporter.feign.config.ReportFileTTL;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.feign.config.StorageProperties;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
