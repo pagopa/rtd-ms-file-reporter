@@ -8,6 +8,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public record ReportFileTTL
         (@NotNull
         @NotBlank
-        String fileTTL) {
-
+        Integer fileTTL) {
 }
+

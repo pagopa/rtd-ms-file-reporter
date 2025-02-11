@@ -10,6 +10,7 @@ import it.gov.pagopa.rtd.ms.rtdmsfilereporter.feign.config.ReportFileTTL;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.persistance.FileReportDao;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.persistance.FileReportRepositoryImpl;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.persistance.model.FileReportEntityMapper;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -18,6 +19,7 @@ import org.springframework.context.annotation.Configuration;
  * the domain are not bounded to the specific framework.
  */
 @Configuration
+@EnableConfigurationProperties(ReportFileTTL.class)
 public class AppConfiguration {
 
   @Bean

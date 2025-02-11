@@ -22,6 +22,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import it.gov.pagopa.rtd.ms.rtdmsfilereporter.feign.config.ReportFileTTL;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,7 +30,10 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.springframework.web.server.ResponseStatusException;
+import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 
 class FileReportServiceImplTest {
 
@@ -39,6 +43,8 @@ class FileReportServiceImplTest {
     @Mock
     StorageAccountService storageAccountService;
 
+    private final ReportFileTTL reportFileTTL = new ReportFileTTL(15);
+
     FileReportService fileReportService;
     AutoCloseable autoCloseable;
 
@@ -47,7 +53,7 @@ class FileReportServiceImplTest {
     void setUp() {
         autoCloseable = MockitoAnnotations.openMocks(this);
 
-        fileReportService = new FileReportServiceImpl(fileReportRepository, storageAccountService);
+        fileReportService = new FileReportServiceImpl(fileReportRepository, storageAccountService, reportFileTTL);
     }
 
     @SneakyThrows
