@@ -12,27 +12,16 @@ import java.util.Collection;
 import java.util.Optional;
 
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.feign.config.ReportFileTTL;
-import it.gov.pagopa.rtd.ms.rtdmsfilereporter.feign.config.StorageProperties;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 
 @Slf4j
 @RequiredArgsConstructor
-//@EnableConfigurationProperties(ReportFileTTL.class)
 public class FileReportServiceImpl implements FileReportService {
 
     private final FileReportRepository fileReportRepository;
     private final StorageAccountService service;
     private final ReportFileTTL report;
-
-//    @Value("${report.fileTTL}")
-//    private Integer fileTimeToLiveInDays;
 
     @Override
     public FileReport getAggregateFileReport(Collection<String> senderCodes) {
