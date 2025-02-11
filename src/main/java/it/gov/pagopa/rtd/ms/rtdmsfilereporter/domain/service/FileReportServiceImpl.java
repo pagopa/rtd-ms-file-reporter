@@ -2,7 +2,6 @@ package it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.service;
 
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.exception.FileMetadataNotFoundException;
 
-
 import static it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.model.FileReportAggregator.aggregateFileReports;
 
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.model.FileMetadata;
@@ -17,8 +16,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
-
+@Component
 @Slf4j
 @RequiredArgsConstructor
 public class FileReportServiceImpl implements FileReportService {
