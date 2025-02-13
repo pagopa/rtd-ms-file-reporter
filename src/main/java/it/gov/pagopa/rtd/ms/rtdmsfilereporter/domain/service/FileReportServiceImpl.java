@@ -45,37 +45,38 @@ public class FileReportServiceImpl implements FileReportService {
         fileReportRepository.save(fileReport);
     }
 
-    @Override
-    public void getMetadata(String basePath, String fileName) {
-        //get senderCode from filename
-        String senderCode = fileName.split("\\.")[1];
-        FileReport fileReport = getFileReport(senderCode)
-                .orElse(FileReport.createFileReportWithSenderCode(senderCode));
+  @Override
+  public void getMetadata(String basePath, String fileName) {
+    // get senderCode from filename
+    String senderCode = fileName.split("\\.")[1];
+    FileReport fileReport =
+        getFileReport(senderCode).orElse(FileReport.createFileReportWithSenderCode(senderCode));
 
-        Optional<FileMetadata> result = fileReport.getFilesUploaded().stream()
-                .filter(f -> f.getName().equals(fileName)).findFirst();
+    Optional<FileMetadata> result =
+        fileReport.getFilesUploaded().stream()
+            .filter(f -> f.getName().equals(fileName))
+            .findFirst();
 
-        FileMetadata fileMetadata;
-        if (result.isEmpty()) {
-            String errorMsg = String.format(
-                    "File %s not found in latest %d days report of sender %s",
-                    fileName, report.fileTTL(), senderCode
-            );
-            throw new FileMetadataNotFoundException(errorMsg);
-        } else
-            fileMetadata = result.get();
+    FileMetadata fileMetadata;
+    if (result.isEmpty()) {
+      String errorMsg =
+          String.format(
+              "File %s not found in latest %d days report of sender %s",
+              fileName, report.fileTTL(), senderCode);
+      throw new FileMetadataNotFoundException(errorMsg);
+    } else fileMetadata = result.get();
 
-        basePath = "/" + basePath + "/";
-        fileMetadata.setPath(basePath);
-        var dataSummary = service.getMetadata(basePath, fileName);
+    basePath = "/" + basePath + "/";
+    fileMetadata.setPath(basePath);
+    var dataSummary = service.getMetadata(basePath, fileName);
 
-        log.debug("DataSummary : {}", dataSummary.toString());
+    log.debug("DataSummary : {}", dataSummary.toString());
 
-        fileMetadata.enrichWithSquaringData(dataSummary);
-        // two operations are needed: update status + add aggregates summary
-        fileReport.addFileOrUpdateStatusIfPresent(fileMetadata);
-        fileReport.addSquaringDataToFile(fileMetadata);
+    fileMetadata.enrichWithSquaringData(dataSummary);
+    // two operations are needed: update status + add aggregates summary
+    fileReport.addFileOrUpdateStatusIfPresent(fileMetadata);
+    fileReport.addSquaringDataToFile(fileMetadata);
 
-        save(fileReport);
-    }
+    save(fileReport);
+  }
 }

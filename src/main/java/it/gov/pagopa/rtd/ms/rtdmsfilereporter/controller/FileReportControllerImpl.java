@@ -12,8 +12,6 @@ import java.util.Collection;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -45,13 +43,10 @@ public class FileReportControllerImpl implements FileReportController {
                 .build();
     }
 
-    @Override
-    public void getMetadata(@RequestParam @NotNull String basePath,
-                            @RequestParam @NotNull String fileName) {
-        String sanitizedFileName = fileName.replace("\n", "").replace("\r", "");
-        log.info("Enrich metadata on file : {}", sanitizedFileName);
-        fileReportService.getMetadata(basePath, fileName);
-    }
-
-
+  @Override
+  public void getMetadata(String basePath, String fileName) {
+    String sanitizedFileName = fileName.replace("\n", "").replace("\r", "");
+    log.info("Enrich metadata on file : {}", sanitizedFileName);
+    fileReportService.getMetadata(basePath, fileName);
+  }
 }
