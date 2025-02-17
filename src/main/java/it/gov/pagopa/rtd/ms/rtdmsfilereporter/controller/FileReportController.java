@@ -5,6 +5,7 @@ import it.gov.pagopa.rtd.ms.rtdmsfilereporter.controller.model.v1.FileReportDto;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.controller.model.v2.FileReportV2Dto;
 import jakarta.validation.constraints.NotNull;
 
+import java.net.MalformedURLException;
 import java.util.Collection;
 
 import org.springframework.http.MediaType;
@@ -27,5 +28,5 @@ public interface FileReportController {
   @GetMapping(value = "/report/metadata", produces = MediaType.APPLICATION_JSON_VALUE)
   void getMetadata(
       @NotNull @RequestParam(name = "basePath") String path,
-      @NotNull @RequestParam(name = "fileName") String fileName);
+      @NotNull @RequestParam(name = "fileName") String fileName) throws MalformedURLException;
 }

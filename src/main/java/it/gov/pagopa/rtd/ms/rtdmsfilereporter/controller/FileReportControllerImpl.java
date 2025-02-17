@@ -8,7 +8,9 @@ import it.gov.pagopa.rtd.ms.rtdmsfilereporter.controller.model.v2.FileReportV2Dt
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.service.FileReportService;
 import jakarta.validation.constraints.NotNull;
 
+import java.net.MalformedURLException;
 import java.util.Collection;
+import java.util.regex.Pattern;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -44,9 +46,22 @@ public class FileReportControllerImpl implements FileReportController {
     }
 
   @Override
-  public void getMetadata(String basePath, String fileName) {
+  public void getMetadata(String basePath, String fileName) throws MalformedURLException {
     String sanitizedFileName = fileName.replace("\n", "").replace("\r", "");
-    log.info("Enrich metadata on file : {}", sanitizedFileName);
-    fileReportService.getMetadata(basePath, fileName);
+    if (validateFileName(sanitizedFileName)) {
+      log.info("Enrich metadata on file : {}", sanitizedFileName);
+      fileReportService.getMetadata(basePath, fileName);
+    } else {
+        throw new MalformedURLException("Filename " + fileName + " malformed");
+    }
+  }
+
+  private boolean validateFileName(String filename) {
+    // Wellformade filename
+    // ADE.[Sender Code].TRNLOG.[yyyymmdd].[hhmmss].[acquirer internal id].[chunk number].csv
+    String app = filename.substring(0, filename.indexOf(".csv.pgp"));
+    Pattern p = Pattern.compile("ADE.\\d{5}.TRNLOG.\\d{8}.\\d{6}.\\d{3}");
+    Pattern p2 = Pattern.compile("ADE.\\d{5}.TRNLOG.\\d{8}.\\d{6}.\\d{3}.\\d*");
+    return (p.matcher(app).matches() || p2.matcher(app).matches());
   }
 }
