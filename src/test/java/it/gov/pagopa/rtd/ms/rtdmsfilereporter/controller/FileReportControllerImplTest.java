@@ -167,10 +167,10 @@ class FileReportControllerImplTest {
   @Test
   void givenValidFilename_whenGetMetadataEndpoint_thenStatusOkAndServiceCalled() {
     String basePath = "myBasePath";
-    String fileName = "ADE.12345.TRNLOG.20230101.130000.001.01.csv";
+    String fileName = "ADE.12345.TRNLOG.20230101.130000.001.01.csv.pgp";
 
     mockMvc.perform(MockMvcRequestBuilders
-                    .get("/v1/report/metadata")
+                    .get("/report/metadata")
                     .param("basePath", basePath)
                     .param("fileName", fileName))
             .andExpect(status().isOk());

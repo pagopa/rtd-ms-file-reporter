@@ -132,8 +132,8 @@ class FileReportServiceImplTest {
         String fileName = "ADE.12345.TRNLOG.20230101.130000.001.01.csv";
         String senderCode = "12345";
 
-        FileReport fileReport = FileReport.createFileReportWithSenderCode(senderCode);
 
+        FileReport fileReport = FileReport.createFileReportWithSenderCode(senderCode);
 
         var fileMetadata = FileMetadata.createNewFileMetadata(fileName);
         fileReport.addFileOrUpdateStatusIfPresent(fileMetadata);
