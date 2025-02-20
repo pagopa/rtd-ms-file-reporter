@@ -19,31 +19,30 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class FileReportServiceImpl implements FileReportService {
 
-    private final FileReportRepository fileReportRepository;
-    private final StorageAccountService service;
-    private final ReportFileTTL report;
+  private final FileReportRepository fileReportRepository;
+  private final StorageAccountService service;
+  private final ReportFileTTL report;
 
-    @Override
-    public FileReport getAggregateFileReport(Collection<String> senderCodes) {
-        return fileReportRepository.getReportsBySenderCodes(senderCodes)
-                .stream()
-                .collect(aggregateFileReports());
-    }
+  @Override
+  public FileReport getAggregateFileReport(Collection<String> senderCodes) {
+    return fileReportRepository.getReportsBySenderCodes(senderCodes).stream()
+        .collect(aggregateFileReports());
+  }
 
-    @Override
-    public Optional<FileReport> getFileReport(String senderCode) {
-        return fileReportRepository.getReportBySenderCode(senderCode);
-    }
+  @Override
+  public Optional<FileReport> getFileReport(String senderCode) {
+    return fileReportRepository.getReportBySenderCode(senderCode);
+  }
 
-    @Override
-    public Collection<String> getAckToDownloadList(Collection<String> senderCodes) {
-        return getAggregateFileReport(senderCodes).getAckToDownload();
-    }
+  @Override
+  public Collection<String> getAckToDownloadList(Collection<String> senderCodes) {
+    return getAggregateFileReport(senderCodes).getAckToDownload();
+  }
 
-    @Override
-    public void save(FileReport fileReport) {
-        fileReportRepository.save(fileReport);
-    }
+  @Override
+  public void save(FileReport fileReport) {
+    fileReportRepository.save(fileReport);
+  }
 
   @Override
   public void getMetadata(String basePath, String fileName) {

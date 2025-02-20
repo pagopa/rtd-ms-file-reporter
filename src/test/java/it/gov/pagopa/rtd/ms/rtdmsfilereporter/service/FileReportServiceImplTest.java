@@ -30,149 +30,139 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import static org.mockito.Mockito.lenient;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
 
 class FileReportServiceImplTest {
 
-    @Mock
-    FileReportRepository fileReportRepository;
+  @Mock FileReportRepository fileReportRepository;
 
-    @Mock
-    StorageAccountService storageAccountService;
+  @Mock StorageAccountService storageAccountService;
 
-    private final ReportFileTTL reportFileTTL = new ReportFileTTL(15);
+  private final ReportFileTTL reportFileTTL = new ReportFileTTL(15);
 
-    FileReportService fileReportService;
-    AutoCloseable autoCloseable;
+  FileReportService fileReportService;
+  AutoCloseable autoCloseable;
 
+  @BeforeEach
+  void setUp() {
+    autoCloseable = MockitoAnnotations.openMocks(this);
 
-    @BeforeEach
-    void setUp() {
-        autoCloseable = MockitoAnnotations.openMocks(this);
+    fileReportService =
+        new FileReportServiceImpl(fileReportRepository, storageAccountService, reportFileTTL);
+  }
 
-        fileReportService = new FileReportServiceImpl(fileReportRepository, storageAccountService, reportFileTTL);
-    }
+  @SneakyThrows
+  @AfterEach
+  void tearDown() {
+    autoCloseable.close();
+  }
 
-    @SneakyThrows
-    @AfterEach
-    void tearDown() {
-        autoCloseable.close();
-    }
+  @Test
+  void whenGetFileReportForManySenderCodesThenMergeTheReportsCorrectly() {
+    Mockito.when(fileReportRepository.getReportsBySenderCodes(any())).thenReturn(getReportList());
 
-    @Test
-    void whenGetFileReportForManySenderCodesThenMergeTheReportsCorrectly() {
-        Mockito.when(fileReportRepository.getReportsBySenderCodes(any())).thenReturn(getReportList());
+    FileReport filereport =
+        fileReportService.getAggregateFileReport(Collections.singleton("12345"));
 
-        FileReport filereport = fileReportService.getAggregateFileReport(
-                Collections.singleton("12345"));
+    assertThat(filereport).isNotNull();
+    assertThat(filereport.getFilesUploaded()).isNotNull().hasSize(4);
+    assertThat(filereport.getAckToDownload()).isNotNull().hasSize(6);
+  }
 
-        assertThat(filereport).isNotNull();
-        assertThat(filereport.getFilesUploaded()).isNotNull().hasSize(4);
-        assertThat(filereport.getAckToDownload()).isNotNull().hasSize(6);
-    }
+  @Test
+  void givenEmptyListWhenGetFileReportForManySenderCodesThenReturnsEmptyReport() {
+    Mockito.when(fileReportRepository.getReportsBySenderCodes(any()))
+        .thenReturn(Collections.emptyList());
 
-    @Test
-    void givenEmptyListWhenGetFileReportForManySenderCodesThenReturnsEmptyReport() {
-        Mockito.when(fileReportRepository.getReportsBySenderCodes(any()))
-                .thenReturn(Collections.emptyList());
+    FileReport filereport =
+        fileReportService.getAggregateFileReport(Collections.singleton("12345"));
 
-        FileReport filereport = fileReportService.getAggregateFileReport(
-                Collections.singleton("12345"));
+    assertThat(filereport).isNotNull();
+    assertThat(filereport.getFilesUploaded()).isNotNull().isEmpty();
+    assertThat(filereport.getAckToDownload()).isNotNull().isEmpty();
+  }
 
-        assertThat(filereport).isNotNull();
-        assertThat(filereport.getFilesUploaded()).isNotNull().isEmpty();
-        assertThat(filereport.getAckToDownload()).isNotNull().isEmpty();
-    }
+  @Test
+  void whenGetFileReportThenReturnsAReport() {
+    Mockito.when(fileReportRepository.getReportBySenderCode(any())).thenReturn(Optional.empty());
 
-    @Test
-    void whenGetFileReportThenReturnsAReport() {
-        Mockito.when(fileReportRepository.getReportBySenderCode(any()))
-                .thenReturn(Optional.empty());
+    var filereport = fileReportService.getFileReport("12345");
 
-        var filereport = fileReportService.getFileReport("12345");
+    assertThat(filereport).isEmpty();
+  }
 
-        assertThat(filereport).isEmpty();
-    }
+  @Test
+  void whenSaveThenRepositorySaveIsInvoked() {
+    fileReportService.save(FileReport.createFileReport());
 
-    @Test
-    void whenSaveThenRepositorySaveIsInvoked() {
-        fileReportService.save(FileReport.createFileReport());
+    verify(fileReportRepository).save(FileReport.createFileReport());
+  }
 
-        verify(fileReportRepository).save(FileReport.createFileReport());
-    }
+  @Test
+  void whenGetAckToDownloadThenReturnsACollectionOfStrings() {
+    var reportMock = getReportList();
+    Mockito.when(fileReportRepository.getReportsBySenderCodes(any())).thenReturn(reportMock);
 
-    @Test
-    void whenGetAckToDownloadThenReturnsACollectionOfStrings() {
-        var reportMock = getReportList();
-        Mockito.when(fileReportRepository.getReportsBySenderCodes(any())).thenReturn(reportMock);
+    var ackToDownloadList = fileReportService.getAckToDownloadList(Collections.singleton("12345"));
 
-        var ackToDownloadList = fileReportService.getAckToDownloadList(Collections.singleton("12345"));
+    var expectedList =
+        reportMock.stream()
+            .map(FileReport::getAckToDownload)
+            .flatMap(Collection::stream)
+            .collect(Collectors.toSet());
+    assertThat(ackToDownloadList)
+        .hasSize(expectedList.size())
+        .containsExactlyInAnyOrderElementsOf(expectedList);
+  }
 
-        var expectedList = reportMock.stream()
-                .map(FileReport::getAckToDownload)
-                .flatMap(Collection::stream)
-                .collect(Collectors.toSet());
-        assertThat(ackToDownloadList)
-                .hasSize(expectedList.size())
-                .containsExactlyInAnyOrderElementsOf(expectedList);
-    }
+  Collection<FileReport> getReportList() {
+    return Stream.of(createFileReport(3, 1), createFileReport(1, 2), createFileReport(2, 1))
+        .collect(Collectors.toList());
+  }
 
-    Collection<FileReport> getReportList() {
-        return Stream.of(createFileReport(3, 1), createFileReport(1, 2), createFileReport(2, 1))
-                .collect(Collectors.toList());
-    }
+  @Test
+  void whenGetMetadata_givenWellFormedFilename_thenExtractSenderCodeAndSave() {
+    String basePath = "basePath";
+    String fileName = "ADE.12345.TRNLOG.20230101.130000.001.01.csv";
+    String senderCode = "12345";
 
+    FileReport fileReport = FileReport.createFileReportWithSenderCode(senderCode);
 
-    @Test
-    void whenGetMetadata_givenWellFormedFilename_thenExtractSenderCodeAndSave() {
-        String basePath = "basePath";
-        String fileName = "ADE.12345.TRNLOG.20230101.130000.001.01.csv";
-        String senderCode = "12345";
+    var fileMetadata = FileMetadata.createNewFileMetadata(fileName);
+    fileReport.addFileOrUpdateStatusIfPresent(fileMetadata);
 
+    Mockito.when(fileReportService.getFileReport(senderCode)).thenReturn(Optional.of(fileReport));
 
-        FileReport fileReport = FileReport.createFileReportWithSenderCode(senderCode);
+    AggregatesDataSummary dataSummaryMock =
+        AggregatesDataSummary.builder()
+            .countPositiveTransactions(100)
+            .sumAmountPositiveTransactions(1000)
+            .build();
+    Mockito.when(storageAccountService.getMetadata("/" + basePath + "/", fileName))
+        .thenReturn(dataSummaryMock);
 
-        var fileMetadata = FileMetadata.createNewFileMetadata(fileName);
-        fileReport.addFileOrUpdateStatusIfPresent(fileMetadata);
+    fileReportService.getMetadata(basePath, fileName);
 
-        Mockito.when(fileReportService.getFileReport(senderCode))
-                .thenReturn(Optional.of(fileReport));
+    Mockito.verify(fileReportRepository).save(fileReport);
+    assertThat(fileMetadata.getPath()).isEqualTo("/" + basePath + "/");
+  }
 
-        AggregatesDataSummary dataSummaryMock = AggregatesDataSummary.builder()
-                .countPositiveTransactions(100)
-                .sumAmountPositiveTransactions(1000)
-                .build();
-        Mockito.when(storageAccountService.getMetadata("/" + basePath + "/", fileName))
-                .thenReturn(dataSummaryMock);
+  @Test
+  void whenGetMetadata_givenNoMatchingFileMetadata_thenThrowNotFound() {
 
-        fileReportService.getMetadata(basePath, fileName);
+    String basePath = "basePath";
+    String fileName = "ADE.12345.TRNLOG.20230101.130000.001.01.csv";
+    String senderCode = "12345";
 
-        Mockito.verify(fileReportRepository).save(fileReport);
-        assertThat(fileMetadata.getPath()).isEqualTo("/" + basePath + "/");
-    }
+    FileReport fileReport = FileReport.createFileReportWithSenderCode(senderCode);
 
-    @Test
-    void whenGetMetadata_givenNoMatchingFileMetadata_thenThrowNotFound() {
+    Mockito.when(fileReportService.getFileReport(senderCode)).thenReturn(Optional.of(fileReport));
 
-        String basePath = "basePath";
-        String fileName = "ADE.12345.TRNLOG.20230101.130000.001.01.csv";
-        String senderCode = "12345";
+    assertThatThrownBy(() -> fileReportService.getMetadata(basePath, fileName))
+        .isInstanceOf(FileMetadataNotFoundException.class)
+        .hasMessageContaining("not found in latest")
+        .hasMessageContaining(fileName)
+        .hasMessageContaining(senderCode);
 
-        FileReport fileReport = FileReport.createFileReportWithSenderCode(senderCode);
-
-        Mockito.when(fileReportService.getFileReport(senderCode))
-                .thenReturn(Optional.of(fileReport));
-
-        assertThatThrownBy(() -> fileReportService.getMetadata(basePath, fileName))
-                .isInstanceOf(FileMetadataNotFoundException.class)
-                .hasMessageContaining("not found in latest")
-                .hasMessageContaining(fileName)
-                .hasMessageContaining(senderCode);
-
-        Mockito.verify(fileReportRepository, Mockito.never()).save(any());
-    }
-
+    Mockito.verify(fileReportRepository, Mockito.never()).save(any());
+  }
 }

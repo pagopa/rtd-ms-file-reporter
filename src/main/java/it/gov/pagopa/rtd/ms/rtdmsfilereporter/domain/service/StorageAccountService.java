@@ -25,7 +25,11 @@ public class StorageAccountService {
     } catch (IOException e) {
       String sanitizedBasePath = basePath.replaceAll("[^a-zA-Z0-9.-]", "");
       String sanitizedFileName = fileName.replaceAll("[^a-zA-Z0-9.-]", "");
-      log.warn("Failed to retrieve the file metadata from the storage! Path: {} File:{} Error: {}", sanitizedBasePath, sanitizedFileName, e.getMessage());
+      log.warn(
+          "Failed to retrieve the file metadata from the storage! Path: {} File:{} Error: {}",
+          sanitizedBasePath,
+          sanitizedFileName,
+          e.getMessage());
       return AggregatesDataSummary.createInvalidDataSummary();
     }
 

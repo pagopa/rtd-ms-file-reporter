@@ -21,29 +21,29 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 public class FileReportControllerImpl implements FileReportController {
 
-    private final FileReportService fileReportService;
-    private final FileReportDtoMapper mapper;
-    private final FileReportV2DtoMapper mapperV2;
+  private final FileReportService fileReportService;
+  private final FileReportDtoMapper mapper;
+  private final FileReportV2DtoMapper mapperV2;
 
-    @Override
-    public FileReportDto getFileReport(Collection<String> senderCodes) {
-        log.info("GET file report for sender codes: {}", senderCodes.toString());
-        return mapper.fileReportToDto(fileReportService.getAggregateFileReport(senderCodes));
-    }
+  @Override
+  public FileReportDto getFileReport(Collection<String> senderCodes) {
+    log.info("GET file report for sender codes: {}", senderCodes.toString());
+    return mapper.fileReportToDto(fileReportService.getAggregateFileReport(senderCodes));
+  }
 
-    @Override
-    public FileReportV2Dto getFileReportV2(Collection<String> senderCodes) {
-        log.info("GET file report v2 for sender codes: {}", senderCodes.toString());
-        return mapperV2.fileReportToDto(fileReportService.getAggregateFileReport(senderCodes));
-    }
+  @Override
+  public FileReportV2Dto getFileReportV2(Collection<String> senderCodes) {
+    log.info("GET file report v2 for sender codes: {}", senderCodes.toString());
+    return mapperV2.fileReportToDto(fileReportService.getAggregateFileReport(senderCodes));
+  }
 
-    @Override
-    public SenderAdeAckListDto getSenderAdeAckList(@NotNull Collection<String> senderCodes) {
-        log.info("GET ack to download list for sender codes: {}", senderCodes.toString());
-        return SenderAdeAckListDto.builder()
-                .fileNameList(fileReportService.getAckToDownloadList(senderCodes))
-                .build();
-    }
+  @Override
+  public SenderAdeAckListDto getSenderAdeAckList(@NotNull Collection<String> senderCodes) {
+    log.info("GET ack to download list for sender codes: {}", senderCodes.toString());
+    return SenderAdeAckListDto.builder()
+        .fileNameList(fileReportService.getAckToDownloadList(senderCodes))
+        .build();
+  }
 
   @Override
   public void getMetadata(String basePath, String fileName) throws MalformedURLException {
@@ -52,7 +52,7 @@ public class FileReportControllerImpl implements FileReportController {
       log.info("Enrich metadata on file : {}", sanitizedFileName);
       fileReportService.getMetadata(basePath, fileName);
     } else {
-        throw new MalformedURLException("Filename " + fileName + " malformed");
+      throw new MalformedURLException("Filename " + fileName + " malformed");
     }
   }
 
