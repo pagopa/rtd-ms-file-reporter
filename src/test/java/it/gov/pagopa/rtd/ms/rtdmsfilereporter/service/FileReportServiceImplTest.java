@@ -85,9 +85,9 @@ class FileReportServiceImplTest {
   void whenGetFileReportThenReturnsAReport() {
     Mockito.when(fileReportRepository.getReportBySenderCode(any())).thenReturn(Optional.empty());
 
-    var filereport = fileReportService.getFileReport("12345");
+    var fileReport = fileReportService.getFileReport("12345");
 
-    assertThat(filereport).isEmpty();
+    assertThat(fileReport).isEmpty();
   }
 
   @Test
@@ -116,7 +116,7 @@ class FileReportServiceImplTest {
 
   Collection<FileReport> getReportList() {
     return Stream.of(createFileReport(3, 1), createFileReport(1, 2), createFileReport(2, 1))
-        .collect(Collectors.toList());
+        .toList();
   }
 
   @Test

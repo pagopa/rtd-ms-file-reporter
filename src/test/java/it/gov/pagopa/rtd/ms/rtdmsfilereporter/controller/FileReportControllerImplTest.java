@@ -35,8 +35,8 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 @WebMvcTest(FileReportControllerImpl.class)
 class FileReportControllerImplTest {
 
-  private final String FILE_REPORT_URL = "/file-report";
-  private final String FILE_REPORT_URL_V2 = "/v2/file-report";
+  private final String fileReportUrl = "/file-report";
+  private final String fileReportUrlV2 = "/v2/file-report";
   ObjectMapper objectMapper = new ObjectMapper();
 
   @Autowired
@@ -61,7 +61,7 @@ class FileReportControllerImplTest {
     String emptyFileReportAsJson = objectMapper.writeValueAsString(fileReportDto);
 
     mockMvc
-        .perform(MockMvcRequestBuilders.get(FILE_REPORT_URL).param("senderCodes", "12345"))
+        .perform(MockMvcRequestBuilders.get(fileReportUrl).param("senderCodes", "12345"))
         .andExpectAll(
             status().isOk(),
             content().contentType(MediaType.APPLICATION_JSON_VALUE),
@@ -78,7 +78,7 @@ class FileReportControllerImplTest {
 
     MvcResult result =
         mockMvc
-            .perform(MockMvcRequestBuilders.get(FILE_REPORT_URL).param("senderCodes", "12345"))
+            .perform(MockMvcRequestBuilders.get(fileReportUrl).param("senderCodes", "12345"))
             .andExpectAll(status().isOk(), content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andReturn();
     FileReportDto fileReportResponse =
@@ -94,7 +94,7 @@ class FileReportControllerImplTest {
         .thenReturn(FileReport.createFileReport());
 
     mockMvc
-        .perform(MockMvcRequestBuilders.get(FILE_REPORT_URL))
+        .perform(MockMvcRequestBuilders.get(fileReportUrl))
         .andExpect(status().isBadRequest())
         .andReturn();
   }
@@ -108,11 +108,11 @@ class FileReportControllerImplTest {
     Mockito.when(fileReportService.getAckToDownloadList(any()))
         .thenReturn(Sets.set(senderAdeAckFileName1, senderAdeAckFileName2));
 
-      String SENDER_ADE_ACK_URL = "/sender-ade-ack";
+      String senderAdeAckUrl = "/sender-ade-ack";
       MvcResult result =
         mockMvc
             .perform(
-                MockMvcRequestBuilders.get(SENDER_ADE_ACK_URL)
+                MockMvcRequestBuilders.get(senderAdeAckUrl)
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
                     .param("senderCodes", "99999", "11111")
                     .accept(MediaType.APPLICATION_JSON_VALUE))
@@ -145,7 +145,7 @@ class FileReportControllerImplTest {
 
     MvcResult result =
         mockMvc
-            .perform(MockMvcRequestBuilders.get(FILE_REPORT_URL_V2).param("senderCodes", "12345"))
+            .perform(MockMvcRequestBuilders.get(fileReportUrlV2).param("senderCodes", "12345"))
             .andExpectAll(status().isOk(), content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andReturn();
     FileReportV2Dto fileReportResponse =
@@ -167,7 +167,7 @@ class FileReportControllerImplTest {
         .thenReturn(FileReport.createFileReport());
 
     mockMvc
-        .perform(MockMvcRequestBuilders.get(FILE_REPORT_URL_V2))
+        .perform(MockMvcRequestBuilders.get(fileReportUrlV2))
         .andExpect(status().isBadRequest())
         .andReturn();
   }
