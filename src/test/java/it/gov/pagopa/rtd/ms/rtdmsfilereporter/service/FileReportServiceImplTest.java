@@ -120,7 +120,7 @@ class FileReportServiceImplTest {
   }
 
   @Test
-  void whenGetMetadata_givenWellFormedFilename_thenExtractSenderCodeAndSave() {
+  void whenGetMetadataGivenWellFormedFilenameThenExtractSenderCodeAndSave() {
     String basePath = "basePath";
     String fileName = "ADE.12345.TRNLOG.20230101.130000.001.01.csv";
     String senderCode = "12345";
@@ -147,7 +147,7 @@ class FileReportServiceImplTest {
   }
 
   @Test
-  void whenGetMetadata_givenNoMatchingFileMetadata_thenThrowNotFound() {
+  void whenGetMetadataGivenNoMatchingFileMetadataThenThrowNotFound() {
 
     String basePath = "basePath";
     String fileName = "ADE.12345.TRNLOG.20230101.130000.001.01.csv";

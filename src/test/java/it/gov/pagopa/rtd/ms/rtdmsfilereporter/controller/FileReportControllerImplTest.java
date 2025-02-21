@@ -26,6 +26,7 @@ import org.mockito.BDDMockito;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -35,16 +36,17 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 class FileReportControllerImplTest {
 
   private final String FILE_REPORT_URL = "/file-report";
-    private final String FILE_REPORT_URL_V2 = "/v2/file-report";
+  private final String FILE_REPORT_URL_V2 = "/v2/file-report";
   ObjectMapper objectMapper = new ObjectMapper();
 
   @Autowired
   private MockMvc mockMvc;
 
+  @MockBean
   private FileReportDtoMapper mapper;
-
+  @MockBean
   private FileReportV2DtoMapper mapperV2;
-
+  @MockBean
   private FileReportService fileReportService;
 
   @SneakyThrows
