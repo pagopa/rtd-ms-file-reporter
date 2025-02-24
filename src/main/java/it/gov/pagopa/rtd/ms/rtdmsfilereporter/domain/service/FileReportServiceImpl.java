@@ -8,6 +8,7 @@ import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.model.FileMetadata;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.model.FileReport;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.repository.FileReportRepository;
 
+import java.io.File;
 import java.util.Collection;
 import java.util.Optional;
 
@@ -65,7 +66,7 @@ public class FileReportServiceImpl implements FileReportService {
       throw new FileMetadataNotFoundException(errorMsg);
     } else fileMetadata = result.get();
 
-    basePath = "/" + basePath + "/";
+    basePath = File.separator + basePath + File.separator;
     fileMetadata.setPath(basePath);
     var dataSummary = service.getMetadata(basePath, fileName);
 
