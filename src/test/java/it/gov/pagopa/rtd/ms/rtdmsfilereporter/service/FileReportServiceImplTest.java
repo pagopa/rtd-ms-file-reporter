@@ -120,7 +120,7 @@ class FileReportServiceImplTest {
   }
 
   @Test
-  void whenGetMetadataGivenWellFormedFilenameThenExtractSenderCodeAndSave() {
+  void whenSaveMetadataGivenWellFormedFilenameThenExtractSenderCodeAndSave() {
     String basePath = "basePath";
     String fileName = "ADE.12345.TRNLOG.20230101.130000.001.01.csv";
     String senderCode = "12345";
@@ -140,14 +140,14 @@ class FileReportServiceImplTest {
     Mockito.when(storageAccountService.getMetadata("/" + basePath + "/", fileName))
         .thenReturn(dataSummaryMock);
 
-    fileReportService.getMetadata(basePath, fileName);
+    fileReportService.saveMetadata(basePath, fileName);
 
     Mockito.verify(fileReportRepository).save(fileReport);
     assertThat(fileMetadata.getPath()).isEqualTo("/" + basePath + "/");
   }
 
   @Test
-  void whenGetMetadataGivenNoMatchingFileMetadataThenThrowNotFound() {
+  void whenSaveMetadataGivenNoMatchingFileMetadataThenThrowNotFound() {
 
     String basePath = "basePath";
     String fileName = "ADE.12345.TRNLOG.20230101.130000.001.01.csv";
@@ -157,7 +157,7 @@ class FileReportServiceImplTest {
 
     Mockito.when(fileReportService.getFileReport(senderCode)).thenReturn(Optional.of(fileReport));
 
-    assertThatThrownBy(() -> fileReportService.getMetadata(basePath, fileName))
+    assertThatThrownBy(() -> fileReportService.saveMetadata(basePath, fileName))
         .isInstanceOf(FileMetadataNotFoundException.class)
         .hasMessageContaining("not found in latest")
         .hasMessageContaining(fileName)

@@ -1,6 +1,7 @@
 package it.gov.pagopa.rtd.ms.rtdmsfilereporter.controller;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -12,11 +13,16 @@ import it.gov.pagopa.rtd.ms.rtdmsfilereporter.controller.model.v1.FileReportDto;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.controller.model.v1.FileReportDtoMapper;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.controller.model.v2.FileReportV2Dto;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.controller.model.v2.FileReportV2DtoMapper;
+import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.exception.FileMetadataNotFoundException;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.model.AggregatesDataSummary;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.model.FileReport;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.service.FileReportService;
+
+import java.net.MalformedURLException;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.regex.Pattern;
+
 import lombok.SneakyThrows;
 import org.assertj.core.util.Sets;
 import org.junit.jupiter.api.Test;
@@ -39,15 +45,12 @@ class FileReportControllerImplTest {
   private final String fileReportUrlV2 = "/v2/file-report";
   ObjectMapper objectMapper = new ObjectMapper();
 
-  @Autowired
-  private MockMvc mockMvc;
+  @Autowired private MockMvc mockMvc;
+  @Autowired FileReportControllerImpl frControllerImpl;
 
-  @MockitoBean
-  private FileReportDtoMapper mapper;
-  @MockitoBean
-  private FileReportV2DtoMapper mapperV2;
-  @MockitoBean
-  private FileReportService fileReportService;
+  @MockitoBean private FileReportDtoMapper mapper;
+  @MockitoBean private FileReportV2DtoMapper mapperV2;
+  @MockitoBean private FileReportService fileReportService;
 
   @SneakyThrows
   @Test
@@ -108,8 +111,8 @@ class FileReportControllerImplTest {
     Mockito.when(fileReportService.getAckToDownloadList(any()))
         .thenReturn(Sets.set(senderAdeAckFileName1, senderAdeAckFileName2));
 
-      String senderAdeAckUrl = "/sender-ade-ack";
-      MvcResult result =
+    String senderAdeAckUrl = "/sender-ade-ack";
+    MvcResult result =
         mockMvc
             .perform(
                 MockMvcRequestBuilders.get(senderAdeAckUrl)
@@ -174,7 +177,7 @@ class FileReportControllerImplTest {
 
   @SneakyThrows
   @Test
-  void givenValidFilenameWhenGetMetadataEndpointThenStatusOkAndServiceCalled() {
+  void givenValidFilenameWhenSaveMetadataEndpointThenStatusOkAndServiceCalled() {
     String basePath = "myBasePath";
     String fileName = "ADE.12345.TRNLOG.20230101.130000.001.01.csv.pgp";
 
@@ -185,6 +188,17 @@ class FileReportControllerImplTest {
                 .param("fileName", fileName))
         .andExpect(status().isOk());
 
-    Mockito.verify(fileReportService).getMetadata(basePath, fileName);
+    Mockito.verify(fileReportService).saveMetadata(basePath, fileName);
+  }
+
+  @SneakyThrows
+  @Test
+  void whenFileNameIsNotValidThenThrowMalformed() {
+    String basePath = "myBasePath";
+    String fileName = "ABCD.123.TRNLOG.20230101.130000.001.01.csv.pgp";
+
+    assertThatThrownBy(() -> frControllerImpl.saveMetadata(basePath, fileName))
+        .isInstanceOf(MalformedURLException.class)
+        .hasMessageContaining("Filename " + fileName + " malformed");
   }
 }

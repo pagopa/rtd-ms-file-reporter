@@ -46,7 +46,7 @@ public class FileReportServiceImpl implements FileReportService {
   }
 
   @Override
-  public void getMetadata(String basePath, String fileName) {
+  public void saveMetadata(String basePath, String fileName) {
     // get senderCode from filename
     String senderCode = fileName.split("\\.")[1];
     FileReport fileReport =
@@ -66,9 +66,9 @@ public class FileReportServiceImpl implements FileReportService {
       throw new FileMetadataNotFoundException(errorMsg);
     } else fileMetadata = result.get();
 
-    basePath = File.separator + basePath + File.separator;
-    fileMetadata.setPath(basePath);
-    var dataSummary = service.getMetadata(basePath, fileName);
+    String path = File.separator + basePath + File.separator;
+    fileMetadata.setPath(path);
+    var dataSummary = service.getMetadata(path, fileName);
 
     log.debug("DataSummary : {}", dataSummary.toString());
 

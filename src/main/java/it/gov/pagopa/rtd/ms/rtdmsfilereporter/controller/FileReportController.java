@@ -30,7 +30,7 @@ public interface FileReportController {
 
   @PatchMapping(value = "/report/metadata", produces = MediaType.APPLICATION_JSON_VALUE)
   @ResponseStatus(HttpStatus.OK)
-  void getMetadata(
+  void saveMetadata(
       @NotNull @RequestParam(name = "basePath") String path,
       @NotNull @RequestParam(name = "fileName") String fileName)
       throws MalformedURLException;

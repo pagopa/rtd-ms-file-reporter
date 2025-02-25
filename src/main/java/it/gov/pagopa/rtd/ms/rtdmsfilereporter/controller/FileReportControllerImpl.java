@@ -46,11 +46,11 @@ public class FileReportControllerImpl implements FileReportController {
   }
 
   @Override
-  public void getMetadata(String basePath, String fileName) throws MalformedURLException {
+  public void saveMetadata(String basePath, String fileName) throws MalformedURLException {
     String sanitizedFileName = fileName.replace("\n", "").replace("\r", "");
     if (validateFileName(sanitizedFileName)) {
       log.info("Enrich metadata on file : {}", sanitizedFileName);
-      fileReportService.getMetadata(basePath, fileName);
+      fileReportService.saveMetadata(basePath, fileName);
     } else {
       throw new MalformedURLException("Filename " + fileName + " malformed");
     }
