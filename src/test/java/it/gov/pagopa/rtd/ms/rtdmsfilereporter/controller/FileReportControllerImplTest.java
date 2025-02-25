@@ -13,7 +13,6 @@ import it.gov.pagopa.rtd.ms.rtdmsfilereporter.controller.model.v1.FileReportDto;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.controller.model.v1.FileReportDtoMapper;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.controller.model.v2.FileReportV2Dto;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.controller.model.v2.FileReportV2DtoMapper;
-import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.exception.FileMetadataNotFoundException;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.model.AggregatesDataSummary;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.model.FileReport;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.service.FileReportService;
@@ -21,7 +20,6 @@ import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.service.FileReportService;
 import java.net.MalformedURLException;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.regex.Pattern;
 
 import lombok.SneakyThrows;
 import org.assertj.core.util.Sets;
