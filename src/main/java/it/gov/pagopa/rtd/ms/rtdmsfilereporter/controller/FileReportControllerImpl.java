@@ -50,9 +50,9 @@ public class FileReportControllerImpl implements FileReportController {
     String sanitizedFileName = fileName.replace("\n", "").replace("\r", "");
     if (validateFileName(sanitizedFileName)) {
       log.info("Enrich metadata on file : {}", sanitizedFileName);
-      fileReportService.saveMetadata(basePath, fileName);
+      fileReportService.saveMetadata(basePath, sanitizedFileName);
     } else {
-      throw new MalformedURLException("Filename " + fileName + " malformed");
+      throw new MalformedURLException("Filename " + sanitizedFileName + " malformed");
     }
   }
 

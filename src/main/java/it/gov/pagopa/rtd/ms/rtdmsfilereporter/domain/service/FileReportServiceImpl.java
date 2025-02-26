@@ -49,8 +49,7 @@ public class FileReportServiceImpl implements FileReportService {
   public void saveMetadata(String basePath, String fileName) {
     // get senderCode from filename
     String senderCode = fileName.split("\\.")[1];
-    FileReport fileReport =
-        getFileReport(senderCode).orElse(FileReport.createFileReportWithSenderCode(senderCode));
+    FileReport fileReport = getFileReport(senderCode).orElseThrow();
 
     Optional<FileMetadata> result =
         fileReport.getFilesUploaded().stream()
