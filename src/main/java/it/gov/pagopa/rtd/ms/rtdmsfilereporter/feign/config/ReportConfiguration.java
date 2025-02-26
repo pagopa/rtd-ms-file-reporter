@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @ConfigurationProperties(prefix = "report")
-public record ReportFileTTL
+public record ReportConfiguration
         (@NotNull
         @NotBlank
         Integer fileTTL) {

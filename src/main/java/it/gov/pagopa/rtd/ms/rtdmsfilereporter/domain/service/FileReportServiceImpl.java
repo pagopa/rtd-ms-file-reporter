@@ -12,7 +12,7 @@ import java.io.File;
 import java.util.Collection;
 import java.util.Optional;
 
-import it.gov.pagopa.rtd.ms.rtdmsfilereporter.feign.config.ReportFileTTL;
+import it.gov.pagopa.rtd.ms.rtdmsfilereporter.feign.config.ReportConfiguration;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -22,7 +22,7 @@ public class FileReportServiceImpl implements FileReportService {
 
   private final FileReportRepository fileReportRepository;
   private final StorageAccountService service;
-  private final ReportFileTTL report;
+  private final ReportConfiguration report;
 
   @Override
   public FileReport getAggregateFileReport(Collection<String> senderCodes) {

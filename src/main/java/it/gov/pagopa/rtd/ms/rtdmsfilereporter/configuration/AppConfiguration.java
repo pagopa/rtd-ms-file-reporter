@@ -6,7 +6,7 @@ import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.service.DecryptedEventComma
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.service.FileReportService;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.service.FileReportServiceImpl;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.service.StorageAccountService;
-import it.gov.pagopa.rtd.ms.rtdmsfilereporter.feign.config.ReportFileTTL;
+import it.gov.pagopa.rtd.ms.rtdmsfilereporter.feign.config.ReportConfiguration;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.persistance.FileReportDao;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.persistance.FileReportRepositoryImpl;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.persistance.model.FileReportEntityMapper;
@@ -19,11 +19,11 @@ import org.springframework.context.annotation.Configuration;
  * the domain are not bounded to the specific framework.
  */
 @Configuration
-@EnableConfigurationProperties(ReportFileTTL.class)
+@EnableConfigurationProperties(ReportConfiguration.class)
 public class AppConfiguration {
 
   @Bean
-  public FileReportService getFileReportService(FileReportRepository repository, StorageAccountService service, ReportFileTTL report) {
+  public FileReportService getFileReportService(FileReportRepository repository, StorageAccountService service, ReportConfiguration report) {
     return new FileReportServiceImpl(repository, service, report);
   }
 
