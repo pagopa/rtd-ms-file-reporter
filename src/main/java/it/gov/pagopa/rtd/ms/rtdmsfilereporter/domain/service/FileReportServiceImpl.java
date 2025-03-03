@@ -22,7 +22,7 @@ public class FileReportServiceImpl implements FileReportService {
 
   private final FileReportRepository fileReportRepository;
   private final StorageAccountService service;
-  private final ReportConfiguration report;
+  private final ReportConfiguration reportConfig;
 
   @Override
   public FileReport getAggregateFileReport(Collection<String> senderCodes) {
