@@ -9,7 +9,6 @@ import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.service.FileReportService;
 import jakarta.validation.constraints.NotNull;
 
 import java.lang.reflect.MalformedParametersException;
-import java.net.MalformedURLException;
 import java.util.Collection;
 import java.util.regex.Pattern;
 
