@@ -181,7 +181,7 @@ class FileReportControllerImplTest {
 
     mockMvc
         .perform(
-            MockMvcRequestBuilders.get("/report/metadata")
+            MockMvcRequestBuilders.patch("/report/metadata")
                 .param("basePath", basePath)
                 .param("fileName", fileName))
         .andExpect(status().isOk());

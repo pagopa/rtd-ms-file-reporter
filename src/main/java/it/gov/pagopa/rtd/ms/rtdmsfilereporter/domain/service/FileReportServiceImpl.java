@@ -9,6 +9,7 @@ import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.model.FileReport;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.repository.FileReportRepository;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.Collection;
 import java.util.Optional;
 
@@ -61,21 +62,15 @@ public class FileReportServiceImpl implements FileReportService {
       String errorMsg =
           String.format(
               "File %s not found in latest %d days report of sender %s",
-              fileName, report.fileTTL(), senderCode);
+              fileName, reportConfig.fileTTL(), senderCode);
       throw new FileMetadataNotFoundException(errorMsg);
     } else fileMetadata = result.get();
 
     String path = File.separator + basePath + File.separator;
     fileMetadata.setPath(path);
     var dataSummary = service.getMetadata(path, fileName);
-
     log.debug("DataSummary : {}", dataSummary.toString());
-
     fileMetadata.enrichWithSquaringData(dataSummary);
-    // two operations are needed: update status + add aggregates summary
-    fileReport.addFileOrUpdateStatusIfPresent(fileMetadata);
-    fileReport.addSquaringDataToFile(fileMetadata);
-
     save(fileReport);
   }
 }
