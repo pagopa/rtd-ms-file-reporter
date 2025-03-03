@@ -9,8 +9,8 @@ import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.model.FileReport;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.repository.FileReportRepository;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.Collection;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.feign.config.ReportConfiguration;
@@ -50,7 +50,13 @@ public class FileReportServiceImpl implements FileReportService {
   public void saveMetadata(String basePath, String fileName) {
     // get senderCode from filename
     String senderCode = fileName.split("\\.")[1];
-    FileReport fileReport = getFileReport(senderCode).orElseThrow();
+    FileReport fileReport = null;
+    try {
+      fileReport = getFileReport(senderCode).orElseThrow();
+    } catch (NoSuchElementException e) {
+      String errorMsg = String.format("FileReport not found for sender %s", senderCode);
+      throw new NoSuchElementException(errorMsg);
+    }
 
     Optional<FileMetadata> result =
         fileReport.getFilesUploaded().stream()
