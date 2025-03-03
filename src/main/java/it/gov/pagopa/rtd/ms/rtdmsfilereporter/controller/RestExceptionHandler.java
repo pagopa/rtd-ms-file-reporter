@@ -7,7 +7,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import java.lang.reflect.MalformedParametersException;
-import java.net.MalformedURLException;
 import java.util.NoSuchElementException;
 
 @RestControllerAdvice

@@ -18,7 +18,6 @@ import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.model.FileReport;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.service.FileReportService;
 
 import java.lang.reflect.MalformedParametersException;
-import java.net.MalformedURLException;
 import java.util.Collections;
 import java.util.HashSet;
 
