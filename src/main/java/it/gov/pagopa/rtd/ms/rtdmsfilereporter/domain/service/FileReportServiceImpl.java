@@ -50,7 +50,7 @@ public class FileReportServiceImpl implements FileReportService {
   public void saveMetadata(String basePath, String fileName) {
     // get senderCode from filename
     String senderCode = fileName.split("\\.")[1];
-    FileReport fileReport = null;
+    FileReport fileReport;
     try {
       fileReport = getFileReport(senderCode).orElseThrow();
     } catch (NoSuchElementException e) {
