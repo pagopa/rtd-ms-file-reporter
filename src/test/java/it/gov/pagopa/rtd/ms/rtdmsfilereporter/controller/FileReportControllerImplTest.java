@@ -2,7 +2,7 @@ package it.gov.pagopa.rtd.ms.rtdmsfilereporter.controller;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -198,5 +198,17 @@ class FileReportControllerImplTest {
     assertThatThrownBy(() -> frControllerImpl.saveMetadata(basePath, fileName))
         .isInstanceOf(MalformedParametersException.class)
         .hasMessageContaining("Filename " + fileName + " malformed");
+  }
+
+  @Test
+  public void testValidateFilenameThenTrue() {
+    String fileName = "ADE.12300.TRNLOG.20230101.130000.001.01.csv.pgp";
+    assertTrue(frControllerImpl.validateFileName(fileName));
+  }
+
+  @Test
+  public void testValidateFilenameThenFalse() {
+    String fileName = "ABCD.123.TRNLOG.20230101.130000.001.01.csv.pgp";
+    assertFalse(frControllerImpl.validateFileName(fileName));
   }
 }

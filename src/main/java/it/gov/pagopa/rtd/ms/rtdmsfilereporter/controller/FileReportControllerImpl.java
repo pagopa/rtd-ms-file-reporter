@@ -56,7 +56,7 @@ public class FileReportControllerImpl implements FileReportController {
     }
   }
 
-  private boolean validateFileName(String filename) {
+  public boolean validateFileName(String filename) {
     // Well formed filename
     // ADE.[Sender Code].TRNLOG.[yyyymmdd].[hhmmss].[acquirer internal id].[chunk number].csv
     String app = filename.substring(0, filename.indexOf(".csv.pgp"));

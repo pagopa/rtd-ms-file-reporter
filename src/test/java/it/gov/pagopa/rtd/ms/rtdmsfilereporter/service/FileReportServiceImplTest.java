@@ -18,6 +18,7 @@ import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.service.StorageAccountServi
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -162,6 +163,24 @@ class FileReportServiceImplTest {
         .hasMessageContaining("not found in latest")
         .hasMessageContaining(fileName)
         .hasMessageContaining(senderCode);
+
+    Mockito.verify(fileReportRepository, Mockito.never()).save(any());
+  }
+
+  @Test
+  void whenSaveMetadataGivenNotWellFormedFilenameThenThrowException() {
+    String basePath = "basePath";
+    String fileName = "ADE.12345.TRNLOG.20230101.130000.001.01.csv";
+    String senderCode = "09876";
+
+    FileReport fileReport = FileReport.createFileReportWithSenderCode(senderCode);
+
+    String senderCodeFromFile = fileName.split("\\.")[1];
+    Mockito.when(fileReportService.getFileReport(senderCode)).thenReturn(Optional.of(fileReport));
+    assertThatThrownBy(() -> fileReportService.saveMetadata(basePath, fileName))
+            .isInstanceOf(NoSuchElementException.class)
+            .hasMessageContaining("FileReport not found for sender")
+            .hasMessageContaining(senderCodeFromFile);
 
     Mockito.verify(fileReportRepository, Mockito.never()).save(any());
   }
