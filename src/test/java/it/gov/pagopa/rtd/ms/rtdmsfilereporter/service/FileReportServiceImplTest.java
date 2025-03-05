@@ -178,9 +178,9 @@ class FileReportServiceImplTest {
     String senderCodeFromFile = fileName.split("\\.")[1];
     Mockito.when(fileReportService.getFileReport(senderCode)).thenReturn(Optional.of(fileReport));
     assertThatThrownBy(() -> fileReportService.saveMetadata(basePath, fileName))
-            .isInstanceOf(NoSuchElementException.class)
-            .hasMessageContaining("FileReport not found for sender")
-            .hasMessageContaining(senderCodeFromFile);
+        .isInstanceOf(NoSuchElementException.class)
+        .hasMessageContaining("FileReport not found for sender")
+        .hasMessageContaining(senderCodeFromFile);
 
     Mockito.verify(fileReportRepository, Mockito.never()).save(any());
   }

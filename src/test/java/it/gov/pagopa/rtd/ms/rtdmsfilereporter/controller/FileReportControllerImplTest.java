@@ -201,13 +201,13 @@ class FileReportControllerImplTest {
   }
 
   @Test
-  public void testValidateFilenameThenTrue() {
+  void testValidateFilenameThenTrue() {
     String fileName = "ADE.12300.TRNLOG.20230101.130000.001.01.csv.pgp";
     assertTrue(frControllerImpl.validateFileName(fileName));
   }
 
   @Test
-  public void testValidateFilenameThenFalse() {
+  void testValidateFilenameThenFalse() {
     String fileName = "ABCD.123.TRNLOG.20230101.130000.001.01.csv.pgp";
     assertFalse(frControllerImpl.validateFileName(fileName));
   }
