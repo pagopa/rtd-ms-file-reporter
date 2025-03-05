@@ -1,7 +1,6 @@
 package it.gov.pagopa.rtd.ms.rtdmsfilereporter.controller;
 
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.exception.FileMetadataNotFoundException;
-import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.service.FileReportServiceImpl;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -15,7 +14,7 @@ import org.springframework.http.ResponseEntity;
 import java.lang.reflect.MalformedParametersException;
 import java.util.NoSuchElementException;
 
-public class RestExceptionHandlerTest {
+class RestExceptionHandlerTest {
 
   @Mock RestExceptionHandler restExceptionHandler;
   AutoCloseable autoCloseable;
