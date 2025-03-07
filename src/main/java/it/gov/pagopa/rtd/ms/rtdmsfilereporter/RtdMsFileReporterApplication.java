@@ -12,5 +12,4 @@ public class RtdMsFileReporterApplication {
   public static void main(String[] args) {
     SpringApplication.run(RtdMsFileReporterApplication.class, args);
   }
-
 }

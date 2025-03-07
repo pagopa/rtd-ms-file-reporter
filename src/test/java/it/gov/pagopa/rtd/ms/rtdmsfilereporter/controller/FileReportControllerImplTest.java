@@ -1,7 +1,8 @@
 package it.gov.pagopa.rtd.ms.rtdmsfilereporter.controller;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -15,8 +16,11 @@ import it.gov.pagopa.rtd.ms.rtdmsfilereporter.controller.model.v2.FileReportV2Dt
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.model.AggregatesDataSummary;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.model.FileReport;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.service.FileReportService;
+
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.InputMismatchException;
+
 import lombok.SneakyThrows;
 import org.assertj.core.util.Sets;
 import org.junit.jupiter.api.Test;
@@ -26,8 +30,8 @@ import org.mockito.BDDMockito;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -35,34 +39,32 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 @WebMvcTest(FileReportControllerImpl.class)
 class FileReportControllerImplTest {
 
-  private final String FILE_REPORT_URL = "/file-report";
-  private final String SENDER_ADE_ACK_URL = "/sender-ade-ack";
-  private final String FILE_REPORT_URL_V2 = "/v2/file-report";
+  private final String fileReportUrl = "/file-report";
+  private final String fileReportUrlV2 = "/v2/file-report";
   ObjectMapper objectMapper = new ObjectMapper();
 
-  @Autowired
-  private MockMvc mockMvc;
-  @MockBean
-  private FileReportDtoMapper mapper;
-  @MockBean
-  private FileReportV2DtoMapper mapperV2;
-  @MockBean
-  private FileReportService fileReportService;
+  @Autowired private MockMvc mockMvc;
+  @Autowired FileReportControllerImpl frControllerImpl;
+
+  @MockitoBean private FileReportDtoMapper mapper;
+  @MockitoBean private FileReportV2DtoMapper mapperV2;
+  @MockitoBean private FileReportService fileReportService;
 
   @SneakyThrows
   @Test
   void givenEmptyReportWhenGetFileReportThenReturnEmptyListJson() {
     var emptyReportDto = new FileReportDto();
     emptyReportDto.setFilesRecentlyUploaded(Collections.emptyList());
-    Mockito.when(mapper.fileReportToDto(any()))
-        .thenReturn(emptyReportDto);
+    Mockito.when(mapper.fileReportToDto(any())).thenReturn(emptyReportDto);
 
     FileReportDto fileReportDto = new FileReportDto();
     fileReportDto.setFilesRecentlyUploaded(new HashSet<>());
     String emptyFileReportAsJson = objectMapper.writeValueAsString(fileReportDto);
 
-    mockMvc.perform(MockMvcRequestBuilders.get(FILE_REPORT_URL).param("senderCodes", "12345"))
-        .andExpectAll(status().isOk(),
+    mockMvc
+        .perform(MockMvcRequestBuilders.get(fileReportUrl).param("senderCodes", "12345"))
+        .andExpectAll(
+            status().isOk(),
             content().contentType(MediaType.APPLICATION_JSON_VALUE),
             content().string(emptyFileReportAsJson))
         .andReturn();
@@ -75,13 +77,13 @@ class FileReportControllerImplTest {
     var reportDto = Mappers.getMapper(FileReportDtoMapper.class).fileReportToDto(reportMock);
     Mockito.when(mapper.fileReportToDto(any())).thenReturn(reportDto);
 
-    MvcResult result = mockMvc.perform(
-            MockMvcRequestBuilders.get(FILE_REPORT_URL).param("senderCodes", "12345"))
-        .andExpectAll(status().isOk(),
-            content().contentType(MediaType.APPLICATION_JSON_VALUE))
-        .andReturn();
-    FileReportDto fileReportResponse = objectMapper.readValue(
-        result.getResponse().getContentAsString(), FileReportDto.class);
+    MvcResult result =
+        mockMvc
+            .perform(MockMvcRequestBuilders.get(fileReportUrl).param("senderCodes", "12345"))
+            .andExpectAll(status().isOk(), content().contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andReturn();
+    FileReportDto fileReportResponse =
+        objectMapper.readValue(result.getResponse().getContentAsString(), FileReportDto.class);
 
     assertThat(fileReportResponse.getFilesRecentlyUploaded()).isNotNull().hasSize(2);
   }
@@ -92,25 +94,31 @@ class FileReportControllerImplTest {
     Mockito.when(fileReportService.getAggregateFileReport(any()))
         .thenReturn(FileReport.createFileReport());
 
-    mockMvc.perform(MockMvcRequestBuilders.get(FILE_REPORT_URL))
+    mockMvc
+        .perform(MockMvcRequestBuilders.get(fileReportUrl))
         .andExpect(status().isBadRequest())
         .andReturn();
   }
 
   @Test
   void whenGetAdeAckToDownloadThenReturns200AndCorrectBody() throws Exception {
-    String senderAdeAckFileName1 = "ADEACK.99999.12345.2022-09-13.709f29ed-2a34-4c73-9a23-397e2e768ecf.csv";
-    String senderAdeAckFileName2 = "ADEACK.11111.12345.2022-09-13.709f29ed-2a34-4c73-9a23-397e2e768ecf.csv";
+    String senderAdeAckFileName1 =
+        "ADEACK.99999.12345.2022-09-13.709f29ed-2a34-4c73-9a23-397e2e768ecf.csv";
+    String senderAdeAckFileName2 =
+        "ADEACK.11111.12345.2022-09-13.709f29ed-2a34-4c73-9a23-397e2e768ecf.csv";
     Mockito.when(fileReportService.getAckToDownloadList(any()))
         .thenReturn(Sets.set(senderAdeAckFileName1, senderAdeAckFileName2));
 
-    MvcResult result = mockMvc.perform(MockMvcRequestBuilders
-            .get(SENDER_ADE_ACK_URL)
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .param("senderCodes", "99999", "11111")
-            .accept(MediaType.APPLICATION_JSON_VALUE))
-        .andExpect(status().isOk())
-        .andReturn();
+    String senderAdeAckUrl = "/sender-ade-ack";
+    MvcResult result =
+        mockMvc
+            .perform(
+                MockMvcRequestBuilders.get(senderAdeAckUrl)
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .param("senderCodes", "99999", "11111")
+                    .accept(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(status().isOk())
+            .andReturn();
 
     assertEquals(
         "{\"fileNameList\":[\"" + senderAdeAckFileName1 + "\",\"" + senderAdeAckFileName2 + "\"]}",
@@ -127,21 +135,22 @@ class FileReportControllerImplTest {
     var reportDto = Mappers.getMapper(FileReportV2DtoMapper.class).fileReportToDto(reportMock);
     reportDto.getFilesRecentlyUploaded().stream()
         .findAny()
-        .ifPresent(file -> file.setDataSummary(
-            AggregatesDataSummary.builder()
-                .countPositiveTransactions(10)
-                .sumAmountPositiveTransactions(1000)
-                .build()));
+        .ifPresent(
+            file ->
+                file.setDataSummary(
+                    AggregatesDataSummary.builder()
+                        .countPositiveTransactions(10)
+                        .sumAmountPositiveTransactions(1000)
+                        .build()));
     Mockito.when(mapperV2.fileReportToDto(any())).thenReturn(reportDto);
 
-    MvcResult result = mockMvc.perform(
-            MockMvcRequestBuilders.get(FILE_REPORT_URL_V2).param("senderCodes", "12345"))
-        .andExpectAll(status().isOk(),
-            content().contentType(MediaType.APPLICATION_JSON_VALUE))
-        .andReturn();
-    FileReportV2Dto fileReportResponse = objectMapper.readValue(
-        result.getResponse().getContentAsString(),
-        FileReportV2Dto.class);
+    MvcResult result =
+        mockMvc
+            .perform(MockMvcRequestBuilders.get(fileReportUrlV2).param("senderCodes", "12345"))
+            .andExpectAll(status().isOk(), content().contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andReturn();
+    FileReportV2Dto fileReportResponse =
+        objectMapper.readValue(result.getResponse().getContentAsString(), FileReportV2Dto.class);
 
     assertThat(fileReportResponse.getFilesRecentlyUploaded()).isNotNull().hasSize(1);
     var file = fileReportResponse.getFilesRecentlyUploaded().stream().findAny();
@@ -158,8 +167,60 @@ class FileReportControllerImplTest {
     Mockito.when(fileReportService.getAggregateFileReport(any()))
         .thenReturn(FileReport.createFileReport());
 
-    mockMvc.perform(MockMvcRequestBuilders.get(FILE_REPORT_URL_V2))
+    mockMvc
+        .perform(MockMvcRequestBuilders.get(fileReportUrlV2))
         .andExpect(status().isBadRequest())
         .andReturn();
+  }
+
+  @SneakyThrows
+  @Test
+  void givenValidFilenameWhenSaveMetadataEndpointThenStatusOkAndServiceCalled() {
+    String basePath = "myBasePath";
+    String fileName = "ADE.12345.TRNLOG.20230101.130000.001.01.csv.pgp";
+
+    mockMvc
+        .perform(
+            MockMvcRequestBuilders.patch("/report/metadata")
+                .param("basePath", basePath)
+                .param("fileName", fileName))
+        .andExpect(status().isOk());
+
+    Mockito.verify(fileReportService).saveMetadata(basePath, fileName);
+  }
+
+  @SneakyThrows
+  @Test
+  void whenFileNameIsNotValidThenThrowMalformedParameter() {
+    String basePath = "myBasePath";
+    String fileName = "ABCD.123.TRNLOG.20230101.130000.001.01.csv.pgp";
+
+    assertThatThrownBy(() -> frControllerImpl.saveMetadata(basePath, fileName))
+        .isInstanceOf(InputMismatchException.class)
+        .hasMessageContaining("Filename " + fileName + " malformed");
+  }
+
+  @Test
+  void testValidateFilenameMatcher1ThenTrue() {
+    String fileName = "ADE.12300.TRNLOG.20230101.130000.001.csv.pgp";
+    assertTrue(frControllerImpl.validateFileName(fileName));
+  }
+
+  @Test
+  void testValidateFilenameMatcher1ThenFalse() {
+    String fileName = "ABCD.123.TRNLOG.20230101.130000.001.csv.pgp";
+    assertFalse(frControllerImpl.validateFileName(fileName));
+  }
+
+  @Test
+  void testValidateFilenameMatcher2ThenTrue() {
+    String fileName = "ADE.12300.TRNLOG.20230101.130000.001.01.csv.pgp";
+    assertTrue(frControllerImpl.validateFileName(fileName));
+  }
+
+  @Test
+  void testValidateFilenameMatcher2ThenFalse() {
+    String fileName = "ABCD.123.TRNLOG.20230101.130000.001.01.csv.pgp";
+    assertFalse(frControllerImpl.validateFileName(fileName));
   }
 }

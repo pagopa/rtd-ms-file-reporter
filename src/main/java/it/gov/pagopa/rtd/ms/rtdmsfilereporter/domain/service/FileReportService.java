@@ -13,4 +13,6 @@ public interface FileReportService {
   Collection<String> getAckToDownloadList(Collection<String> senderCodes);
 
   void save(FileReport fileReport);
+
+  void saveMetadata(String basePath, String fileName);
 }
