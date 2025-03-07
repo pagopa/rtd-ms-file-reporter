@@ -17,9 +17,9 @@ import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.model.AggregatesDataSummary
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.model.FileReport;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.service.FileReportService;
 
-import java.lang.reflect.MalformedParametersException;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.InputMismatchException;
 
 import lombok.SneakyThrows;
 import org.assertj.core.util.Sets;
@@ -196,7 +196,7 @@ class FileReportControllerImplTest {
     String fileName = "ABCD.123.TRNLOG.20230101.130000.001.01.csv.pgp";
 
     assertThatThrownBy(() -> frControllerImpl.saveMetadata(basePath, fileName))
-        .isInstanceOf(MalformedParametersException.class)
+        .isInstanceOf(InputMismatchException.class)
         .hasMessageContaining("Filename " + fileName + " malformed");
   }
 

@@ -8,8 +8,8 @@ import it.gov.pagopa.rtd.ms.rtdmsfilereporter.controller.model.v2.FileReportV2Dt
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.service.FileReportService;
 import jakarta.validation.constraints.NotNull;
 
-import java.lang.reflect.MalformedParametersException;
 import java.util.Collection;
+import java.util.InputMismatchException;
 import java.util.regex.Pattern;
 
 import lombok.RequiredArgsConstructor;
@@ -52,7 +52,7 @@ public class FileReportControllerImpl implements FileReportController {
       log.info("Enrich metadata on file : {}", sanitizedFileName);
       fileReportService.saveMetadata(basePath, sanitizedFileName);
     } else {
-      throw new MalformedParametersException("Filename " + sanitizedFileName + " malformed");
+      throw new InputMismatchException("Filename " + sanitizedFileName + " malformed");
     }
   }
 

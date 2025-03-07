@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import java.lang.reflect.MalformedParametersException;
+import java.util.InputMismatchException;
 import java.util.NoSuchElementException;
 
 @RestControllerAdvice
@@ -22,8 +22,8 @@ public class RestExceptionHandler {
     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
   }
 
-  @ExceptionHandler(MalformedParametersException.class)
-  protected ResponseEntity<String> handleMalformedParameters(MalformedParametersException ex) {
+  @ExceptionHandler(InputMismatchException.class)
+  protected ResponseEntity<String> handleInputMismatch(InputMismatchException ex) {
     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
   }
 

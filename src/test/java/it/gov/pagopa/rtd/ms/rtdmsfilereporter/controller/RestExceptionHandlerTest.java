@@ -11,7 +11,7 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import java.lang.reflect.MalformedParametersException;
+import java.util.InputMismatchException;
 import java.util.NoSuchElementException;
 
 class RestExceptionHandlerTest {
@@ -53,11 +53,11 @@ class RestExceptionHandlerTest {
   }
 
   @Test
-  void testHandleMalformedParameters() {
-    MalformedParametersException exception =
-        new MalformedParametersException("Filename  malformed");
+  void testHandleInputMismatch() {
+    InputMismatchException exception =
+        new InputMismatchException("Filename  malformed");
 
-    ResponseEntity<String> response = restExceptionHandler.handleMalformedParameters(exception);
+    ResponseEntity<String> response = restExceptionHandler.handleInputMismatch(exception);
 
     Assertions.assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     Assertions.assertEquals("Filename  malformed", response.getBody());
