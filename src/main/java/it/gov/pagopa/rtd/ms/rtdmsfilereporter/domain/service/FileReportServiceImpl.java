@@ -51,12 +51,13 @@ public class FileReportServiceImpl implements FileReportService {
     // get senderCode from filename
     String senderCode = fileName.split("\\.")[1];
     FileReport fileReport;
-    try {
-      fileReport = getFileReport(senderCode).orElseThrow();
-    } catch (NoSuchElementException e) {
-      String errorMsg = String.format("FileReport not found for sender %s", senderCode);
-      throw new NoSuchElementException(errorMsg);
-    }
+    fileReport =
+        getFileReport(senderCode)
+            .orElseThrow(
+                () -> {
+                  String errorMsg = String.format("FileReport not found for sender %s", senderCode);
+                  return new NoSuchElementException(errorMsg);
+                });
 
     Optional<FileMetadata> result =
         fileReport.getFilesUploaded().stream()
