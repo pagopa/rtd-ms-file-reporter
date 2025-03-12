@@ -5,9 +5,12 @@ import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.repository.FileReportReposi
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.service.DecryptedEventCommand;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.service.FileReportService;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.service.FileReportServiceImpl;
+import it.gov.pagopa.rtd.ms.rtdmsfilereporter.domain.service.StorageAccountService;
+import it.gov.pagopa.rtd.ms.rtdmsfilereporter.feign.config.ReportConfiguration;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.persistance.FileReportDao;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.persistance.FileReportRepositoryImpl;
 import it.gov.pagopa.rtd.ms.rtdmsfilereporter.persistance.model.FileReportEntityMapper;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -16,11 +19,12 @@ import org.springframework.context.annotation.Configuration;
  * the domain are not bounded to the specific framework.
  */
 @Configuration
+@EnableConfigurationProperties(ReportConfiguration.class)
 public class AppConfiguration {
 
   @Bean
-  public FileReportService getFileReportService(FileReportRepository repository) {
-    return new FileReportServiceImpl(repository);
+  public FileReportService getFileReportService(FileReportRepository repository, StorageAccountService service, ReportConfiguration report) {
+    return new FileReportServiceImpl(repository, service, report);
   }
 
   @Bean
